@@ -5,3 +5,4 @@
 #
 
 ReadPackage( "AutF2", "gap/AutF2.gd");
+ReadPackage( "AutF2", "gap/mats.gd");

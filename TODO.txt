@@ -5,3 +5,6 @@ ReduceAutomorphismWord, to reduce a word of automorphisms
 AutomorphismFromWord, to create an automorphism from a word
 
 For the second function I need to create a new object called the GroupOfAutomorphisms.
+
+
+Conjugacy in F2.
