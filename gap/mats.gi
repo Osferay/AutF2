@@ -198,10 +198,10 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
             delta, I2, U, a, b, c, d;
 
     fundamentalUnit := function( delta )
-        local a0, d, b0, q1, q2, A, u, v;
+        local a, a0, d, b0, q1, q2, A, u, v, tmp;
 
         a0 := 1;
-        d  := Int( Floor( Sqrt( Float( delta ) ) ) );
+        d  := RootInt( delta );
         if (delta - d) mod 2 = 0 then
             b0 := d;
         else
@@ -209,14 +209,15 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
         fi;
 
         a  := a0; b  := b0;
-        q1 := 1;  q2 := 2;
+        q1 := 0;  q2 := 1;
 
         repeat
-            A  := Int( Floor( Float( (b+d)/(2*a) ) ) );
-            b  := 2*a*A-b;
-            a  := (delta-b^2)/(4*a);
-            q1 := q1*A+q2;
-            q2 := q1;
+            A   := Int( (b+d)/(2*a) );
+            b   := 2*a*A-b;
+            a   := (delta-b^2)/(4*a);
+            tmp := q1;
+            q1  := q1*A+q2;
+            q2  := tmp;
         until a = a0 and b = b0;
 
         u := ( 2*a0*q2 + q1*b0 )/a0;
@@ -224,7 +225,7 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
 
         return [u,v];
     end;
-
+    
     I2    := [ [1,0], [0,1] ];
     b     := A[1][1]-A[2][2];
     a     := A[1][2];
