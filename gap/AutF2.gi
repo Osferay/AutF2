@@ -20,98 +20,159 @@ InstallMethod(AutomorphismOfF2Family,
 );
 
 GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
-	local	autos, gens,
-			AutF2IdentityFunction,
-			ReplaceGen1ByInverse,
-			ReplaceGen1ByGen1Gen2,
-			ReplaceGen2ByGen2Gen1,
-			ReplaceGen1ByInverseGen2Gen1,
-			ReplaceGen2ByInverseGen1Gen2,
-			ReplaceGen1ByGen1InverseGen2,
-			ReplaceGen2ByGen2InverseGen1,
-			ReplaceGen1ByGen2Gen1,
-			ReplaceGen2ByGen1Gen2;
+	local	gens, i,
+			sigma,
+			phi1, phi2, phi3;
 
-	autos := [];
 	gens  := GeneratorsOfGroup( F );
 
-	AutF2IdentityFunction := function( w )
-		return w;
+	sigma := function(w)
+		local rep, new;
+		rep := LetterRepAssocWord( w );
+		new := [];
+		for i in [1..Length( rep )] do
+			if AbsInt( rep[i] ) = 1 then Add( new, SignInt( rep[i] )*2 );
+			else Add( new, SignInt( rep[i] )*1 );
+			fi;
+		od;
+		return AssocWordByLetterRep( FamilyObj(w), new ); 
 	end;
-	Add( autos, AutF2IdentityFunction );
-	#Word 1
-	ReplaceGen1ByInverse := function( w )
-		return EliminatedWord( w, gens[1], gens[1]^-1 );
-	end;
-	Add( autos, ReplaceGen1ByInverse );
-	#Word 2
-	ReplaceGen1ByGen1Gen2 := function( w )
+	phi1 := function( w )
 		return EliminatedWord( w, gens[1], gens[1]*gens[2] );
 	end;
-	Add( autos, ReplaceGen1ByGen1Gen2 );
-	#Word 3
-	ReplaceGen2ByGen2Gen1 := function( w )
+	phi2 := function( w )
 		return EliminatedWord( w, gens[2], gens[2]*gens[1] );
 	end;
-	Add( autos, ReplaceGen2ByGen2Gen1 );
-	#Word 4
-	ReplaceGen1ByInverseGen2Gen1 := function( w )
+	phi3 := function( w )
 		return EliminatedWord( w, gens[1], gens[2]^-1*gens[1] );
 	end;
-	Add( autos, ReplaceGen1ByInverseGen2Gen1 );
-	#Word 5
-	ReplaceGen2ByInverseGen1Gen2 := function( w )
-		return EliminatedWord( w, gens[2], gens[1]^-1*gens[2] );
-	end;
-	Add( autos, ReplaceGen2ByInverseGen1Gen2 );
-	#Word 6
-	ReplaceGen1ByGen1InverseGen2 := function( w )
+
+	return [ sigma, phi1, phi2, phi3 ];
+end;
+
+InverseOfGeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
+	local	gens,
+			iphi1, iphi2, iphi3;
+
+	gens  := GeneratorsOfGroup( F );
+
+	iphi1 := function( w )
 		return EliminatedWord( w, gens[1], gens[1]*gens[2]^-1 );
 	end;
-	Add( autos, ReplaceGen1ByGen1InverseGen2 );
-	#Word 7
-	ReplaceGen2ByGen2InverseGen1 := function( w )
+	iphi2 := function( w )
 		return EliminatedWord( w, gens[2], gens[2]*gens[1]^-1 );
 	end;
-	Add( autos, ReplaceGen2ByGen2InverseGen1 );
-	#Word 8
-	ReplaceGen1ByGen2Gen1 := function( w )
+	iphi3 := function( w )
 		return EliminatedWord( w, gens[1], gens[2]*gens[1] );
 	end;
-	Add( autos, ReplaceGen1ByGen2Gen1 );
-	#Word 9
-	ReplaceGen2ByGen1Gen2 := function( w )
-		return EliminatedWord( w, gens[2], gens[1]*gens[2] );
-	end;
-	Add( autos, ReplaceGen2ByGen1Gen2 );
 
-	return autos;
+	return [ iphi1, iphi2, iphi3 ];
+end;
+
+ReduceWordOfAutomorphismOfF2 := function( word )
+	local	red, i;
+
+	red := ShallowCopy( word );
+
+	for i in [1..Length( red )-1] do
+		if IsInt( red[i] ) and IsInt( red[ i+1 ] ) then
+			if red[i] = -red[i+1] then
+				Remove( red, i+1 ); Remove( red, i );
+				return ReduceWordOfAutomorphismOfF2( red );
+			fi;
+		elif red[i] = "s" and red[i+1] = "s" then
+			Remove( red, i+1 ); Remove( red, i );
+			return ReduceWordOfAutomorphismOfF2( red );
+		fi;
+	od;
+
+	return red;
+end;
+
+MoveSigmaToLeft := function( word )
+	local	pos, mov, tmp;
+
+	mov := ReduceWordOfAutomorphismOfF2( word );
+	pos := Positions( mov, "s" );
+
+	if pos <> [1] and not IsEmpty( pos ) then 
+		pos := Last( pos );
+		if AbsInt( mov[ pos-1 ] ) = 1 then
+			mov[ pos ] := SignInt( mov[ pos-1 ] )*2;
+			mov[ pos-1 ] := "s";
+		elif AbsInt( mov[ pos-1 ] ) = 2 then
+			mov[ pos ] := SignInt( mov[ pos-1 ] )*1;
+			mov[ pos-1 ] := "s";
+		elif AbsInt( mov[ pos-1 ] ) = 3 then
+			tmp := mov{[1..pos-2]};
+			Append( tmp, [ "s", -3, -2, SignInt( mov[ pos-1 ] )*1, 2, 3] );
+			Append( tmp, mov{ [pos+1..Length(mov) ] } );
+			mov := ShallowCopy( tmp );
+		fi;
+		
+		mov := ReduceWordOfAutomorphismOfF2( mov );
+		return MoveSigmaToLeft( mov );
+	fi;
+
+	return mov;
 end;
 
 InstallMethod( AutomorphismOfF2, 
-    "for a list of functions", 
+    "for a free group and a word of automorphisms", 
     [ IsFreeGroup, IsList ], 
     function( F, word ) 
-        local aut, v, w, i;
+        local aut, autw, v, w, i, funs, gens, invs, identityfunction;
 
-		
+		gens := GeneratorsOfGroupOfAutomorphismsOfF2( F );
+		invs := InverseOfGeneratorsOfGroupOfAutomorphismsOfF2( F );
+		autw := MoveSigmaToLeft( word );
+		funs := [];
+		for i in [1..Length(autw)] do
+			if autw[i] = 1 then
+				Add( funs, gens[2] );
+			elif autw[i] = 2 then
+				Add( funs, gens[3] );
+			elif autw[i] = 3 then
+				Add( funs, gens[4] );
+			elif autw[i] = -1 then
+				Add( funs, invs[1] );
+			elif autw[i] = -2 then
+				Add( funs, invs[2] );
+			elif autw[i] = -3 then
+				Add( funs, invs[3] );
+			elif autw[i] = "s" then
+				Add( funs, gens[1] );
+			else
+				Error( "Word is not a word of automorphisms." );
+			fi;
+		od;
+
+		if IsEmpty(funs) then
+			identityfunction := function(w)
+				return w;
+			end;
+			Add( funs, identityfunction );
+		fi;
 
 		v := GeneratorsOfGroup( F )[1];
 		w := GeneratorsOfGroup( F )[2];
-		for i in [1..Length(list[1])] do
-			v := list[1][i]( v );
-		od;
-		for i in [1..Length(list[2])] do
-			w := list[2][i]( w );
+		for i in [1..Length(funs)] do
+			v := funs[i]( v );
+			w := funs[i]( w );
 		od;
         
-        aut := rec( functions := list, freeGroup := F, images := [v,w], word := word );
+        aut := rec( functions := funs, freeGroup := F, images := [v,w], word := autw );
 
         aut := Objectify( NewType( AutomorphismOfF2Family( FamilyObj( aut ) ), IsAutomorphismOfF2 and RepAutomorphismOfF2 ),
                        aut ) ;
         return( aut );
     end 
 );
+
+InstallMethod( WordOfAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
+	function( aut )
+		return aut!.word;
+	end );
 
 InstallMethod( PrintObj, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
     function( aut )
@@ -169,18 +230,14 @@ InstallOtherMethod( \*,
 	"for automorphisms of F2",
 	[ IsAutomorphismOfF2, IsAutomorphismOfF2],
 	function( aut1, aut2 )
-		local l1, l2, w1, w2, aut;
+		local w, aut;
 
 		if aut1!.freeGroup <> aut2!.freeGroup then
 			Error( "The free groups of the automorphisms are different." );
 		fi;
 
-		l1 := Concatenation( aut1!.functions[1], aut2!.functions[1] );
-		l2 := Concatenation( aut1!.functions[2], aut2!.functions[2] );
-		w1 := Concatenation( aut1!.word[1], aut2!.word[1] );
-		w2 := Concatenation( aut1!.word[2], aut2!.word[2] );
-		aut := AutomorphismOfF2( aut1!.freeGroup, [l1,l2] );
-		aut!.word := [w1, w2];
+		w := Concatenation( aut1!.word, aut2!.word );
+		aut := AutomorphismOfF2( aut1!.freeGroup, w );
 
 		return aut;	
 end);
@@ -189,67 +246,22 @@ InstallOtherMethod( Inverse,
 	"for automorphisms of F2",
 	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local 	autos,
-				w1, w2, i, inv;
+		local 	word,
+				inv,
+				i;
 
-		if IsEmpty(aut!.word) then
-			Error( "this automorphism does not belong an automorphism group." );
-		fi;
+		word := aut!.word;
+		inv := [];
 
-		w1 := []; w2 := [];
-
-		for i in [1..Length( aut!.word[1])/2 ] do
-			if aut!.word[1][2*i-1] = 0 then
-				w1[2*i-1] 	:= [0,0];
-			elif aut!.word[1][2*i-1] = 1 then 
-				w1[2*i-1] 	:= [1,1];
-			elif aut!.word[1][2*i-1] = 2 and aut!.word[1][2*i] = 1 then 
-				w1[2*i-1] 	:= [2,-1];
-			elif aut!.word[1][2*i-1] = 3 and aut!.word[1][2*i] = 1 then 
-				w1[2*i-1] 	:= [3,-1];
-			elif aut!.word[1][2*i-1] = 4 and aut!.word[1][2*i] = 1 then 
-				w1[2*i-1] 	:= [4,-1];
-			elif aut!.word[1][2*i-1] = 5 and aut!.word[1][2*i] = 1 then 
-				w1[2*i-1] 	:= [5,-1];
-			elif aut!.word[1][2*i-1] = 6 and aut!.word[1][2*i] = -1 then 
-				w1[2*i-1] 	:= [2,1];
-			elif aut!.word[1][2*i-1] = 7 and aut!.word[1][2*i] = -1 then  
-				w1[2*i-1] 	:= [3,1];
-			elif aut!.word[1][2*i-1] = 8 and aut!.word[1][2*i] = -1 then  
-				w1[2*i-1] 	:= [4,1];
-			elif aut!.word[1][2*i-1] = 9 and aut!.word[1][2*i] = -1 then  
-				w1[2*i-1] 	:= [5,1];
+		for i in [1..Length( word )] do
+			if IsInt(word[i]) then
+				Add( inv, -word[i] );
+			else
+				Add( inv, "s" );
 			fi;
 		od;
-		for i in [1..Length( aut!.word[2])/2 ] do
-			if aut!.word[2][2*i-1] = 0 then
-				w2[2*i-1] 	:= [0,0];
-			elif aut!.word[2][2*i-1] = 1 then 
-				w2[2*i-1] 	:= [1,1];
-			elif aut!.word[2][2*i-1] = 2 and aut!.word[1][2*i] = 1 then  
-				w2[2*i-1] 	:= [2,-1];
-			elif aut!.word[2][2*i-1] = 3 and aut!.word[1][2*i] = 1 then  
-				w2[2*i-1] 	:= [3,-1];
-			elif aut!.word[2][2*i-1] = 4 and aut!.word[1][2*i] = 1 then  
-				w2[2*i-1] 	:= [4,-1];
-			elif aut!.word[2][2*i-1] = 5 and aut!.word[1][2*i] = 1 then  
-				w2[2*i-1] 	:= [5,-1];
-			elif aut!.word[2][2*i-1] = 2 and aut!.word[1][2*i] = -1 then  
-				w2[2*i-1] 	:= [2,1];
-			elif aut!.word[2][2*i-1] = 3 and aut!.word[1][2*i] = -1 then  
-				w2[2*i-1] 	:= [3,1];
-			elif aut!.word[2][2*i-1] = 4 and aut!.word[1][2*i] = -1 then  
-				w2[2*i-1] 	:= [4,1];
-			elif aut!.word[2][2*i-1] = 5 and aut!.word[1][2*i] = -1 then  
-				w2[2*i-1] 	:= [5,1];
-			fi;
-		od;
-
-		w1 := Flat( Reversed( w1 ) ); w2 := Flat( Reversed( w2 ) );
-
-		inv := [ w1, w2 ];
-
-		return inv;
+			
+		return AutomorphismOfF2( aut!.freeGroup, Reversed(inv) );
 end );
 
 InstallOtherMethod( \^,
@@ -272,6 +284,24 @@ InstallOtherMethod( \^,
 		return pow;
 end);
 
+InstallOtherMethod( \^,
+	"for two automorphisms of F2",
+	[ IsAutomorphismOfF2, IsAutomorphismOfF2],
+	function( a, b )
+		local new;
+
+		if a!.freeGroup <> b!.freeGroup then
+			Error( "The free groups of the automorphisms are different." );
+		fi;
+
+		new := Inverse( b );
+		new := ShallowCopy( WordOfAutomorphismOfF2( new ) );
+		Append( new, WordOfAutomorphismOfF2( a ) );
+		Append( new, WordOfAutomorphismOfF2( b ) );
+
+		return AutomorphismOfF2( a!.freeGroup, new );
+end);
+
 InstallOtherMethod( Order,
 	"for automorphisms of F2",
 	[ IsAutomorphismOfF2],
@@ -286,25 +316,3 @@ InstallOtherMethod( Order,
 		od;
 		return infinity;
 end);
-
-GroupOfAutomorphismsOfF2 := function( F )
-
-	local 	autos,
-			e, t, f1, f2, f3, f4;
-
-	autos := AllAutomorphismsOfF2( F );
-	e := AutomorphismOfF2( F, [[autos[1]], [autos[1]]] );
-	e!.word := [ [0,0], [0,0] ];
-	t := AutomorphismOfF2( F, [[autos[2]], [autos[1]]] );
-	t!.word := [ [1,1], [0,0] ];
-	f1 := AutomorphismOfF2( F, [[autos[3]], [autos[1]]] );
-	f1!.word := [ [2,1], [0,0] ];
-	f2 := AutomorphismOfF2( F, [[autos[1]], [autos[4]]] );
-	f2!.word := [ [0,0], [3,1] ];
-	f3 := AutomorphismOfF2( F, [[autos[5]], [autos[1]]] );
-	f3!.word := [ [4,1], [0,0] ];
-	f4 := AutomorphismOfF2( F, [[autos[1]], [autos[6]]] );
-	f4!.word := [ [0,0], [5,1] ];
-
-	return [e,t,f1,f2,f3,f4];
-end;

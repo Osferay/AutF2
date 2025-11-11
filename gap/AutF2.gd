@@ -24,6 +24,8 @@ DeclareAttribute( "AutomorphismOfF2Family", IsFamily );
 #! Constructor of the automorphism object given a list of functions. 
 #! @Arguments F, list
 DeclareOperation("AutomorphismOfF2", [ IsFreeGroup, IsList ] );
+
+DeclareAttribute( "WordOfAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
 #! Returns whether or not an automorphism is trivial.
 #! @Arguments aut
