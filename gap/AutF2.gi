@@ -27,12 +27,13 @@ GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 	gens  := GeneratorsOfGroup( F );
 
 	sigma := function(w)
-		local rep, new;
+		local rep, r, new;
 		rep := LetterRepAssocWord( w );
 		new := [];
 		for i in [1..Length( rep )] do
-			if AbsInt( rep[i] ) = 1 then Add( new, SignInt( rep[i] )*2 );
-			else Add( new, SignInt( rep[i] )*1 );
+			r := rep[i];
+			if AbsInt( r ) = 1 then Add( new, SignInt( r )*2 );
+			else Add( new, SignInt( r )*1 );
 			fi;
 		od;
 		return AssocWordByLetterRep( FamilyObj(w), new ); 
@@ -174,52 +175,56 @@ InstallMethod( WordOfAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorp
 		return aut!.word;
 	end );
 
+InstallMethod( ImagesAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
+	function( aut )
+		return [ aut!.images[1], aut!.images[2] ];	
+end );
+
 InstallMethod( PrintObj, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
     function( aut )
-		local gens;
+		local gens, imgs;
 
 		gens := GeneratorsOfGroup( aut!.freeGroup );
+		imgs := ImagesAutomorphismOfF2( aut );
 
-		Print( gens[1], " -> ", aut!.images[1], "\n" );
-		Print( gens[2], " -> ", aut!.images[2] );
+		Print( gens[1], " -> ", imgs[1], "\n" );
+		Print( gens[2], " -> ", imgs[2] );
     end 
 );
 
 InstallMethod( IsIdentityAutomorphismOfF2, 
 	"for an automorphism of F2",
-	[IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local gens, v, w;
+		local gens, imgs;
 
 		gens := GeneratorsOfGroup( aut!.freeGroup );
-		v    := aut!.images[1];
-		w    := aut!.images[2];
-		return ( gens[1] = v and gens[2] = w );
+		imgs := ImagesAutomorphismOfF2( aut );
+		return ( gens[1] = imgs[1] and gens[2] = imgs[2] );
 
 end);
 
 InstallMethod( MatrixRepresentationOfAutomorphismOfF2,
 	"for an automorphism of F2",
-	[IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local M, gens, v, w;
+		local M, gens, imgs;
 
 		M := [[0,0],[0,0]];
 		gens := GeneratorsOfGroup( aut!.freeGroup );
-		v    := aut!.images[1];
-		w    := aut!.images[2];
+		imgs := ImagesAutomorphismOfF2( aut );
 
-		M[1][1] := ExponentSumWord( v, gens[1] );
-		M[1][2] := ExponentSumWord( v, gens[2] );
-		M[2][1] := ExponentSumWord( w, gens[1] );
-		M[2][2] := ExponentSumWord( w, gens[2] );
+		M[1][1] := ExponentSumWord( imgs[1], gens[1] );
+		M[1][2] := ExponentSumWord( imgs[1], gens[2] );
+		M[2][1] := ExponentSumWord( imgs[2], gens[1] );
+		M[2][2] := ExponentSumWord( imgs[2], gens[2] );
 
 		return M;
 end );
 
 InstallMethod( IsSpecialAutomorphismOfF2,
 	"for an automorphism of F2",
-	[IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2 ],
 	function( aut )
 		local M;
 		M := MatrixRepresentationOfAutomorphismOfF2(aut);
@@ -228,7 +233,7 @@ end);
 
 InstallOtherMethod( \*,
 	"for automorphisms of F2",
-	[ IsAutomorphismOfF2, IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2, IsAutomorphismOfF2 ],
 	function( aut1, aut2 )
 		local w, aut;
 
@@ -266,7 +271,7 @@ end );
 
 InstallOtherMethod( \^,
 	"for automorphisms of F2",
-	[ IsAutomorphismOfF2, IsInt],
+	[ IsAutomorphismOfF2, IsInt ],
 	function( aut, e)
 		local i, pow, mul;
 		
@@ -286,7 +291,7 @@ end);
 
 InstallOtherMethod( \^,
 	"for two automorphisms of F2",
-	[ IsAutomorphismOfF2, IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2, IsAutomorphismOfF2 ],
 	function( a, b )
 		local new;
 
@@ -304,7 +309,7 @@ end);
 
 InstallOtherMethod( Order,
 	"for automorphisms of F2",
-	[ IsAutomorphismOfF2],
+	[ IsAutomorphismOfF2 ],
 	function( aut )
 		local i, o;
 		
@@ -315,4 +320,83 @@ InstallOtherMethod( Order,
 			fi;
 		od;
 		return infinity;
+end);
+
+InstallMethod( IsConjugacyAutomorphismOfF2,
+	"for automorphisms of F2",
+	[ IsAutomorphismOfF2 ],
+	function(aut)
+		local	F, gens, imgs, c1, c2, rep1, rep2;
+
+		F    := aut!.freeGroup;
+		gens := GeneratorsOfGroup( aut!.freeGroup );
+		imgs := ImagesAutomorphismOfF2( aut );
+		c1   := RepresentativeAction( F, gens[1], imgs[1] );
+		c2   := RepresentativeAction( F, gens[2], imgs[2] );
+		
+		if not IsBool( c1 ) and not IsBool( c2 ) then
+				rep1 := LetterRepAssocWord( c1 );
+				rep2 := LetterRepAssocWord( c2 );
+				if not IsBool( PositionSublist( rep1, rep2 ) ) then
+					SetConjugacyElementConjugacyAutomorphismOfF2( aut, c1 );
+					return true;
+				elif not IsBool( PositionSublist( rep1, rep2 ) ) then
+					SetConjugacyElementConjugacyAutomorphismOfF2( aut, c2 );
+					return true;
+				else
+					return false;
+				fi;
+		fi;			
+
+		return false;
+	
+end );
+
+InstallMethod( ConjugacyElementConjugacyAutomorphismOfF2,
+	"for a conjugacy automorphism in F2",
+	[ IsAutomorphismOfF2 ],
+	function( aut )
+		if HasConjugacyElementConjugacyAutomorphismOfF2(aut) then
+			return ConjugacyElementConjugacyAutomorphismOfF2( aut );
+		elif IsConjugacyAutomorphismOfF2( aut ) then
+			return ConjugacyElementConjugacyAutomorphismOfF2( aut );
+		else
+			return fail;
+		fi;
+end );
+
+InstallMethod( ConjugacyAutomorphismOfF2,
+	"for a conjugating element in F2",
+	[ IsFreeGroup, IsAssocWordWithInverse ],
+	function( F, word )
+		local rep, r, aut, i;
+
+		if Rank(F) <> 2 then
+			Error( "This function is only for the free group of rank 2.");
+		elif not word in F then
+			Error( "The word has to be in the given free group." );
+		fi;
+
+		rep := LetterRepAssocWord( word );
+		aut := [];
+		for i in [1..Length(rep)] do
+			r := rep[i];
+			if AbsInt( r ) = 1 then
+				Add( aut, SignInt( r )*2 );
+				Add( aut, -3 );
+				Add( aut, -2 );
+				Add( aut, SignInt( r )*1 );
+				Add( aut, 2 );
+				Add( aut, 3 );
+			elif AbsInt( r ) = 2 then
+				Add( aut, SignInt( r )*1 );
+				Add( aut, SignInt( r )*3 );
+			fi;
+		od;
+
+		aut := AutomorphismOfF2( F, aut );
+		SetIsConjugacyAutomorphismOfF2( aut, true );
+		SetConjugacyElementConjugacyAutomorphismOfF2( aut, word );
+
+		return aut;
 end);
