@@ -17,6 +17,6 @@ DeclareGlobalFunction( "ReduceMatrix22" );
 #! @Arguments A,B
 DeclareGlobalFunction( "ConjugacyMatrix22" );
 #! @Description
-#! Computes the centralizer of a 2x2 matrix.
+#! Computes a generating set of the centralizer of a 2x2 matrix.
 #! @Arguments A,B
 DeclareGlobalFunction( "CentralizerMatrix22" );
