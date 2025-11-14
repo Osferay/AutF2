@@ -1,1 +1,4 @@
 Add code for braids
+
+To complile bridge.cpp use 
+g++ -std=c++17 -Iinclude bridge.cpp lib/braiding.cpp lib/cbraid.cpp -o bridge
