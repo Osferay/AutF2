@@ -3,6 +3,6 @@
 #
 # Reading the implementation part of the package.
 #
+ReadPackage( "AutF2", "gap/bridge.gi");
 ReadPackage( "AutF2", "gap/AutF2.gi");
 ReadPackage( "AutF2", "gap/mats.gi");
-ReadPackage( "AutF2", "gap/bridge.gi");

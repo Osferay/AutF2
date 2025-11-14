@@ -1,10 +1,10 @@
 LoadPackage( "json" );
 
-AutF2CallCpp := function(  )
-    local filename;
+AutF2CallCppLCF := function(  )
+    local filename, cpp;
 
     filename := DirectoriesPackageLibrary( "autf2", "src" );
-    cpp := Filename( filename[1], "bridge" );
+    cpp := Filename( filename[1], "lcf.o" );
     filename := Filename( filename[1], "todo.json" );
     filename := Concatenation( cpp, " \"", filename, "\"" );
     

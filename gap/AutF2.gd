@@ -56,3 +56,7 @@ DeclareAttribute( "ConjugacyElementConjugacyAutomorphismOfF2", IsAutomorphismOfF
 #! Returns the automorphism determinated by the conjugacy of the given word in $F_2$
 #! @Arguments aut
 DeclareOperation( "ConjugacyAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInverse ] );
+#! @Description
+#! Computes the left canonical form of the given automorphism
+#! @Arguments aut
+DeclareAttribute( "LeftCanonicalFormAutomorphismOfF2", IsAutomorphismOfF2 );

@@ -20,3 +20,17 @@ gap> Order( sigma );
 gap> aut := AutomorphismOfF2( F, [ 1, 3, 2, -3, -2, 1, 2, 3 ] );;
 gap> ConjugacyElementConjugacyAutomorphismOfF2( aut );
 f2*f1
+gap> lcf := LeftCanonicalFormAutomorphismOfF2( aut );;
+gap> AutomorphismOfF2( F, lcf );
+f1 -> f1^-1*f2^-1*f1*f2*f1
+f2 -> f1^-1*f2*f1
+gap> phi1*phi3 = phi3*phi1;
+true
+gap> phi2*phi3*phi2 = phi3*phi2*phi3;
+true
+gap> phi1^-1*phi2*phi1^-1 = phi2*phi1^-1*phi2;
+true
+gap> phi1^sigma = phi2;
+true
+gap> phi3^sigma = phi3^-1*phi2^-1*phi1*phi2*phi3;
+true

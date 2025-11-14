@@ -400,3 +400,58 @@ InstallMethod( ConjugacyAutomorphismOfF2,
 
 		return aut;
 end);
+
+InstallMethod( LeftCanonicalFormAutomorphismOfF2,
+	"for an automorphism of F2",
+	[ IsAutomorphismOfF2 ],
+	function( aut )
+		local	word, lcf, i;
+
+		word := WordOfAutomorphismOfF2( aut );
+
+		if word[1] = "s" then
+			lcf := word{[2..Length(word)]};
+		else
+			lcf := ShallowCopy( word );
+		fi;
+
+		for i in [1..Length( lcf )] do
+
+			if AbsInt( lcf[i] ) = 1 then
+				lcf[i] := -1*lcf[i];
+			fi;
+		
+		od;
+
+		AutF2WriteJSON( lcf );
+		AutF2CallCppLCF();
+		lcf := AutF2ReadJSON();
+
+		for i in [1..Length( lcf )] do
+
+			if AbsInt( lcf[i] ) = 1 then
+				lcf[i] := -1*lcf[i];
+			fi;
+		
+		od;
+
+		if lcf[1] = 4 then 
+			word := [ -1, 2, -1, 3, 2, -1 ];
+			lcf := Concatenation( word, lcf{[2..Length(lcf)]});
+		fi;
+
+		if word[1] = "s" then
+			Add( lcf, "s", 1 );
+		fi;
+
+		return lcf;
+
+end );
+
+InstallOtherMethod( \=,
+	"for two automorphisms of F2",
+	[ IsAutomorphismOfF2, IsAutomorphismOfF2 ],
+	function( a, b )
+
+	return LeftCanonicalFormAutomorphismOfF2( a ) = LeftCanonicalFormAutomorphismOfF2( b );
+end );

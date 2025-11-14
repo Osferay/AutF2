@@ -34,31 +34,36 @@ int main(int argc, char* argv[])
         cerr << "JSON is not a list.\n";
         return 1;
     }
+
+    // Start the braid
     B = ArtinBraid( 4 );
 	B = WordToBraid( word, 4);
     B.MakeLCF();
+
     
+    // Read all the factors and the deltas
     sint16 i, j, k, n=B.Index();
     ArtinFactor F=ArtinFactor(n);
     list<sint16> wlcf;
     list<ArtinFactor>::iterator it;
-
+    
+    if(B.LeftDelta!=0){
+        wlcf.push_back( 4 );
+    }
+    
     for(it=B.FactorList.begin(); it!=B.FactorList.end(); it++)
     {
-      if(it!=B.FactorList.begin())
-	cout << ". ";
-
       F=*it;
       for(i=2; i<=n; i++)
-	{
-	  for(j=i; j>1 && F[j]<F[j-1]; j--)
 	    {
-	      wlcf.push_back( j-1 );
-	      k=F[j];
-	      F[j]=F[j-1];
-	      F[j-1]=k;
+	    for(j=i; j>1 && F[j]<F[j-1]; j--)
+	        {
+	        wlcf.push_back( j-1 );
+	        k=F[j];
+	        F[j]=F[j-1];
+	        F[j-1]=k;
+	        }
 	    }
-	}
     }
 
     for (int x : wlcf) {
