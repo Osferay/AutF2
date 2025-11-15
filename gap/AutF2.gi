@@ -226,9 +226,10 @@ InstallMethod( IsSpecialAutomorphismOfF2,
 	"for an automorphism of F2",
 	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local M;
-		M := MatrixRepresentationOfAutomorphismOfF2(aut);
-		return DeterminantIntMat(M) = 1;
+		#local M;
+		#M := MatrixRepresentationOfAutomorphismOfF2(aut);
+		#return DeterminantIntMat(M) = 1;
+		return WordOfAutomorphismOfF2( aut )[1] <> "s";
 end);
 
 InstallOtherMethod( \*,
@@ -401,6 +402,26 @@ InstallMethod( ConjugacyAutomorphismOfF2,
 		return aut;
 end);
 
+WordOfSpecialAutomorphismOfF2ToBraidWord := function( word )
+	local braid, delta, i;
+
+	braid := ShallowCopy( word );
+	for i in [1..Length( braid )] do
+
+		if AbsInt( braid[i] ) = 1 then
+			braid[i] := -1*braid[i];
+		fi;
+	
+	od;
+
+	if braid[1] = 4 then 
+		delta := [ -1, 2, -1, 3, 2, -1 ];
+		braid := Concatenation( delta, braid{[2..Length(braid)]});
+	fi;
+	
+	return braid;
+end;
+
 InstallMethod( LeftCanonicalFormAutomorphismOfF2,
 	"for an automorphism of F2",
 	[ IsAutomorphismOfF2 ],
@@ -414,31 +435,13 @@ InstallMethod( LeftCanonicalFormAutomorphismOfF2,
 		else
 			lcf := ShallowCopy( word );
 		fi;
-
-		for i in [1..Length( lcf )] do
-
-			if AbsInt( lcf[i] ) = 1 then
-				lcf[i] := -1*lcf[i];
-			fi;
-		
-		od;
+		lcf := WordOfSpecialAutomorphismOfF2ToBraidWord( lcf );
 
 		AutF2WriteJSON( lcf );
-		AutF2CallCppLCF();
+		AutF2CallCpp( "lcf" );
 		lcf := AutF2ReadJSON();
 
-		for i in [1..Length( lcf )] do
-
-			if AbsInt( lcf[i] ) = 1 then
-				lcf[i] := -1*lcf[i];
-			fi;
-		
-		od;
-
-		if lcf[1] = 4 then 
-			word := [ -1, 2, -1, 3, 2, -1 ];
-			lcf := Concatenation( word, lcf{[2..Length(lcf)]});
-		fi;
+		lcf := WordOfSpecialAutomorphismOfF2ToBraidWord( lcf );
 
 		if word[1] = "s" then
 			Add( lcf, "s", 1 );
@@ -455,3 +458,51 @@ InstallOtherMethod( \=,
 
 	return LeftCanonicalFormAutomorphismOfF2( a ) = LeftCanonicalFormAutomorphismOfF2( b );
 end );
+
+AreConjugate := function( a, b )
+	local	b1, b2, j, conj;
+
+	b1 := WordOfAutomorphismOfF2( a );
+	b2 := WordOfAutomorphismOfF2( b );
+
+	if IsSpecialAutomorphismOfF2( a ) and IsSpecialAutomorphismOfF2( b ) then
+		b1 := WordOfSpecialAutomorphismOfF2ToBraidWord( b1 );
+		b2 := WordOfSpecialAutomorphismOfF2ToBraidWord( b2 );
+		j  := rec( word1 := b1, word2 := b2 );
+
+		AutF2WriteJSON( j );
+		AutF2CallCpp( "cent" );
+		conj := AutF2ReadJSON();
+
+		if IsBool( conj ) then
+			return false;
+		else
+			conj := WordOfSpecialAutomorphismOfF2ToBraidWord( conj );
+			return AutomorphismOfF2( a!.freeGroup, conj );
+		fi;
+	
+	else
+		Error( "not yet." );
+	fi;
+end;
+
+Centralizer := function( a )
+	local b, cent, i;
+
+	if not IsSpecialAutomorphismOfF2( a ) then
+		Error( "not yet." );
+	fi;
+	
+	b := WordOfAutomorphismOfF2( a );
+
+	AutF2WriteJSON( b );
+	AutF2CallCpp( "cent" );
+	cent := AutF2ReadJSON( );
+
+	for i in [1..Length(cent)] do
+		cent[i] := WordOfSpecialAutomorphismOfF2ToBraidWord( cent[i] );
+		cent[i] := AutomorphismOfF2( a!.freeGroup, cent[i] );
+	od; 
+
+	return cent;
+end;
