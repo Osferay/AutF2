@@ -4,20 +4,9 @@ AutF2CallCpp := function( func )
     local filename, cpp;
 
     filename := DirectoriesPackageLibrary( "autf2", "src" );
-
-    if func = "lcf" then
-        cpp := Filename( filename[1], "lcf.o" );
-    elif func = "conj" then
-        cpp := Filename( filename[1], "conj.o" );
-    elif func = "cent" then
-        cpp := Filename( filename[1], "cent.o" );
-    else
-        Error( "No function implemented in c++." );
-    fi;
-
-    filename := Filename( filename[1], "todo.json" );
-    filename := Concatenation( cpp, " \"", filename, "\"" );
-    
+    cpp := Filename( filename[1], "braidgap" );
+    filename := Filename( filename[1], "todo.json" );     
+    filename := Concatenation( cpp, " \"", filename, "\"", " \"", func, "\"" );       
     Exec( filename );
 
 end;

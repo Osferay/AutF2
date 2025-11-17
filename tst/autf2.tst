@@ -34,3 +34,12 @@ gap> phi1^sigma = phi2;
 true
 gap> phi3^sigma = phi3^-1*phi2^-1*phi1*phi2*phi3;
 true
+gap> phi4 := phi3^-1*phi2^-1*phi1*phi2*phi3;;
+gap> conj := AreConjugate( phi2, phi4^-1 );
+f1 -> f1*f2^-1*f1*f2*f1^-1
+f2 -> f1^-1*f2*f1^-1
+gap> phi2^conj = phi4^-1;
+true
+gap> cent := CentralizerAutomorphismOfF2( phi4 );;
+gap> ForAll( cent, x -> phi4*x = x*phi4 );
+true

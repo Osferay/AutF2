@@ -471,7 +471,7 @@ AreConjugate := function( a, b )
 		j  := rec( word1 := b1, word2 := b2 );
 
 		AutF2WriteJSON( j );
-		AutF2CallCpp( "cent" );
+		AutF2CallCpp( "conj" );
 		conj := AutF2ReadJSON();
 
 		if IsBool( conj ) then
@@ -486,7 +486,7 @@ AreConjugate := function( a, b )
 	fi;
 end;
 
-Centralizer := function( a )
+CentralizerAutomorphismOfF2 := function( a )
 	local b, cent, i;
 
 	if not IsSpecialAutomorphismOfF2( a ) then
@@ -494,6 +494,7 @@ Centralizer := function( a )
 	fi;
 	
 	b := WordOfAutomorphismOfF2( a );
+	b := WordOfSpecialAutomorphismOfF2ToBraidWord( b );
 
 	AutF2WriteJSON( b );
 	AutF2CallCpp( "cent" );

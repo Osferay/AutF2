@@ -28,3 +28,6 @@
 /gh-pages/
 
 /src/*.o
+/src/lib/*.o
+/src/braidgap
+/src/todo.json

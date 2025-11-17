@@ -7,11 +7,12 @@ About
 -----
 
 The AutF2 package provides methods to solve the conjugacy problem in the group of automorphisms of the free group of rank 2.
+It includes a bundled copy of the C++ library [*CBraid*](https://github.com/jeanluct/cbraid).
 
 Installation
 ------------
 
-Either place the folder in the pkg subdirectory of your gap folder, or in any other folder where you have write permission. You can verify if GAP recognizes the AutF2 package using the following command:
+First place the folder in the pkg subdirectory of your gap folder, or in any other folder where you have write permission. You can verify if GAP recognizes the AutF2 package using the following command:
 
     gap> LoadPackage("autf2");
 	─────────────────────────────────────────────────────────────────────────────
@@ -21,6 +22,12 @@ Either place the folder in the pkg subdirectory of your gap folder, or in any ot
 	Report issues at https://github.com/osferay/autf2/issues
 	─────────────────────────────────────────────────────────────────────────────
 	true
+
+To compile the C++ library, run the following from the package’s base directory:
+
+```
+cd src; make
+```
 
 Support
 -------
