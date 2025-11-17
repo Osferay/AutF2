@@ -3,8 +3,7 @@
 #
 #! @Chapter Introduction
 #!
-#! AutF2 is a package which does some
-#! interesting and cool things
+#! AutF2 is a package to compute with automorphisms of F2.
 #!
 #! @Chapter Automorphisms
 #! @ChapterLabel autos
@@ -33,6 +32,10 @@ DeclareAttribute( "WordOfAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Arguments aut
 DeclareAttribute( "ImagesAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
+#! Returns the image of the given word by the given automorphism.
+#! @Arguments aut, w
+DeclareOperation( "ImageAutomorphismOfF2", [ IsAutomorphismOfF2, IsAssocWordWithInverse ] );
+#! @Description
 #! Returns whether or not an automorphism is trivial.
 #! @Arguments aut
 DeclareProperty( "IsIdentityAutomorphismOfF2", IsAutomorphismOfF2 );
@@ -54,8 +57,8 @@ DeclareProperty( "IsConjugacyAutomorphismOfF2", IsAutomorphismOfF2 );
 DeclareAttribute( "ConjugacyElementConjugacyAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
 #! Returns the automorphism determinated by the conjugacy of the given word in $F_2$
-#! @Arguments aut
-DeclareOperation( "ConjugacyAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInverse ] );
+#! @Arguments F, w
+DeclareOperation( "ConjugacyOfAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInverse ] );
 #! @Description
 #! Computes the left canonical form of the given automorphism
 #! @Arguments aut

@@ -323,6 +323,26 @@ InstallOtherMethod( Order,
 		return infinity;
 end);
 
+InstallMethod( ImageAutomorphismOfF2,
+	"for an automorphism of F2 and an element of F2",
+	[ IsAutomorphismOfF2, IsAssocWordWithInverse ],
+	function( aut, w )
+	local	funs, v, i;
+	
+	if not w in aut!.freeGroup then
+		Error( "The given word has to be in the same free group as the automorphism." );
+	fi;
+
+	funs := aut!.functions;
+	
+	v := ShallowCopy( w );
+	for i in [1..Length(funs)] do
+		v := funs[i]( v );
+	od;
+
+	return v;
+end);
+
 InstallMethod( IsConjugacyAutomorphismOfF2,
 	"for automorphisms of F2",
 	[ IsAutomorphismOfF2 ],
@@ -366,7 +386,7 @@ InstallMethod( ConjugacyElementConjugacyAutomorphismOfF2,
 		fi;
 end );
 
-InstallMethod( ConjugacyAutomorphismOfF2,
+InstallMethod( ConjugacyOfAutomorphismOfF2,
 	"for a conjugating element in F2",
 	[ IsFreeGroup, IsAssocWordWithInverse ],
 	function( F, word )

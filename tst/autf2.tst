@@ -43,3 +43,5 @@ true
 gap> cent := CentralizerAutomorphismOfF2( phi4 );;
 gap> ForAll( cent, x -> phi4*x = x*phi4 );
 true
+gap> ImageOfAutomorphismOfF2( phi1*phi3*phi4, F.1*F.2 );
+f2^-1*(f1*f2)^2
