@@ -386,7 +386,7 @@ InstallMethod( ConjugacyElementConjugacyAutomorphismOfF2,
 		fi;
 end );
 
-InstallMethod( ConjugacyOfAutomorphismOfF2,
+InstallMethod( ConjugacyAutomorphismOfF2,
 	"for a conjugating element in F2",
 	[ IsFreeGroup, IsAssocWordWithInverse ],
 	function( F, word )
@@ -527,3 +527,126 @@ CentralizerAutomorphismOfF2 := function( a )
 
 	return cent;
 end;
+
+WhiteheadAutomorphismsOfF2 := function( F )
+    local gens, type1, type2, sigma1, sigma2;
+
+    gens    := [];
+    gens[1] := AutomorphismOfF2( F, [1] );
+    gens[2] := AutomorphismOfF2( F, [2] );
+    gens[3] := AutomorphismOfF2( F, [3] );
+    gens[4] := AutomorphismOfF2( F, [-3, -2, 1, 2, 3] );
+    type2   := ShallowCopy( gens );
+    Add( type2, gens[1]^-1 );
+    Add( type2, gens[2]^-1 );
+    Add( type2, gens[3]^-1 );
+    Add( type2, gens[4]^-1 );
+
+    type1   := [];
+    sigma2  := AutomorphismOfF2( F, ["s"] );
+    sigma1  := gens[1]^-1*gens[2]*gens[3];
+    Add( type1, sigma1 );
+    Add( type1, sigma1^2 );
+    Add( type1, sigma1^3 );
+    Add( type1, sigma2 );
+    Add( type1, sigma1*sigma2 );
+    Add( type1, sigma1^2*sigma2 );
+    Add( type1, sigma1^3*sigma2 );
+
+    return rec( type1 := type1, type2 := type2, all := Concatenation( type1, type2 ) );
+
+end;
+
+WhiteheadLengthReduction := function( W, w )
+
+    local i, img;
+
+    for i in [1..Length(W)] do
+        img := ImageAutomorphismOfF2( W[i], w );
+        if Length( img ) < Length(w) then
+            return rec( aut := W[i], img := img );
+        fi;
+    od;
+
+    return false;
+
+end;
+
+WhiteheadReductionAlgorithm := function( F, w )
+
+    local W, u, aut;
+
+    W   := WhiteheadAutomorphismsOfF2( F ).type2;
+    u   := ShallowCopy( w );
+    aut := AutomorphismOfF2( F, [] );
+    u   := WhiteheadLengthReduction( W, u );
+
+    while not IsBool(u) do
+        aut := aut * u.aut;
+        u   := u.img;
+        u   := WhiteheadLengthReduction( W, u );
+    od;
+
+    return rec( aut := aut, min := ImageAutomorphismOfF2( aut, w ) );
+
+end;
+
+InstallMethod( IsCyclicalyReducedWord,
+	"for a associative word with inverse",
+	[ IsAssocWordWithInverse ],
+	function( u )
+    local   rep;
+
+    if IsOne( u ) then 
+        return true;
+    fi;
+
+    rep := LetterRepAssocWord(u);
+
+    return rep[1] <> -1*Last(rep);
+end);
+
+
+InstallMethod( AreAutomorphicEquivalent,
+	"For a free group F and two elements",
+	[ IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse ],
+	function( F, u, v )
+    local red1, red2, W, ae, conj, w;
+
+    if IsCyclicalyReducedWord( u ) and IsCyclicalyReducedWord(v) then
+        red1 := WhiteheadReductionAlgorithm( F, u );
+        red2 := WhiteheadReductionAlgorithm( F, v );
+
+        if Length( red1.min ) = Length( red2.min ) then
+            W := WhiteheadAutomorphismsOfF2( F ).type1;
+
+            for w in W do
+                if ImageAutomorphismOfF2( w, red1.min ) = red2.min then
+                    return red1.aut*w*red2.aut^-1;
+                fi;
+            od;
+
+            return false;
+        else 
+            return false;
+        fi;
+
+    else
+        red1 := CyclicallyReducedWord( u );
+        red2 := CyclicallyReducedWord( v );
+
+        ae   := AreAutomorphicEquivalent( F, red1, red2 );
+
+        if IsBool(ae) then
+            return false;
+        fi;
+
+        conj := RepresentativeAction( F, ImageAutomorphismOfF2( ae, u ), v );
+        if IsBool( conj ) then
+            return false;
+        fi;
+
+        conj := ConjugacyAutomorphismOfF2( F, conj );
+        return ae*conj;
+    fi;
+end);

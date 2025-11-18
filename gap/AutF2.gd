@@ -58,8 +58,15 @@ DeclareAttribute( "ConjugacyElementConjugacyAutomorphismOfF2", IsAutomorphismOfF
 #! @Description
 #! Returns the automorphism determinated by the conjugacy of the given word in $F_2$
 #! @Arguments F, w
-DeclareOperation( "ConjugacyOfAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInverse ] );
+DeclareOperation( "ConjugacyAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInverse ] );
 #! @Description
 #! Computes the left canonical form of the given automorphism
 #! @Arguments aut
 DeclareAttribute( "LeftCanonicalFormAutomorphismOfF2", IsAutomorphismOfF2 );
+
+DeclareProperty( "IsCyclicalyReducedWord", IsAssocWordWithInverse );
+
+#! @Description
+#! Decides whether two words are automorphic equivalent
+#! @Arguments u, v
+DeclareOperation( "AreAutomorphicEquivalent", [ IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse ] );
