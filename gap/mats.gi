@@ -151,7 +151,7 @@ InstallGlobalFunction( ReduceMatrix22, function( M )
 
 end );
 
-InstallGlobalFunction( ConjugacyMatrix22, function( A, B )
+InstallGlobalFunction( AreConjugateMatrices22, function( A, B )
     local   D1, D2,
             red1, red2,
             pos;

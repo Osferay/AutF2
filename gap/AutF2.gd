@@ -63,10 +63,3 @@ DeclareOperation( "ConjugacyAutomorphismOfF2", [ IsFreeGroup, IsAssocWordWithInv
 #! Computes the left canonical form of the given automorphism
 #! @Arguments aut
 DeclareAttribute( "LeftCanonicalFormAutomorphismOfF2", IsAutomorphismOfF2 );
-
-DeclareProperty( "IsCyclicalyReducedWord", IsAssocWordWithInverse );
-
-#! @Description
-#! Decides whether two words are automorphic equivalent
-#! @Arguments u, v
-DeclareOperation( "AreAutomorphicEquivalent", [ IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse ] );
