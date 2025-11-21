@@ -195,10 +195,10 @@ end );
 
 InstallGlobalFunction( CentralizerMatrix22, function( A )
     local   fundamentalUnit,
-            delta, I2, U, a, b, c, d;
+            delta, I2, U, x, y, z, d;
 
     fundamentalUnit := function( delta )
-        local a, a0, d, b0, q1, q2, A, u, v, tmp;
+        local a, a0, b, d, b0, q1, q2, A, u, v, tmp;
 
         a0 := 1;
         d  := RootInt( delta );
@@ -215,7 +215,7 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
             A   := Int( (b+d)/(2*a) );
             b   := 2*a*A-b;
             a   := (delta-b^2)/(4*a);
-            tmp := q1;
+            tmp := ShallowCopy(q1);
             q1  := q1*A+q2;
             q2  := tmp;
         until a = a0 and b = b0;
@@ -227,30 +227,30 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
     end;
     
     I2    := [ [1,0], [0,1] ];
-    b     := A[1][1]-A[2][2];
-    a     := A[1][2];
-    c     := A[2][1];
+    y     := A[1][1]-A[2][2];
+    x     := A[1][2];
+    z     := A[2][1];
 
-    if a=0 and b=0 and c=0 then
+    if x=0 and y=0 and z=0 then
         return [ [ [0, 1], [1, 0] ], [ [-1, 0], [0, 1] ], [ [1, 1], [0, 1] ] ];
     fi;
 
-    d := Gcd( a, b, c );
-    a := a/d; b := b/d; c := c/d;
-    delta := b^2+4*a*c;
+    d := Gcd( x, y, z );
+    x := x/d; y := y/d; z := z/d;
+    delta := y^2+4*x*z;
     
     if delta = -3 then
-        return [ [ [ (1-b)/2, -a ], [ -c, (b+1)/2 ] ] ];
+        return [ [ [ (1-y)/2, -x ], [ -z, (y+1)/2 ] ] ];
     elif delta = 4 or delta = -4 then
-        return [ -I2, [ [ -b/2, -a ], [ -c, b/2 ] ] ];
+        return [ -I2, [ [ -y/2, -x ], [ -z, y/2 ] ] ];
     elif delta = 0 then
-        return [ -I2, [ [ 1+b/2, a ], [ c, 1-b/2 ] ] ];
+        return [ -I2, [ [ 1+y/2, x ], [ z, 1-y/2 ] ] ];
     elif delta = 1 then
-        return [ -I2, [ [ -b, -2*a ], [ -2*c, b ] ] ];
+        return [ -I2, [ [ -y, -2*x ], [ -2*z, y ] ] ];
     elif IsSquareInt( delta ) or delta < 0 then
         return [ -I2 ];
     else
         U := fundamentalUnit( delta );
-        return [ -I2, [ [ (U[1]+b*U[2])/2, a*U[2] ], [ c*U[2], (U[1]-b*U[2])/2 ] ] ];
+        return [ -I2, [ [ (U[1]+y*U[2])/2, x*U[2] ], [ z*U[2], (U[1]-y*U[2])/2 ] ] ];
     fi;
 end );
