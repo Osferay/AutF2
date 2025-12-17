@@ -108,6 +108,7 @@ InstallGlobalFunction( ReduceMatrix22, function( M )
         fi;
 
         a := Eigenvectors( Rationals, M )[1];
+        a := Product( List( a, DenominatorRat ) )*a;
         d := GcdInt( a[1], a[2] );
         if d <> 1 then
             a := a / d;
@@ -126,9 +127,9 @@ InstallGlobalFunction( ReduceMatrix22, function( M )
         else
             if R[1][1] < R[1][1] - R[2][2] then
                 if R[1][1] - R[2][2] > 0 then
-                    n := Int(Floor( R[2][1]/( R[1][1] - R[2][2] ) ) ) + 1;
+                    n := Int(Floor( Float( R[2][1]/( R[1][1] - R[2][2] ) ) ) ) + 1;
                 else
-                    n := Int(Ceil( R[2][1]/( R[1][1] - R[2][2] ) ) ) - 1;
+                    n := Int(Ceil( Float( R[2][1]/( R[1][1] - R[2][2] ) ) ) ) - 1;
                 fi;
                 P := P*[ [1, 0], [-n, 1] ];
                 return rec( reduced := P^-1*M*P, conj := P );
@@ -253,4 +254,27 @@ InstallGlobalFunction( CentralizerMatrix22, function( A )
         U := fundamentalUnit( delta );
         return [ -I2, [ [ (U[1]+y*U[2])/2, x*U[2] ], [ z*U[2], (U[1]-y*U[2])/2 ] ] ];
     fi;
+end );
+
+InstallGlobalFunction( CentralizerMatrixGLZ22, function(A)
+    
+    local   d;
+
+
+    if Order( A ) < infinity then
+
+        if List( DiagonalOfMat( A ), AbsInt ) = [1,1] then
+            return [ [ [0, 1], [1, 0] ], [ [-1, 0], [0, 1] ], [ [1, 1], [0, 1] ] ];
+        else
+            return [ -A, A ];
+        fi;
+    
+    else
+
+        if AbsInt( TraceMat( A ) ) = 2 then
+
+        else
+
+    fi;
+    
 end );
