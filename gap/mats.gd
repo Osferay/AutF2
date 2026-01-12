@@ -5,18 +5,10 @@
 #! @ChapterTitle Matrix groups
 
 #! @Description
-#! Decides whether a 2x2 matrix is reduced.
-#! @Arguments A
-DeclareGlobalFunction( "IsReducedMatrix22" );
-#! @Description
-#! Reduces a 2x2 matrix.
-#! @Arguments A
-DeclareGlobalFunction( "ReduceMatrix22" );
-#! @Description
-#! Decides whether a pair of 2x2 matrices are conjugate. If so returns the element C such that $A=C^{-1}BC$.
+#! Decides whether a pair of 2x2 matrices in $\operatorname{GL}_2(\mathbb{Z})$ are conjugate. If so returns the element $C$ such that $A=C^{-1}BC$.
 #! @Arguments A,B
-DeclareGlobalFunction( "AreConjugateMatrices22" );
+DeclareGlobalFunction( "ConjugacyGL2Z" );
 #! @Description
-#! Computes a generating set of the centralizer of a 2x2 matrix.
+#! Given a matrix $A$, computes a matrix $C$ such that $\langle -C, C \rangle = C_{\operatorname{GL}_2(\mathbb{Z})}(A)$ and an integer $n$ such that $C^n=A$.
 #! @Arguments A,B
-DeclareGlobalFunction( "CentralizerMatrix22" );
+DeclareGlobalFunction( "CentralizerGL2Z" );
