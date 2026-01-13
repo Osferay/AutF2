@@ -53,11 +53,11 @@ ReduceElitpicBQF := function( QF, P )
     if A>C or ( A=C and -A <= B and B < 0 ) then
         Q := P*[[0,-1],[1,0]];
         return ReduceElitpicBQF( [ C, -B, A ], Q );
-
+        
     elif A < AbsInt(B) then
-        n := Int( -B/(2*A) );
-        Q := P*[[1,n],[0,1]];
-        return ReduceElitpicBQF( [ A, 2*A*n+B, A*n^2+B*n+C ], Q );
+        n := Int( B/(2*A) );
+        Q := P*[[1,-n],[0,1]];
+        return ReduceElitpicBQF( [ A, -2*A*n+B, A*n^2-B*n+C ], Q );
         
     else
         return rec( QF := QF, P := P );
@@ -72,7 +72,7 @@ ConjugacyClassElipticMatrix := function( A )
     I := [[1,0],[0,1]];
 
     if A = I or A = -I then
-        return rec( rep := A, conj := I );
+        return rec( rep := A, P := I );
 
     elif Order(A) = 2 then
         a := Eigenvectors( Rationals, A )[1];
@@ -85,12 +85,22 @@ ConjugacyClassElipticMatrix := function( A )
         P := [ [ a[1], a[2]], [ -d.coeff2, d.coeff1] ];
         P := P^-1;
         R := P^-1*A*P;
-        return rec( rep := R, conj := P );
+        if R[2][1] = 0 then
+
+        elif IsEvenInt( R[2][1] ) then
+            P := P*[[1,0], [ Int(R[2][1]/2), 1 ]];
+            R := P^-1*A*P;
+        else
+            P := P*[[1,0], [ Int((R[2][1]-1)/2), 1 ]];
+            R := P^-1*A*P;
+        fi;
         
+        return rec( rep := R, P := P );
+
     else
         if A[2][1] < 0 then 
             P := [[1,0],[0,-1]];
-            R := P*A*P^-1;
+            R := P*A*P;
         else
             P := I;
             R := A;
@@ -119,7 +129,13 @@ ConjugacyClassParabolicMatrix := function( A )
     P := [ [ a[1], a[2]], [ -d.coeff2, d.coeff1] ];
     P := P^-1;
     R := P^-1*A*P;
-    return rec( rep := R, conj := P );
+
+    if R[2][1] < 0 then
+        P := P*[[1,0],[0,-1]];
+        R := P^-1*A*P;
+    fi;
+
+    return rec( rep := R, P := P );
 
 end;
 
@@ -136,7 +152,6 @@ ConjugacyClassHyperbolicMatrix := function( A )
         P := P*Q;
         R := Q^-1*R*Q;
     fi;
-    Error();
     #Step 2
     if AbsInt( R[1][2] ) <= AbsInt(R[2][2]) and R[1][2]<0 then
         Q := [[1,0],[0,-1]];
@@ -148,7 +163,6 @@ ConjugacyClassHyperbolicMatrix := function( A )
         P := P*Q;
         R := Q^-1*R*Q;
     fi;
-    Error();
     #Step 3
     if AbsInt( R[1][2] ) <= AbsInt(R[2][2]) and R[2][2] < 0 then
         n := FloorRat( R[2][2]/R[1][2] );
@@ -163,7 +177,6 @@ ConjugacyClassHyperbolicMatrix := function( A )
         R := Q^-1*R*Q;
 
     fi;
-    Error();
 
     #Step 4 and 5
     if R[1][2] < R[2][2] then
@@ -178,7 +191,6 @@ ConjugacyClassHyperbolicMatrix := function( A )
         P := P*Q;
         R := Q^-1*R*Q;
     fi;
-    Error();
 
     return rec( rep := R, P := P );
 end;
@@ -246,7 +258,7 @@ ConjugacyStandardHyperbolicMatrix := function( A, B )
         for i in c1{p} do
             P := P*[[i,1],[1,0]];
         od;
-        return P;
+        return P^-1;
     fi;
 
 
@@ -275,7 +287,7 @@ InstallGlobalFunction( ConjugacyGL2Z, function( A, B )
         if R1.rep <> R2.rep then
             return false;
         else
-            return (R2.P)^-1*R1.P;
+            return (R1.P)*(R2.P)^-1;
         fi;
     elif AbsInt( t1 ) = 2 and d1 = 1 then
         #Parabolic case
@@ -285,7 +297,7 @@ InstallGlobalFunction( ConjugacyGL2Z, function( A, B )
         if R1.rep <> R2.rep then
             return false;
         else
-            return (R2.P)^-1*R1.P;
+            return (R1.P)*(R2.P)^-1;
         fi;
         
     else
@@ -298,7 +310,7 @@ InstallGlobalFunction( ConjugacyGL2Z, function( A, B )
         if IsBool( C ) then 
             return C;
         else
-            return (R2.P)^-1*C*R1.P;
+            return (R1.P)*C*(R2.P)^-1;
         fi;
     fi;
 
@@ -447,8 +459,6 @@ MembershipCommutatorSL2Z := function( M )
             e := NearestInteger( -d(N)/(2*r(N)) );
             Append( w, ListWithIdenticalEntries( AbsInt(e), SignInt(e)*2 ) );
             N := N*B^e;
-        else
-            Error();
         fi;
     od;
 
