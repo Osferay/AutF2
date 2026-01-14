@@ -468,3 +468,41 @@ MembershipCommutatorSL2Z := function( M )
     return -1*Reversed(w);
 
 end;
+
+TransversalRepresentativeCommutatorSL2Z := function( T, M )
+
+    local t, N;
+
+    for t in T do
+        N := t^-1*M;
+        if N[1][1] mod 4 = 1 and N[2][2] mod 4 = 1 and N[1][2] mod 2 = 0 and N[2][1] mod 2 = 0 then
+            return t;
+        fi;
+    od;
+end;
+
+MembershipCommutatorSL2Z := function( gens, M )
+
+    local   S, U, T;
+
+    S := [[0,-1],[1,0]];
+    U := [[0,-1],[1,1]];
+
+    T := [ S^0, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
+
+    dict := NewDictionary( T[1], true );
+    AddDictionary( dict, T[1], 1 );
+    O    := [ T[1] ];
+    
+    for g in gens do
+        for t in T do
+            y := TransversalRepresentativeCommutatorSL2Z( g*t, T );
+            j := LookupDictionary( dict, y )
+
+            if IsBool( j ) 
+                AddDictionary( dict, y, Length(O)+1 )
+                Add( O, y );
+            fi;
+        od;
+    od;
+end;
