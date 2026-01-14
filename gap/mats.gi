@@ -330,13 +330,15 @@ CentralizerElipticMatrix := function( A )
 end;
 
 CentralizerParabolicMatrix := function( A )
-    local   R, e, P;
+    local   R, e, P, T;
 
     R := ConjugacyClassParabolicMatrix( A );
-    e := R.rep[1][2];
+    e := R.rep[2][1];
     P := R.P;
+    T := R.rep;
+    T[2][1] := 1;
 
-    return rec( gen := P^-1*[[1,1],[0,1]]*P, exponent := e );
+    return rec( gen := P*T*P^-1, exponent := e );
 end;
 
 DiscriminantMatrix22 := function( A )
@@ -385,7 +387,7 @@ CentralizerHyperbolicMatrix := function( A )
     b     := A[1][2];
     c     := A[2][1];
 
-    C     := [ [ 1/2*(u+ad*v), b*v ], [ c*u, 1/2*(u-ad*v) ] ];
+    C     := [ [ 1/2*(u+ad*v), b*v ], [ c*v, 1/2*(u-ad*v) ] ];
 
     e     := 1;
     U     := [ u ];
@@ -455,13 +457,14 @@ MembershipCommutatorSL2Z := function( M )
             e := NearestInteger( -d(N)/(2*l(N)) );
             Append( w, ListWithIdenticalEntries( AbsInt(e), SignInt(e)*1 ) );
             N := N*A^e;
+            
         elif r(N) < AbsInt( d(N) ) then
             e := NearestInteger( -d(N)/(2*r(N)) );
             Append( w, ListWithIdenticalEntries( AbsInt(e), SignInt(e)*2 ) );
             N := N*B^e;
         fi;
     od;
-
-    return Reversed(w);
+    
+    return -1*Reversed(w);
 
 end;
