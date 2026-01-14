@@ -481,9 +481,9 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
     od;
 end;
 
-MembershipCommutatorSL2Z := function( gens, M )
+MembershipSubgroupSL2Z := function( gens, M )
 
-    local   S, U, T;
+    local   S, U, T, dict, O, g, t, y, j, stab;
 
     S := [[0,-1],[1,0]];
     U := [[0,-1],[1,1]];
@@ -493,16 +493,22 @@ MembershipCommutatorSL2Z := function( gens, M )
     dict := NewDictionary( T[1], true );
     AddDictionary( dict, T[1], 1 );
     O    := [ T[1] ];
+    stab := [ T[1] ];
     
     for g in gens do
         for t in T do
-            y := TransversalRepresentativeCommutatorSL2Z( g*t, T );
-            j := LookupDictionary( dict, y )
+            y := TransversalRepresentativeCommutatorSL2Z( T, g*t );
+            j := LookupDictionary( dict, y );
 
-            if IsBool( j ) 
-                AddDictionary( dict, y, Length(O)+1 )
+            if IsBool( j ) then
+                AddDictionary( dict, y, Length(O)+1 );
                 Add( O, y );
+
+                #Compute the Scheirer vector 
+                Add( stab, (g*t)*y^-1 );
+                Error();
             fi;
         od;
     od;
+    Error();
 end;
