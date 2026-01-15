@@ -483,32 +483,50 @@ end;
 
 MembershipSubgroupSL2Z := function( gens, M )
 
-    local   S, U, T, dict, O, g, t, y, j, stab;
+    local   S, U, T, I, dict, orbit, stab, t, y, j, s, e;
 
-    S := [[0,-1],[1,0]];
-    U := [[0,-1],[1,1]];
+    S  := [[0,-1],[1,0]];
+    U  := [[0,-1],[1,1]];
+    I  := S^0;
 
-    T := [ S^0, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
-
-    dict := NewDictionary( T[1], true );
-    AddDictionary( dict, T[1], 1 );
-    O    := [ T[1] ];
-    stab := [ T[1] ];
+    #This is a transversal of the commutator for SL2Z
+    T  := [ S^0, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
+    S  := ShallowCopy( gens );
     
-    for g in gens do
-        for t in T do
-            y := TransversalRepresentativeCommutatorSL2Z( T, g*t );
+    for t in T do
+        #For each element in the transversal we compute the orbit-stabilizer
+        dict  := NewDictionary( T, true );
+        AddDictionary( dict, t, 1 );
+        orbit := [ t ];
+        stab  := [];
+
+        for s in S do
+            #Compute a new point
+            y := TransversalRepresentativeCommutatorSL2Z( T, s*t );
             j := LookupDictionary( dict, y );
+        
+            e := 1;
+            while IsBool( j ) do
+                AddDictionary( dict, y, Length( orbit )+1 );
+                Add( orbit, y ); 
+                
+                #If this is a new point, compute the block
+                y := TransversalRepresentativeCommutatorSL2Z( T, s*y );
+                e := e + 1;
+                j := LookupDictionary( dict, y );
+            od;
 
-            if IsBool( j ) then
-                AddDictionary( dict, y, Length(O)+1 );
-                Add( O, y );
-
-                #Compute the Scheirer vector 
-                Add( stab, (g*t)*y^-1 );
-                Error();
-            fi;
+            Add( stab, s^e*t*y^-1 );
         od;
+        S := stab;
     od;
+    
+    S := List( S, MembershipCommutatorSL2Z );
+    F := FreeGroup( 2 );
+    S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
+    U := NielsenReducedSet( S ); 
+
+    t := TransversalRepresentativeCommutatorSL2Z( T, M );
+
     Error();
 end;
