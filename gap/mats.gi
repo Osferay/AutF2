@@ -483,7 +483,7 @@ end;
 
 MembershipSubgroupSL2Z := function( gens, M )
 
-    local   S, U, T, I, dict, orbit, stab, t, y, j, s, e;
+    local   S, U, T, I, dict, orbit, stab, t, y, j, s, e, F, v, g;
 
     S  := [[0,-1],[1,0]];
     U  := [[0,-1],[1,1]];
@@ -495,7 +495,7 @@ MembershipSubgroupSL2Z := function( gens, M )
     
     for t in T do
         #For each element in the transversal we compute the orbit-stabilizer
-        dict  := NewDictionary( T, true );
+        dict  := NewDictionary( I, true );
         AddDictionary( dict, t, 1 );
         orbit := [ t ];
         stab  := [];
@@ -527,6 +527,35 @@ MembershipSubgroupSL2Z := function( gens, M )
     U := NielsenReducedSet( S ); 
 
     t := TransversalRepresentativeCommutatorSL2Z( T, M );
+    v := ListWithIdenticalEntries( 12, 0 );
+
+    dict  := NewDictionary( I, true );
+    S     := NewDictionary( I, true );
+    for s in [ 1.. 12 ] do
+        Add( S, T[s], s );
+    od;
+    orbit := [ t ];
+    j     := LookupDictionary( S, t );
+    v[j]  := -1;
+
+    for g in gens do
+    
+        y := TransversalRepresentativeCommutatorSL2Z( T, g*t );
+        j := LookupDictionary( dict, y );
+    
+        while IsBool( j ) do
+            AddDictionary( dict, y, Length( orbit )+1 );
+            Add( orbit, y ); 
+            j := LookupDictionary( S, y );
+            v[j] := j;
+            
+            #If this is a new point, compute the block
+            y := TransversalRepresentativeCommutatorSL2Z( T, s*y );
+            e := e + 1;
+            j := LookupDictionary( dict, y );
+        od;
+
+    od;
 
     Error();
 end;
