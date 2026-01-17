@@ -159,38 +159,20 @@ InstallMethod( AutomorphismOfF2ByMatrix,
     [ IsFreeGroup, IsList ],
     function( F, M )
 
-		local w, r, u, v, aut, i,j;
+		local w, aut, t, s, i;
 
-		if Length( M ) <> 2 or Length( M[1] ) <> 2 or AbsInt(DeterminantIntMat( M )) <> 1 then
-			Error( "The matrix is incompatible with the function." );
+		w   := WordGL2ZinST( M );
+		aut := AutomorphismOfF2( F, [] );
+		t   := AutomorphismOfF2( F, [1] );
+		s   := AutomorphismOfF2( F, [-1, 2, 3] );
+
+		if w.det = -1 then
+			aut := AutomorphismOfF2( F, ["s"] );
 		fi;
 
-		r := Random( F );
-		w := [[0,0],[0,0]];
-
-		for i in [1..2] do
-			for j in [1..2] do
-				if M[i][j] < 0 then
-					w[i][j] := ListWithIdenticalEntries( -M[i][j], -j );
-				else
-					w[i][j] := ListWithIdenticalEntries( M[i][j], j );
-				fi;
-			od;
-		od;
-
-		u  := [ Concatenation( w[1][1], w[1][2] ), Concatenation( w[1][1], w[1][2] ), Concatenation( w[1][2], w[1][1] ), Concatenation( w[2][1], w[1][1] )];
-		v  := [ Concatenation( w[2][1], w[2][2] ), Concatenation( w[2][2], w[2][1] ), Concatenation( w[2][1], w[2][2] ), Concatenation( w[2][2], w[2][1] )];
-
-		for i in [1..4] do
-			u[i] := AssocWordByLetterRep( FamilyObj(r), u[i] );
-			v[i] := AssocWordByLetterRep( FamilyObj(r), v[i] );	
-
-			aut := AutomorphismOfF2ByImages( F, u[i], v[i] );
-			if not IsBool( aut ) then
-				return aut;
-			fi;
-
-		od;
-
-		return false;
+		for i in [1..Length(w.wT)] do
+        	aut := aut*t^(w.wT[i])*s^(w.wS[i]);
+    	od;
+		
+		return aut;
 end );

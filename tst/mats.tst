@@ -47,3 +47,8 @@ rec( exponent := 1, gen := [ [ 25, 29 ], [ -6, -7 ] ] )
 gap> M := [ [ 97, 216 ], [ 22, 49 ] ];
 gap> MembershipCommutatorSL2Z(M);
 [ 1, 1, 2, 1, 2, 2, 1 ]
+gap> M := [ [ 216, 97 ], [ 49, 22 ] ];;
+gap> w := WordGL2ZinST( M );
+rec( det := -1, wS := [ 1, 1, 1, 1, 1, 1, 1, 1, 0 ], wT := [ 1, 2, 2, 2, 4, 2, 6, 2, 1 ] )
+gap> MatrixGL2ZbyWordST( w );
+[ [ 216, 97 ], [ 49, 22 ] ]

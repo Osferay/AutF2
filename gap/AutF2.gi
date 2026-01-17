@@ -276,6 +276,10 @@ InstallOtherMethod( \^,
 	function( aut, e)
 		local i, pow, mul;
 		
+		if e = 0 then
+			return aut*Inverse( aut );
+		fi;
+		
 		if e < 0 then
 			pow := Inverse( aut );
 			mul := Inverse( aut );

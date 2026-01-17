@@ -219,6 +219,27 @@ ContinuedFraction := function( a, b )
 
 end;
 
+MinusContinuedFraction := function( a, b )
+
+    local x, y, r, Q;
+
+    x := a; 
+    y := b; 
+    r := 1; 
+    Q := [];
+
+    while r <> 0 do
+        r := CeilRat( x/y );
+        Add( Q, r );
+        r := r*y-x;
+        x := y;
+        y := r;
+    od;
+
+    return Q;
+
+end;
+
 IsCyclicalyPermuted := function( c1, c2 )
     local n, p, perm, i;
 
@@ -558,4 +579,66 @@ MembershipSubgroupSL2Z := function( gens, M )
     od;
 
     Error();
+end;
+
+WordGL2ZinST := function( M )
+
+    local A, S, T, C, N, c, w, d;
+
+    if M[2][1] = 0 and M[1][1] = 1 then
+        return rec( det := 1, wS := [0], wT := [ M[1][2] ] );
+    elif M[2][1] = 0 and M[1][1] = -1 then
+        return rec( det := 1, wS := [2], wT := [ M[1][2] ] );
+    fi;
+
+    A := M;
+    S := [[0,-1],[1,0]];
+    T := [[1,1],[0,1]];
+
+    if DeterminantIntMat(A) = -1 then
+        A := [[0,1],[1,0]]*A;
+        d := -1;
+    else 
+        d := 1;
+    fi;
+
+    C := MinusContinuedFraction( A[1][1], A[2][1] );
+
+    N := [[1,0],[0,1]];
+    for c in C do
+        N := N*T^c*S;
+    od;
+    
+    S := ListWithIdenticalEntries( Length(C), 1 );
+    N := N^-1*A;
+    Add( C, AbsInt(N[1][2]) );
+
+    if N[1][1] = -1 then
+        Add( S, 2 );
+    else
+        Add( S, 0 );
+    fi; 
+
+    return rec( det := d, wT := C, wS := S );
+
+end;
+
+MatrixGL2ZbyWordST := function( w )
+
+    local M, i, T, S;
+
+    M := [[1,0],[0,1]];
+    S := [[0,-1],[1,0]];
+    T := [[1,1],[0,1]];
+
+    if w.det = -1 then
+        M := M*[[0,1],[1,0]];
+    fi;
+
+    for i in [1..Length(w.wT)] do
+        M := M*T^(w.wT[i])*S^(w.wS[i]);
+    od;
+
+    return M;
+
 end;
