@@ -490,6 +490,25 @@ MembershipCommutatorSL2Z := function( M )
 
 end;
 
+MatrixCommutatorSL2ZbyWordAB := function( w )
+
+    local A, B, M, i;
+
+    A := [[1,2],[0,1]];
+    B := [[1,0],[2,1]];
+    M := [[1,0],[0,1]];
+
+    for i in [1..Length(w)] do
+        if AbsInt(w[i]) = 1 then
+            M := M*A^(SignInt(w[i]));
+        else
+            M := M*B^(SignInt(w[i]));
+        fi;
+    od;
+
+    return M;
+end;
+
 TransversalRepresentativeCommutatorSL2Z := function( T, M )
 
     local t, N;
@@ -502,17 +521,18 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
     od;
 end;
 
-MembershipSubgroupSL2Z := function( gens, M )
+CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
-    local   S, U, T, I, dict, orbit, stab, t, y, j, s, e, F, v, g;
+    local   S, U, T, I, dict, orbit, stab, exps, W, t, y, j, s, e, F, v, g, todo, o, i, h, words, w;
 
     S  := [[0,-1],[1,0]];
     U  := [[0,-1],[1,1]];
-    I  := S^0;
+    I  := [[1,0],[0,1]];
 
     #This is a transversal of the commutator for SL2Z
-    T  := [ S^0, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
+    T  := [ I, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
     S  := ShallowCopy( gens );
+    W  := ListWithIdenticalEntries( Length(gens), 1 );
     
     for t in T do
         #For each element in the transversal we compute the orbit-stabilizer
@@ -520,6 +540,7 @@ MembershipSubgroupSL2Z := function( gens, M )
         AddDictionary( dict, t, 1 );
         orbit := [ t ];
         stab  := [];
+        exps  := [];
 
         for s in S do
             #Compute a new point
@@ -538,47 +559,104 @@ MembershipSubgroupSL2Z := function( gens, M )
             od;
 
             Add( stab, s^e*t*y^-1 );
+            Add( exps, e );
         od;
         S := stab;
+        W := List( [1..Length(exps) ], i -> W[i]*exps[i] );
     od;
-    
+
     S := List( S, MembershipCommutatorSL2Z );
     F := FreeGroup( 2 );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
-    U := NielsenReducedSet( S ); 
+    # We compute U = < <gens> \cap G' >
+    words := [];
+    for i in [1..Length(gens)] do
+        Add( words, [ i ] );
+    od;
+    U := NielsenReducedSetBacktrack( S, words ); 
+    Error();
 
     t := TransversalRepresentativeCommutatorSL2Z( T, M );
-    v := ListWithIdenticalEntries( 12, 0 );
 
     dict  := NewDictionary( I, true );
+    AddDictionary( dict, t, 1 );
     S     := NewDictionary( I, true );
     for s in [ 1.. 12 ] do
-        Add( S, T[s], s );
-    od;
+        AddDictionary( S, T[s], s );
+    od;    
+    v := ListWithIdenticalEntries( 12, 0 );
+
     orbit := [ t ];
+    todo  := [ t ];
     j     := LookupDictionary( S, t );
     v[j]  := -1;
 
-    for g in gens do
-    
-        y := TransversalRepresentativeCommutatorSL2Z( T, g*t );
-        j := LookupDictionary( dict, y );
-    
-        while IsBool( j ) do
-            AddDictionary( dict, y, Length( orbit )+1 );
-            Add( orbit, y ); 
-            j := LookupDictionary( S, y );
-            v[j] := j;
-            
-            #If this is a new point, compute the block
-            y := TransversalRepresentativeCommutatorSL2Z( T, s*y );
-            e := e + 1;
-            j := LookupDictionary( dict, y );
-        od;
+    while not IsEmpty( todo ) do
 
+        o := todo[1];
+        Remove( todo, 1 );
+
+        for i in [1..Length(gens)] do
+
+            y := TransversalRepresentativeCommutatorSL2Z( T, gens[i]*o );
+            j := LookupDictionary( dict, y );
+            
+            if IsBool( j ) then
+                AddDictionary( dict, y, Length( orbit )+1 );
+                Add( orbit, y );
+                Add( todo, y );
+
+                j    := LookupDictionary( S, y );
+                v[j] := i;
+            fi;
+        od;
     od;
 
-    Error();
+    h := false;
+
+    while IsBool( h ) do 
+        i := 1;
+
+        t := T[i];
+        j := v[i];
+        if j <> 0 then
+            
+            h := I;
+            y := t;
+
+            while j <> -1 do
+                h := gens[j]*h;
+                y := TransversalRepresentativeCommutatorSL2Z( T, gens[j]*y );
+                i := LookupDictionary( S, y );
+                j := v[i];
+            od;
+        fi;
+
+        i := i+1;
+    od;
+
+    w := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
+    w := AssocWordByLetterRep( FamilyObj( One(F) ), w );
+    w := CosetRepresentativeReducedNielsenSet( U[1], w )[2];
+    w := LetterRepAssocWord( w );
+    w := MatrixCommutatorSL2ZbyWordAB( w );
+    
+    return w*t;
+
+end;
+
+MembershipSubgroupSL2Z := function( gens, M )
+
+    local r;
+
+    r := CosetRepresentativeSubgroupSL2Z( gens, M );
+
+    if r = r^0 then
+        return true;
+    else
+        return false;
+    fi;
+
 end;
 
 WordGL2ZinST := function( M )
@@ -618,7 +696,7 @@ WordGL2ZinST := function( M )
     else
         Add( S, 0 );
     fi; 
-
+    
     return rec( det := d, wT := C, wS := S );
 
 end;
