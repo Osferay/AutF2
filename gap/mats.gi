@@ -522,9 +522,9 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
     od;
 end;
 
-GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens )
+GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
 
-    local I, S, w, t, dict, orbit, stab, exps, s, y, j, e, F, b, U;
+    local I, S, w, t, dict, orbit, stab, exps, s, y, j, e, A, b, U;
 
     I  := [[1,0],[0,1]];
     S  := ShallowCopy( gens );
@@ -540,7 +540,7 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens )
 
         for s in S do
             #Compute a new point
-            y := TransversalRepresentativeCommutatorSL2Z( T, s*t );
+            y := TransversalRepresentativeCommutatorSL2Z( T, t*s );
             j := LookupDictionary( dict, y );
         
             e := 1;
@@ -563,7 +563,6 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens )
     od;
     
     S := List( S, MembershipCommutatorSL2Z );
-    F := FreeGroup( 2 );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
     # We compute U = < <gens> \cap G' >
     b := [];
@@ -572,20 +571,20 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens )
     od;
     U := NielsenReducedSetBacktrack( S, b ); 
 
-    F := [];
+    A := [];
     for s in [1..Length( U[2] ) ] do
         S := [];
-        for t in [1..Length( s ) ] do
-            S := Concatenation( S, ListWithIdenticalEntries( w[s], t ) );
+        for t in [1..Length( U[2][s] ) ] do
+            S := Concatenation( S, ListWithIdenticalEntries( w[ U[2][s][t] ], U[2][s][t] ) );
         od;
-        Add( F, S );
+        Add( A, S );
     od;
-
-    return [ U[1], F ];
+    
+    return [ U[1], A ];
 
 end;
 
-SchreierVectorTransversalCommutatorSL2Z := function( T, M )
+SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
 
     local I, t, dict, S, i, v, orbit, todo, j, o, y, h, new;
 
@@ -652,36 +651,36 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, M )
 
         i := i+1;
     od;
-
+    
     return [ t, h, new ];
 end;
 
 CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
-    local   S, U, T, I, wU, t, wh, h, u, wv;
+    local   S, U, F, T, I, wU, t, wh, h, u, wv;
 
     I  := [[1,0],[0,1]];
     S  := [[0,-1],[1,0]];
     U  := [[0,-1],[1,1]];
+    F  := FreeGroup( 2 );
 
     #This is a transversal of the commutator for SL2Z
     T  := [ I, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
 
-    U  := GeneratorsOfIntersectionCommutatorSL2Z( T, gens );
+    U  := GeneratorsOfIntersectionCommutatorSL2Z( T, gens, F );
     wU := U[2];
     U  := U[1];
 
-    t  := SchreierVectorTransversalCommutatorSL2Z( T, M );
+    t  := SchreierVectorTransversalCommutatorSL2Z( T, gens, M );
     wh := t[3];
     h  := t[2];
     t  := t[1];
 
     u  := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
     u  := AssocWordByLetterRep( FamilyObj( One(F) ), u );
-    Error();
     u  := CosetRepresentativeReducedNielsenSetBacktrack( U, u );
     wv := u[3];
-    u  := u[1];
+    u  := u[2];
 
     u  := LetterRepAssocWord( u );
     u  := MatrixCommutatorSL2ZbyWordAB( u );
@@ -696,7 +695,7 @@ MembershipSubgroupSL2Z := function( gens, M )
 
     r := CosetRepresentativeSubgroupSL2Z( gens, M );
 
-    if r = r^0 then
+    if r[1] = r[1]^0 then
         return true;
     else
         return false;

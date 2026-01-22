@@ -506,7 +506,7 @@ CosetRepresentativeReducedNielsenSetBacktrack := function( V, w )
     W    := ShallowCopy( V );
     W    := Concatenation( W, List( V, x -> x^-1 ) );
 
-    word := Concatenation( [1..Length(W)], -1*[1..Length(W)] );
+    word := Concatenation( [1..Length(V)], -1*[1..Length(V)] );
     new  := [];
 
     flag := true;
@@ -518,7 +518,7 @@ CosetRepresentativeReducedNielsenSetBacktrack := function( V, w )
                 u := W[i]*u;
                 flag := true;
 
-                Add( new, word[i] );
+                Add( new, -1*word[i] );
             fi;
         od;
 
@@ -528,11 +528,11 @@ CosetRepresentativeReducedNielsenSetBacktrack := function( V, w )
                 u := W[i]*u;
                 flag := true;
 
-                Add( new, i );
+                Add( new, -i );
             fi; 
         od;
     od;
-
+    
     return [v, u, new];
 end;
 
