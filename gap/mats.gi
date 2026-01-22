@@ -152,25 +152,27 @@ ConjugacyClassHyperbolicMatrix := function( A )
         P := P*Q;
         R := Q^-1*R*Q;
     fi;
+    
     #Step 2
-    if AbsInt( R[1][2] ) <= AbsInt(R[2][2]) and R[1][2]<0 then
+    if AbsInt( R[1][2] ) <= AbsInt(R[1][1]) and R[1][2]<0 then
         Q := [[1,0],[0,-1]];
         P := P*Q;
         R := Q^-1*R*Q;
     
-    elif AbsInt( R[2][1] ) <= AbsInt(R[2][2]) and R[2][1]<0 then
+    elif AbsInt( R[2][1] ) <= AbsInt(R[1][1]) and R[2][1]<0 then
         Q := [[1,0],[0,-1]];
         P := P*Q;
         R := Q^-1*R*Q;
     fi;
+    
     #Step 3
-    if AbsInt( R[1][2] ) <= AbsInt(R[2][2]) and R[2][2] < 0 then
+    if 0 < R[1][2] and R[1][2] <= R[1][1] and R[2][2] < 0 then
         n := FloorRat( R[2][2]/R[1][2] );
         Q := [[1,0],[n,1]];
         P := P*Q;
         R := Q^-1*R*Q;
 
-    elif AbsInt( R[2][1] ) <= AbsInt(R[2][2]) and R[2][2] < 0 then
+    elif 0 < R[2][1] and R[2][1] <= R[1][1] and R[2][2] < 0 then
         n := CeilRat( -R[2][2]/R[2][1] );
         Q := [[1,n],[0,1]];
         P := P*Q;
@@ -184,7 +186,6 @@ ConjugacyClassHyperbolicMatrix := function( A )
         Q := [[1,n],[0,1]];
         P := P*Q;
         R := Q^-1*R*Q;
-
     elif R[1][2] < R[2][2] then
         n := CeilRat( (R[2][2]-R[1][2])/R[1][2] );
         Q := [[1,0],[n,1]];
@@ -521,18 +522,13 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
     od;
 end;
 
-CosetRepresentativeSubgroupSL2Z := function( gens, M )
+GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens )
 
-    local   S, U, T, I, dict, orbit, stab, exps, W, t, y, j, s, e, F, v, g, todo, o, i, h, words, w;
+    local I, S, w, t, dict, orbit, stab, exps, s, y, j, e, F, b, U;
 
-    S  := [[0,-1],[1,0]];
-    U  := [[0,-1],[1,1]];
     I  := [[1,0],[0,1]];
-
-    #This is a transversal of the commutator for SL2Z
-    T  := [ I, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
     S  := ShallowCopy( gens );
-    W  := ListWithIdenticalEntries( Length(gens), 1 );
+    w  := ListWithIdenticalEntries( Length(gens), 1 );
     
     for t in T do
         #For each element in the transversal we compute the orbit-stabilizer
@@ -557,32 +553,51 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
                 e := e + 1;
                 j := LookupDictionary( dict, y );
             od;
-
-            Add( stab, s^e*t*y^-1 );
+            
+            Add( stab, s^e );
             Add( exps, e );
+            
         od;
         S := stab;
-        W := List( [1..Length(exps) ], i -> W[i]*exps[i] );
+        w := List( [1..Length(exps) ], i -> w[i]*exps[i] );
     od;
-
+    
     S := List( S, MembershipCommutatorSL2Z );
     F := FreeGroup( 2 );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
     # We compute U = < <gens> \cap G' >
-    words := [];
-    for i in [1..Length(gens)] do
-        Add( words, [ i ] );
+    b := [];
+    for s in [1..Length(gens)] do
+        Add( b, [ s ] );
     od;
-    U := NielsenReducedSetBacktrack( S, words ); 
-    Error();
+    U := NielsenReducedSetBacktrack( S, b ); 
 
-    t := TransversalRepresentativeCommutatorSL2Z( T, M );
+    F := [];
+    for s in [1..Length( U[2] ) ] do
+        S := [];
+        for t in [1..Length( s ) ] do
+            S := Concatenation( S, ListWithIdenticalEntries( w[s], t ) );
+        od;
+        Add( F, S );
+    od;
+
+    return [ U[1], F ];
+
+end;
+
+SchreierVectorTransversalCommutatorSL2Z := function( T, M )
+
+    local I, t, dict, S, i, v, orbit, todo, j, o, y, h, new;
+
+    I     := [[1,0],[0,1]];
+    t     := TransversalRepresentativeCommutatorSL2Z( T, M );
+    new   := [];
 
     dict  := NewDictionary( I, true );
     AddDictionary( dict, t, 1 );
     S     := NewDictionary( I, true );
-    for s in [ 1.. 12 ] do
-        AddDictionary( S, T[s], s );
+    for i in [ 1.. 12 ] do
+        AddDictionary( S, T[i], i );
     od;    
     v := ListWithIdenticalEntries( 12, 0 );
 
@@ -591,6 +606,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
     j     := LookupDictionary( S, t );
     v[j]  := -1;
 
+    #Compute the orbit of t
     while not IsEmpty( todo ) do
 
         o := todo[1];
@@ -614,6 +630,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
     h := false;
 
+    #Use the Schreier vector to obtain h
     while IsBool( h ) do 
         i := 1;
 
@@ -626,6 +643,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
             while j <> -1 do
                 h := gens[j]*h;
+                Add( new, j );
                 y := TransversalRepresentativeCommutatorSL2Z( T, gens[j]*y );
                 i := LookupDictionary( S, y );
                 j := v[i];
@@ -635,13 +653,40 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
         i := i+1;
     od;
 
-    w := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
-    w := AssocWordByLetterRep( FamilyObj( One(F) ), w );
-    w := CosetRepresentativeReducedNielsenSet( U[1], w )[2];
-    w := LetterRepAssocWord( w );
-    w := MatrixCommutatorSL2ZbyWordAB( w );
+    return [ t, h, new ];
+end;
+
+CosetRepresentativeSubgroupSL2Z := function( gens, M )
+
+    local   S, U, T, I, wU, t, wh, h, u, wv;
+
+    I  := [[1,0],[0,1]];
+    S  := [[0,-1],[1,0]];
+    U  := [[0,-1],[1,1]];
+
+    #This is a transversal of the commutator for SL2Z
+    T  := [ I, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
+
+    U  := GeneratorsOfIntersectionCommutatorSL2Z( T, gens );
+    wU := U[2];
+    U  := U[1];
+
+    t  := SchreierVectorTransversalCommutatorSL2Z( T, M );
+    wh := t[3];
+    h  := t[2];
+    t  := t[1];
+
+    u  := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
+    u  := AssocWordByLetterRep( FamilyObj( One(F) ), u );
+    Error();
+    u  := CosetRepresentativeReducedNielsenSetBacktrack( U, u );
+    wv := u[3];
+    u  := u[1];
+
+    u  := LetterRepAssocWord( u );
+    u  := MatrixCommutatorSL2ZbyWordAB( u );
     
-    return w*t;
+    return [ u*t, wU, wv, wh ];
 
 end;
 
@@ -663,12 +708,6 @@ WordGL2ZinST := function( M )
 
     local A, S, T, C, N, c, w, d;
 
-    if M[2][1] = 0 and M[1][1] = 1 then
-        return rec( det := 1, wS := [0], wT := [ M[1][2] ] );
-    elif M[2][1] = 0 and M[1][1] = -1 then
-        return rec( det := 1, wS := [2], wT := [ M[1][2] ] );
-    fi;
-
     A := M;
     S := [[0,-1],[1,0]];
     T := [[1,1],[0,1]];
@@ -678,6 +717,12 @@ WordGL2ZinST := function( M )
         d := -1;
     else 
         d := 1;
+    fi;
+
+    if A[2][1] = 0 and A[1][1] = 1 then
+        return rec( det := d, wS := [0], wT := [ A[1][2] ] );
+    elif A[2][1] = 0 and A[1][1] = -1 then
+        return rec( det := d, wS := [2], wT := [ -A[1][2] ] );
     fi;
 
     C := MinusContinuedFraction( A[1][1], A[2][1] );

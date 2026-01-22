@@ -498,6 +498,44 @@ CosetRepresentativeReducedNielsenSet := function( V, w )
     return [v,u];
 end;
 
+CosetRepresentativeReducedNielsenSetBacktrack := function( V, w )
+    local v, u, W, flag, i, GP, new, word, p;
+
+    v    := w^0;
+    u    := ShallowCopy( w );
+    W    := ShallowCopy( V );
+    W    := Concatenation( W, List( V, x -> x^-1 ) );
+
+    word := Concatenation( [1..Length(W)], -1*[1..Length(W)] );
+    new  := [];
+
+    flag := true;
+    while flag do
+        flag := false;
+        for i in [1..Length(W)] do
+            if Length( W[i]*u ) < Length( u ) then
+                v := v*W[i]^-1;
+                u := W[i]*u;
+                flag := true;
+
+                Add( new, word[i] );
+            fi;
+        od;
+
+        for i in [1..Length(V)] do
+            if Length( V[i]*u ) = Length( u ) then
+                v := v*W[i]^-1;
+                u := W[i]*u;
+                flag := true;
+
+                Add( new, i );
+            fi; 
+        od;
+    od;
+
+    return [v, u, new];
+end;
+
 InstallGlobalFunction( InFreeSubgroup, function( V, w )
     local W,r;
 
