@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
         // We translate the left canonical form to a readeable list.
         // 4 represents the element delta, since we are in B_4/Z(B_4) this can only be one.
-        if(B1.LeftDelta!=0){
+        if(C.LeftDelta % 2 != 0){
             wlcf.push_back( 4 );
         }
     
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
         n=C.Index();
         ArtinFactor F=ArtinFactor(n);
         
-            if(C.LeftDelta!=0){
+            if(C.LeftDelta % 2 != 0){
                 wlcf.push_back( 4 );
             }
         
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
             ArtinFactor F=ArtinFactor(n);
             list<ArtinFactor>::iterator it2;
 
-            if(C.LeftDelta!=0){
+            if(C.LeftDelta % 2 != 0){
                 wlcf.push_back( 4 );
             }
 
