@@ -447,47 +447,109 @@ InstallGlobalFunction( CentralizerGL2Z, function( A )
 
 end );
 
+WordGL2ZinST := function( M )
+
+    local A, S, T, C, N, c, w, d, l;
+
+    if M = [[1,0],[0,1]] then
+        return rec( det := 1, wS := [0], wT := [0], l :=0 );
+    fi;
+    
+    A := M;
+    S := [[0,-1],[1,0]];
+    T := [[1,1],[0,1]];
+
+    if DeterminantIntMat(A) = -1 then
+        A := [[0,1],[1,0]]*A;
+        d := -1;
+    else 
+        d := 1;
+    fi;
+
+    if A[2][1] = 0 and A[1][1] = 1 then
+        return rec( det := d, wS := [0], wT := [ A[1][2] ], l := 1 );
+    elif A[2][1] = 0 and A[1][1] = -1 then
+        return rec( det := d, wS := [2], wT := [ -A[1][2] ], l := 1 );
+    fi;
+
+    C := MinusContinuedFraction( A[1][1], A[2][1] );
+
+    N := [[1,0],[0,1]];
+    for c in C do
+        N := N*T^c*S;
+    od;
+    
+    S := ListWithIdenticalEntries( Length(C), 1 );
+    N := N^-1*A;
+    Add( C, AbsInt(N[1][2]) );
+
+    if N[1][1] = -1 then
+        Add( S, 2 );
+    else
+        Add( S, 0 );
+    fi; 
+    
+    return rec( det := d, wT := C, wS := S, l := Sum(C)+Sum(S) );
+
+end;
+
+MatrixGL2ZbyWordST := function( w )
+
+    local M, i, T, S;
+
+    M := [[1,0],[0,1]];
+    S := [[0,-1],[1,0]];
+    T := [[1,1],[0,1]];
+
+    if w.det = -1 then
+        M := M*[[0,1],[1,0]];
+    fi;
+
+    for i in [1..Length(w.wT)] do
+        M := M*T^(w.wT[i])*S^(w.wS[i]);
+    od;
+
+    return M;
+
+end;
+
 MembershipCommutatorSL2Z := function( M )
 
-    local   r,l,d, N, I, A, B, w, e;
+    local   w, eT, eS, x, y, N, I, F, new, z;
 
-    if M[1][1] mod 4 <> 1 or M[2][2] mod 4 <> 1 or M[1][2] mod 2 <> 0 or M[2][1] mod 2 <> 0 then
+    w := WordGL2ZinST( M );
+
+    if w.det <> 1 then
+        Error( "The matrix must be in SL(2,Z)." );
+    fi;
+    
+    eT := Sum( w.wT );
+    eS := Sum( w.wS );
+
+    if (eT-3*eS) mod 12 <> 0 then
         return false;
     fi;
 
-    l := function(M)
-        return M[1][1]^2+M[2][1]^2;
-    end;
+    #[S,T] and [T^-1,S^-1]
+    x   := [ [ 1, 1 ], [ 1, 2 ] ];
+    y   := [ [ 2, 1 ], [ 1, 1 ] ];
+    F   := [ [ x,1 ], [x^-1,-1], [y,2], [y^-1,-2] ];
 
-    r := function(M)
-        return M[2][2]^2+M[1][2]^2;
-    end;
-
-    d := function(M)
-        return M[1][1]*M[1][2]+M[2][1]*M[2][2];
-    end;
-
-    N := M;
-    I := M^0;
-    A := [[1,2],[0,1]];
-    B := [[1,0],[2,1]];
-    w := [];
-
+    N   := ShallowCopy(M);
+    new := [];
+    I   := [[1,0],[0,1]];
+    
     while N <> I do
-    
-        if l(N) < AbsInt( d(N) ) then
-            e := NearestInteger( -d(N)/(2*l(N)) );
-            Append( w, ListWithIdenticalEntries( AbsInt(e), SignInt(e)*1 ) );
-            N := N*A^e;
-            
-        elif r(N) < AbsInt( d(N) ) then
-            e := NearestInteger( -d(N)/(2*r(N)) );
-            Append( w, ListWithIdenticalEntries( AbsInt(e), SignInt(e)*2 ) );
-            N := N*B^e;
-        fi;
+        for z in F do
+            if WordGL2ZinST( N*z[1] ).l < w.l then
+                Add( new, z[2] );
+                N := N*z[1];
+                w := WordGL2ZinST( N );
+            fi;
+        od;
     od;
-    
-    return -1*Reversed(w);
+
+    return -1*Reversed(new);
 
 end;
 
@@ -540,7 +602,7 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
 
         for s in S do
             #Compute a new point
-            y := TransversalRepresentativeCommutatorSL2Z( T, t*s );
+            y := TransversalRepresentativeCommutatorSL2Z( T, s*t );
             j := LookupDictionary( dict, y );
         
             e := 1;
@@ -626,7 +688,7 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
             fi;
         od;
     od;
-
+    
     h := false;
 
     #Use the Schreier vector to obtain h
@@ -642,8 +704,8 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
 
             while j <> -1 do
                 h := gens[j]*h;
-                Add( new, j );
-                y := TransversalRepresentativeCommutatorSL2Z( T, gens[j]*y );
+                Add( new, j, 1 );
+                y := TransversalRepresentativeCommutatorSL2Z( T, gens[j]^-1*y );
                 i := LookupDictionary( S, y );
                 j := v[i];
             od;
@@ -652,7 +714,7 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
         i := i+1;
     od;
     
-    return [ t, h, new ];
+    return [ t, h^-1, -1*Reversed(new) ];
 end;
 
 CosetRepresentativeSubgroupSL2Z := function( gens, M )
@@ -675,7 +737,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
     wh := t[3];
     h  := t[2];
     t  := t[1];
-
+    
     u  := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
     u  := AssocWordByLetterRep( FamilyObj( One(F) ), u );
     u  := CosetRepresentativeReducedNielsenSetBacktrack( U, u );
@@ -703,64 +765,4 @@ MembershipSubgroupSL2Z := function( gens, M )
 
 end;
 
-WordGL2ZinST := function( M )
 
-    local A, S, T, C, N, c, w, d;
-
-    A := M;
-    S := [[0,-1],[1,0]];
-    T := [[1,1],[0,1]];
-
-    if DeterminantIntMat(A) = -1 then
-        A := [[0,1],[1,0]]*A;
-        d := -1;
-    else 
-        d := 1;
-    fi;
-
-    if A[2][1] = 0 and A[1][1] = 1 then
-        return rec( det := d, wS := [0], wT := [ A[1][2] ] );
-    elif A[2][1] = 0 and A[1][1] = -1 then
-        return rec( det := d, wS := [2], wT := [ -A[1][2] ] );
-    fi;
-
-    C := MinusContinuedFraction( A[1][1], A[2][1] );
-
-    N := [[1,0],[0,1]];
-    for c in C do
-        N := N*T^c*S;
-    od;
-    
-    S := ListWithIdenticalEntries( Length(C), 1 );
-    N := N^-1*A;
-    Add( C, AbsInt(N[1][2]) );
-
-    if N[1][1] = -1 then
-        Add( S, 2 );
-    else
-        Add( S, 0 );
-    fi; 
-    
-    return rec( det := d, wT := C, wS := S );
-
-end;
-
-MatrixGL2ZbyWordST := function( w )
-
-    local M, i, T, S;
-
-    M := [[1,0],[0,1]];
-    S := [[0,-1],[1,0]];
-    T := [[1,1],[0,1]];
-
-    if w.det = -1 then
-        M := M*[[0,1],[1,0]];
-    fi;
-
-    for i in [1..Length(w.wT)] do
-        M := M*T^(w.wT[i])*S^(w.wS[i]);
-    od;
-
-    return M;
-
-end;
