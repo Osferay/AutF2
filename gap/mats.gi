@@ -467,9 +467,9 @@ WordGL2ZinST := function( M )
     fi;
 
     if A[2][1] = 0 and A[1][1] = 1 then
-        return rec( det := d, wS := [0], wT := [ A[1][2] ], l := 1 );
+        return rec( det := d, wS := [0], wT := [ A[1][2] ], l := AbsInt(A[1][2]) );
     elif A[2][1] = 0 and A[1][1] = -1 then
-        return rec( det := d, wS := [2], wT := [ -A[1][2] ], l := 1 );
+        return rec( det := d, wS := [2], wT := [ -A[1][2] ], l := 2+AbsInt(A[1][2]) );
     fi;
 
     C := MinusContinuedFraction( A[1][1], A[2][1] );
@@ -488,8 +488,10 @@ WordGL2ZinST := function( M )
     else
         Add( S, 0 );
     fi; 
+
+    l := Sum( List( C, AbsInt ) ) + Sum( List( S, AbsInt ) ); 
     
-    return rec( det := d, wT := C, wS := S, l := Sum(C)+Sum(S) );
+    return rec( det := d, wT := C, wS := S, l := l );
 
 end;
 
@@ -578,7 +580,7 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
 
     for t in T do
         N := t^-1*M;
-        if N[1][1] mod 4 = 1 and N[2][2] mod 4 = 1 and N[1][2] mod 2 = 0 and N[2][1] mod 2 = 0 then
+        if not IsBool(MembershipCommutatorSL2Z(N)) then
             return t;
         fi;
     od;
