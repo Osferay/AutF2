@@ -46,5 +46,5 @@ f1 -> f1^-1*f2^-1*f1*f2*f1
 f2 -> f1^-1*f2*f1
 gap> B := [ [ 1, 1 ], [ -3, -2 ] ];;
 gap> AutomorphismOfF2ByMatrix( F, B );
-f1 -> f2*f1
-f2 -> f2*(f1^-1*f2^-1)^3
+f1 -> f1*f2
+f2 -> (f2^-1*f1^-1)^2*f1^-1

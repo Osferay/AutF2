@@ -447,29 +447,23 @@ InstallGlobalFunction( CentralizerGL2Z, function( A )
 
 end );
 
-WordGL2ZinST := function( M )
+WordSL2ZinST := function( M )
 
-    local A, S, T, C, N, c, w, d, l;
+    local A, S, T, C, N, s, c;
 
-    if M = [[1,0],[0,1]] then
-        return rec( det := 1, wS := [0], wT := [0], l :=0 );
-    fi;
-    
-    A := M;
     S := [[0,-1],[1,0]];
     T := [[1,1],[0,1]];
 
-    if DeterminantIntMat(A) = -1 then
-        A := [[0,1],[1,0]]*A;
-        d := -1;
-    else 
-        d := 1;
+    if M = [[1,0],[0,1]] then
+        return rec( s := 0, T := [] );
     fi;
 
+    A := ShallowCopy( M );
+
     if A[2][1] = 0 and A[1][1] = 1 then
-        return rec( det := d, wS := [0], wT := [ A[1][2] ], l := AbsInt(A[1][2]) );
+        return rec( s := 0, T := [ A[1][2] ] );
     elif A[2][1] = 0 and A[1][1] = -1 then
-        return rec( det := d, wS := [2], wT := [ -A[1][2] ], l := 2+AbsInt(A[1][2]) );
+        return rec( s := 2, T := [ -1*( A[1][2] ) ] );
     fi;
 
     C := MinusContinuedFraction( A[1][1], A[2][1] );
@@ -478,24 +472,21 @@ WordGL2ZinST := function( M )
     for c in C do
         N := N*T^c*S;
     od;
-    
-    S := ListWithIdenticalEntries( Length(C), 1 );
     N := N^-1*A;
-    Add( C, AbsInt(N[1][2]) );
 
     if N[1][1] = -1 then
-        Add( S, 2 );
+        s := 2;
+        Add( C, -1* N[1][2] );
     else
-        Add( S, 0 );
+        s := 0;
+        Add( C, N[1][2] );
     fi; 
-
-    l := Sum( List( C, AbsInt ) ) + Sum( List( S, AbsInt ) ); 
     
-    return rec( det := d, wT := C, wS := S, l := l );
+    return rec( s := s, T := C );
 
 end;
 
-MatrixGL2ZbyWordST := function( w )
+MatrixSL2ZbyWordST := function( w )
 
     local M, i, T, S;
 
@@ -503,36 +494,175 @@ MatrixGL2ZbyWordST := function( w )
     S := [[0,-1],[1,0]];
     T := [[1,1],[0,1]];
 
-    if w.det = -1 then
-        M := M*[[0,1],[1,0]];
+    if w.s = 2 then
+        M := M*S^2;
     fi;
 
-    for i in [1..Length(w.wT)] do
-        M := M*T^(w.wT[i])*S^(w.wS[i]);
+    for i in [1..Length(w.T)] do
+        M := M*T^(w.T[i])*S;
+    od;
+
+    return M*S^-1;
+
+end;
+
+CanonicalWordInSU := function( w, s )
+    local p, q;
+
+    p := Position( w, 1 );
+    q := Position( w, 2 );
+    if p = 1 and IsBool(q) then
+        return[ [], s + Length(w) ];
+    elif p = 1 and not IsBool(q) then
+        while w[p] = 1 do
+            p := p + 1;
+        od;
+        return CanonicalWordInSU( w{[p..Length(w)]}, s+p-1 );
+    fi;
+
+    p := PositionSublist( w, [1,1,1,1] );
+    if not IsBool( p ) then
+        return CanonicalWordInSU( Concatenation( w{[1..p-1]}, w{[p+4..Length(w)]}), s );
+    fi;
+
+    p := PositionSublist( w, [2,2,2] );
+    if not IsBool( p ) then
+        return CanonicalWordInSU( Concatenation( w{[1..p-1]}, w{[p+3..Length(w)]}), s+2 );
+    fi;
+
+    p := PositionSublist( w, [1,1] );
+    if not IsBool( p ) then
+        return CanonicalWordInSU( Concatenation( w{[1..p-1]}, w{[p+2..Length(w)]}), s+2 );
+    fi;
+
+    return [ w, s mod 4 ];
+
+end;
+
+WordSL2ZinSU := function( M )
+
+    local w, v, i, t;
+
+    w := WordSL2ZinST( M );
+    v := [];
+
+    for t in w.T do
+        if not IsEvenInt( t ) then
+            v := Concatenation( v, [1,1] );
+        fi;
+
+        if t > 0 then
+            for i in [1..t] do
+                v := Concatenation( v, [1,2] );
+            od;
+        else
+            for i in [1..-t] do
+                v := Concatenation( v, [2,2,1] );
+            od;
+        fi;
+        Add( v, 1 );
+    od;
+
+    if not IsEmpty( v ) then
+        Remove( v, Length(v) );
+    fi;
+
+    v := CanonicalWordInSU( v, w.s );
+    
+    return rec( w := v[1], s := v[2] );
+end;
+
+MatrixSL2ZbyWordSU := function( w )
+
+    local M, v, U, S;
+
+    M := [[1,0],[0,1]];
+    S := [[0,-1],[1,0]];
+    U := [[0,-1],[1,1]];
+
+    M := M*S^(w.s);
+
+    for v in w.w do
+        if v = 1 then
+            M := M*S;
+        else
+            M := M*U;
+        fi;
     od;
 
     return M;
 
 end;
 
-MembershipCommutatorSL2Z := function( M )
+WordGL2ZinSU := function( M )
 
-    local   w, eT, eS, x, y, N, I, F, new, z;
+    local A, e, w;
 
-    w := WordGL2ZinST( M );
-
-    if w.det <> 1 then
-        Error( "The matrix must be in SL(2,Z)." );
+    if M = [[1,0],[0,1]] then
+        return rec( e := 0, s := 0, U := [] );
     fi;
     
-    eT := Sum( w.wT );
-    eS := Sum( w.wS );
+    A := M;
 
-    if (eT-3*eS) mod 12 <> 0 then
+    if DeterminantIntMat(A) = -1 then
+        A := [[0,1],[1,0]]*A;
+        e := 1;
+    else 
+        e := 0;
+    fi;
+
+    w := WordSL2ZinSU( A );
+
+    return rec( e := e, s := w.s, w := w.w );
+
+end;
+
+MatrixGL2ZbyWordSU := function( w )
+
+    local M, v, N;
+
+    if w.e = 1 then
+        M := [[0,1],[1,0]];
+    else
+        M := [[1,0],[0,1]];
+    fi;
+    
+    v := rec( s := w.s, w := w.w );
+    N := MatrixSL2ZbyWordSU( v );
+
+    return M*N;
+
+end;
+
+LengthWordMatrixSL2ZinSU := function( M )
+    local w;
+
+    w := WordSL2ZinSU( M );
+
+    return Length( w.w ) + w.s;
+end;
+
+HomomorphismSL2Zto12Z := function( M )
+    local w, eU, eS, G, u, s;
+
+    w := WordSL2ZinSU( M );
+
+    eU := Length( Positions( w.w, 2 ) );
+    eS := Length( Positions( w.w, 1 ) ) + w.s;
+    
+    return (2*eU + 3*eS) mod 12;
+
+end;
+
+MembershipCommutatorSL2Z := function( M )
+
+    local   w, x, y, N, I, F, new, z;
+
+    if HomomorphismSL2Zto12Z( M ) <> 0 then
         return false;
     fi;
 
-    #[S,T] and [T^-1,S^-1]
+    #[S,U] and [S^-1,U^-1]
     x   := [ [ 1, 1 ], [ 1, 2 ] ];
     y   := [ [ 2, 1 ], [ 1, 1 ] ];
     F   := [ [ x,1 ], [x^-1,-1], [y,2], [y^-1,-2] ];
@@ -542,32 +672,29 @@ MembershipCommutatorSL2Z := function( M )
     I   := [[1,0],[0,1]];
     
     while N <> I do
-        for z in F do
-            if WordGL2ZinST( N*z[1] ).l < w.l then
-                Add( new, z[2] );
-                N := N*z[1];
-                w := WordGL2ZinST( N );
-            fi;
-        od;
+        z := List( F, x -> LengthWordMatrixSL2ZinSU( N*x[1] ) );
+        z := Position( z, Minimum(z) );
+        Add( new, F[z][2] );
+        N := N*F[z][1];
     od;
 
     return -1*Reversed(new);
 
 end;
 
-MatrixCommutatorSL2ZbyWordAB := function( w )
+MatrixCommutatorSL2ZbyWordxy := function( w )
 
-    local A, B, M, i;
+    local x, y, M, i;
 
-    A := [[1,2],[0,1]];
-    B := [[1,0],[2,1]];
+    x := [ [ 1, 1 ], [ 1, 2 ] ];
+    y := [ [ 2, 1 ], [ 1, 1 ] ];
     M := [[1,0],[0,1]];
 
     for i in [1..Length(w)] do
         if AbsInt(w[i]) = 1 then
-            M := M*A^(SignInt(w[i]));
+            M := M*x^(SignInt(w[i]));
         else
-            M := M*B^(SignInt(w[i]));
+            M := M*y^(SignInt(w[i]));
         fi;
     od;
 
@@ -576,14 +703,48 @@ end;
 
 TransversalRepresentativeCommutatorSL2Z := function( T, M )
 
-    local t, N;
+    local t;
 
-    for t in T do
-        N := t^-1*M;
-        if not IsBool(MembershipCommutatorSL2Z(N)) then
-            return t;
-        fi;
-    od;
+    t := HomomorphismSL2Zto12Z( M );
+
+    return T[t+1];
+end;
+
+
+OrbitStabilizerMembership := function( t, gens )
+    local I, S, w, dict, orbit, stab, exps, o, s, y, j, e;
+
+    I  := [[1,0],[0,1]];
+    S  := ShallowCopy( gens );
+    w  := ListWithIdenticalEntries( Length(gens), 1 );
+    
+
+        #For each element in the transversal we compute the orbit-stabilizer
+        dict  := NewDictionary( I, true );
+        AddDictionary( dict, t, 1 );
+        orbit := [ [t,I] ];
+        todo  := [ t ]
+        stab  := [];
+
+        while not IsEmpty(todo) do
+            o := todo[1];
+            Remove( todo, 1 );
+            for s in gens do
+                #Compute a new point
+                y := TransversalRepresentativeCommutatorSL2Z( T, s*o );
+                j := LookupDictionary( dict, y );
+
+                if IsBool(j) then
+                    AddDictionary( dict, y, Length(orbit)+1 );
+                    Add( orbit, [y,s] );
+                    Add( todo, y );
+                else
+                    Add( stab, orbit[j][2]*s)
+                fi;
+            od;
+        od;
+        S := stab;
+    return stab;
 end;
 
 GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
@@ -639,7 +800,8 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
     for s in [1..Length( U[2] ) ] do
         S := [];
         for t in [1..Length( U[2][s] ) ] do
-            S := Concatenation( S, ListWithIdenticalEntries( w[ U[2][s][t] ], U[2][s][t] ) );
+            b := U[2][s][t];
+            S := Concatenation( S, ListWithIdenticalEntries( w[ AbsInt(b) ], b ) );
         od;
         Add( A, S );
     od;
@@ -729,7 +891,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
     F  := FreeGroup( 2 );
 
     #This is a transversal of the commutator for SL2Z
-    T  := [ I, S, S^2, S^3, U, U^-1, S*U, S*U^-1, S^2*U, S^2*U^-1, S^3*U, S^3*U^-1 ];
+    T  := [ I, S^3*U^2, U, S, U^2, S*U, S^2, S*U^2, S^2*U, S^3, S^2*U^2, S^3*U ];
 
     U  := GeneratorsOfIntersectionCommutatorSL2Z( T, gens, F );
     wU := U[2];
@@ -743,11 +905,12 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
     u  := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
     u  := AssocWordByLetterRep( FamilyObj( One(F) ), u );
     u  := CosetRepresentativeReducedNielsenSetBacktrack( U, u );
+    Error();
     wv := u[3];
     u  := u[2];
 
     u  := LetterRepAssocWord( u );
-    u  := MatrixCommutatorSL2ZbyWordAB( u );
+    u  := MatrixCommutatorSL2ZbyWordxy( u );
     
     return [ u*t, wU, wv, wh ];
 
@@ -766,5 +929,3 @@ MembershipSubgroupSL2Z := function( gens, M )
     fi;
 
 end;
-
-

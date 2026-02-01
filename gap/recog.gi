@@ -159,19 +159,25 @@ InstallMethod( AutomorphismOfF2ByMatrix,
     [ IsFreeGroup, IsList ],
     function( F, M )
 
-		local w, aut, t, s, i;
+		local w, aut, t, s, v;
 
-		w   := WordGL2ZinST( M );
+		w   := WordGL2ZinSU( M );
 		aut := AutomorphismOfF2( F, [] );
-		t   := AutomorphismOfF2( F, [1] );
+		t   := AutomorphismOfF2( F, [-1, 2, 3, 1] );
 		s   := AutomorphismOfF2( F, [-1, 2, 3] );
 
-		if w.det = -1 then
+		if w.e = 1 then
 			aut := AutomorphismOfF2( F, ["s"] );
 		fi;
 
-		for i in [1..Length(w.wT)] do
-        	aut := aut*t^(w.wT[i])*s^(w.wS[i]);
+		aut := aut*s^(w.s);
+
+		for v in w.w do
+			if v = 1 then 
+        		aut := aut*s;
+			else
+				aut := aut*t;
+			fi;
     	od;
 		
 		return aut;
