@@ -241,7 +241,7 @@ end );
 
 NielsenReducedSetStep2Backtrack := function( V, words )
 
-    local   one, new, W, i, j;
+    local   one, new, W, i, j, w;
 
     one := V[1]^0;
     W   := ShallowCopy( V );
@@ -255,39 +255,43 @@ NielsenReducedSetStep2Backtrack := function( V, words )
                     Remove( new, i );
                     return [ W, new ];
                 elif LexicographicOrderNSet( W[i]*W[j], W[i] ) then
-                    W[i] := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j], (W[i]*W[j])^-1 )[1];
-                    if MinimumLexicographicOrderNSetBacktrack( W[i]*W[j], (W[i]*W[j])^-1 )[2] = 1 then
+                    w := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j], (W[i]*W[j])^-1 );
+                    if w[2] = 1 then
                         new[i] := Concatenation( new[i], new[j] );
                     else
                         new[i] := -1*Reversed( Concatenation( new[i], new[j] ) );
                     fi;
+                    W[i] := w[1];
 
                     return [ W, new ];
                 elif LexicographicOrderNSet( W[i]^-1*W[j], W[i] ) then
-                    W[i] := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j], W[j]^-1*W[i] )[1];
-                    if MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j], W[j]^-1*W[i] )[2] = 1 then
+                    w := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j], W[j]^-1*W[i] );
+                    if w[2] = 1 then
                         new[i] := Concatenation( -1*Reversed( new[i] ), new[j] );
                     else
                         new[i] := Concatenation( -1*Reversed( new[j] ), new[i] );
                     fi;
+                    W[i] := w[1];
 
                     return [ W, new ];
                 elif LexicographicOrderNSet( W[i]*W[j]^-1, W[i] ) then
-                    W[i] := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j]^-1, W[j]*W[i]^-1 )[1];
-                    if MinimumLexicographicOrderNSetBacktrack( W[i]*W[j]^-1, W[j]*W[i]^-1 )[2] = 1 then
+                    w := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j]^-1, W[j]*W[i]^-1 );
+                    if w[2] = 1 then
                         new[i] := Concatenation( new[i], -1*Reversed( new[j] ) );
                     else
                         new[i] := Concatenation( new[j], -1*Reversed( new[i] ) );
                     fi;
-
+                    W[i] := w[1];
+                    
                     return [ W, new ];
                 elif LexicographicOrderNSet( W[i]^-1*W[j]^-1, W[i] ) then
-                    W[i] := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j]^-1, W[j]*W[i] );
-                    if MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j]^-1, W[j]*W[i] )[2] = 1 then
+                    w := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j]^-1, W[j]*W[i] );
+                    if w[2] = 1 then
                         new[i] := -1*Reversed( Concatenation( new[j], new[i] ) );
                     else
                         new[i] := Concatenation( new[j], new[i] );
                     fi;
+                    W[i] := w[1];
 
                     return [ W, new ];
                 fi;
@@ -300,7 +304,7 @@ end;
 
 NielsenReducedSetStep3Backtrack := function( V, words )
 
-    local   W, new, even, ewor, i, v, y, p, q, n, flag;
+    local   W, new, even, ewor, i, v, y, p, q, n, flag, w;
 
     W    := ShallowCopy( V );
     new  := ShallowCopy( words );
@@ -320,14 +324,15 @@ NielsenReducedSetStep3Backtrack := function( V, words )
         p := PositionProperty( even, x -> x <> v and IsPrefix( x, q ) );
         
         if not IsBool( p ) then
-            n    := Position( W, even[p] );
-            W[n] := MinimumLexicographicOrderNSetBacktrack( v*even[p], (v*even[p])^-1 )[1];
+            n := Position( W, even[p] );
+            w := MinimumLexicographicOrderNSetBacktrack( v*even[p], (v*even[p])^-1 );
 
-            if MinimumLexicographicOrderNSetBacktrack( v*even[p], (v*even[p])^-1 )[2] = 1 then
+            if w[2] = 1 then
                 new[n] := Concatenation( y, new[n] );
             else
                 new[n] := -1*Reversed( Concatenation( y, new[n] ) );
             fi;
+            W[n] := w[1];
             
             flag := true;
             while flag do
@@ -346,14 +351,15 @@ NielsenReducedSetStep3Backtrack := function( V, words )
         p := PositionProperty( even, x -> x <> v and IsSuffix( x, q^-1 ) );
 
         if not IsBool( p ) then
-            n    := Position( W, even[p] );
-            W[n] := MinimumLexicographicOrderNSet( v*even[p]^-1, even[p]*v^-1 );
+            n := Position( W, even[p] );
+            w := MinimumLexicographicOrderNSetBacktrack( v*even[p]^-1, even[p]*v^-1 );
             
-            if MinimumLexicographicOrderNSetBacktrack( v*even[p]^-1, even[p]*v^-1 )[2] = 1 then
+            if w[2] = 1 then
                 new[n] := Concatenation( y, -1*Reversed( new[n] ) );
             else
                 new[n] := Concatenation( new[n], -1*Reversed( y ) );
             fi;
+            W[n] := w[1];
 
             flag := true;
             while flag do
