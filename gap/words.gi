@@ -1,3 +1,16 @@
+ReduceLetterRep := function(w)
+    local i;
+
+    for i in [1..Length(w)-1] do
+        if w[i] = -1*w[i+1] then
+            return ReduceLetterRep( Concatenation( w{[1..(i-1)]}, w{[i+2..Length(w)]}) );
+        fi;
+    od;
+
+    return w;
+
+end;
+
 InstallMethod( IsCyclicalyReducedWord,
 	"for a associative word with inverse",
 	[ IsAssocWordWithInverse ],
@@ -422,7 +435,7 @@ NielsenReducedSetBacktrack := function( V, words )
         
         if not IsBool( flag ) then
             W    := flag[1];
-            new  := flag[2];
+            new  := List( flag[2], ReduceLetterRep );
             flag := true;
         fi;
     od;
@@ -433,7 +446,7 @@ NielsenReducedSetBacktrack := function( V, words )
         
         if not IsBool( flag ) then
             W    := flag[1];
-            new  := flag[2];
+            new  := List( flag[2], ReduceLetterRep );
             flag := true;
         fi;
     od;
