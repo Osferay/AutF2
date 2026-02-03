@@ -710,100 +710,78 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
     return T[t+1];
 end;
 
+OrbitStabilizerMembership := function( T, t, gens )
+    local I, S, w, dict, orbit, stab, o, i, y, j, todo, new;
 
-OrbitStabilizerMembership := function( t, gens )
-    local I, S, w, dict, orbit, stab, exps, o, s, y, j, e;
+    I     := [[1,0],[0,1]];
+    dict  := NewDictionary( I, true );
+    AddDictionary( dict, t, 1 );
+    orbit := [ [ t, I, [] ] ];
+    todo  := [ [ t, I, [] ] ];
+    stab  := [];
+    new   := [];
 
-    I  := [[1,0],[0,1]];
-    S  := ShallowCopy( gens );
-    w  := ListWithIdenticalEntries( Length(gens), 1 );
-    
+    while not IsEmpty(todo) do
+        o := todo[1];
+        Remove( todo, 1 );
+        for i in [1..Length(gens[1])] do
+            #Compute a new point
+            y := TransversalRepresentativeCommutatorSL2Z( T, gens[1][i]*o[1] );
+            j := LookupDictionary( dict, y );
 
-        #For each element in the transversal we compute the orbit-stabilizer
-        dict  := NewDictionary( I, true );
-        AddDictionary( dict, t, 1 );
-        orbit := [ [t,I] ];
-        todo  := [ t ]
-        stab  := [];
-
-        while not IsEmpty(todo) do
-            o := todo[1];
-            Remove( todo, 1 );
-            for s in gens do
-                #Compute a new point
-                y := TransversalRepresentativeCommutatorSL2Z( T, s*o );
-                j := LookupDictionary( dict, y );
-
-                if IsBool(j) then
-                    AddDictionary( dict, y, Length(orbit)+1 );
-                    Add( orbit, [y,s] );
-                    Add( todo, y );
-                else
-                    Add( stab, orbit[j][2]*s)
-                fi;
-            od;
+            if IsBool(j) then
+                AddDictionary( dict, y, Length(orbit)+1 );
+                Add( orbit, [y, gens[1][i]*o[2], Concatenation( gens[2][i], o[3] ) ] );
+                Add( todo, [y, gens[1][i]*o[2], Concatenation( gens[2][i], o[3] ) ] );
+            else
+                Add( stab, (orbit[j][2])^-1*gens[1][i]*o[2] );
+                Add( new, Concatenation( -1*Reversed( orbit[j][3] ), Concatenation( gens[2][i], o[3] ) ) );
+            fi;
         od;
-        S := stab;
-    return stab;
+    od;
+
+    new := List( new, ReduceLetterRep );
+    return [stab,new];
 end;
 
 GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
 
-    local I, S, w, t, dict, orbit, stab, exps, s, y, j, e, A, b, U;
+    local S, t, b, i, j, U, A, w;
 
-    I  := [[1,0],[0,1]];
-    S  := ShallowCopy( gens );
-    w  := ListWithIdenticalEntries( Length(gens), 1 );
+    S := [ gens, [] ];
+
+    for i in [1..Length(gens)] do
+        Add(S[2], [i]);
+    od;
     
     for t in T do
-        #For each element in the transversal we compute the orbit-stabilizer
-        dict  := NewDictionary( I, true );
-        AddDictionary( dict, t, 1 );
-        orbit := [ t ];
-        stab  := [];
-        exps  := [];
-
-        for s in S do
-            #Compute a new point
-            y := TransversalRepresentativeCommutatorSL2Z( T, s*t );
-            j := LookupDictionary( dict, y );
-        
-            e := 1;
-            while IsBool( j ) do
-                AddDictionary( dict, y, Length( orbit )+1 );
-                Add( orbit, y ); 
-                
-                #If this is a new point, compute the block
-                y := TransversalRepresentativeCommutatorSL2Z( T, s*y );
-                e := e + 1;
-                j := LookupDictionary( dict, y );
-            od;
-            
-            Add( stab, s^e );
-            Add( exps, e );
-            
-        od;
-        S := stab;
-        w := List( [1..Length(exps) ], i -> w[i]*exps[i] );
+        S := OrbitStabilizerMembership( T, t, S );
     od;
-    
-    S := List( S, MembershipCommutatorSL2Z );
+
+    w := S[2];
+    S := List( S[1], MembershipCommutatorSL2Z );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
     # We compute U = < <gens> \cap G' >
-    b := [];
-    for s in [1..Length(gens)] do
-        Add( b, [ s ] );
-    od;
-    U := NielsenReducedSetBacktrack( S, b ); 
 
+    b := [];
+    for i in [1..Length(S)] do
+        Add( b, [ i ] );
+    od;
+    
+    U := NielsenReducedSetBacktrack( S, b ); 
+    
     A := [];
-    for s in [1..Length( U[2] ) ] do
+    for i in [1..Length( U[2] ) ] do
         S := [];
-        for t in [1..Length( U[2][s] ) ] do
-            b := U[2][s][t];
-            S := Concatenation( S, ListWithIdenticalEntries( w[ AbsInt(b) ], b ) );
+        for j in [1..Length( U[2][i] ) ] do
+            b := U[2][i][j];
+            if b > 0 then
+                S := Concatenation( S, w[b] );
+            else
+                S := Concatenation( S, -1*Reversed( w[-1*b] ) );
+            fi;
         od;
-        Add( A, S );
+        Add( A, ReduceLetterRep(S) );
     od;
     
     return [ U[1], A ];
