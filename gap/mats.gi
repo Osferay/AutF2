@@ -883,7 +883,6 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
     u  := MembershipCommutatorSL2Z( h^-1*M*t^-1 );
     u  := AssocWordByLetterRep( FamilyObj( One(F) ), u );
     u  := CosetRepresentativeReducedNielsenSetBacktrack( U, u );
-    Error();
     wv := u[3];
     u  := u[2];
 
@@ -896,12 +895,20 @@ end;
 
 MembershipSubgroupSL2Z := function( gens, M )
 
-    local r;
+    local r, w, i;
 
     r := CosetRepresentativeSubgroupSL2Z( gens, M );
 
     if r[1] = r[1]^0 then
-        return true;
+        w := r[4];
+        for i in [1..Length( r[3] ) ] do
+            if r[3][i] > 0 then
+                w := Concatenation( w, r[2][ r[3][i] ] );
+            else 
+                w := Concatenation( w, -1*Reversed( r[2][ -1*r[3][i] ] ) );
+            fi;
+        od;
+        return ReduceLetterRep( w );
     else
         return false;
     fi;
