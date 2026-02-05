@@ -421,6 +421,10 @@ NielsenReducedSetBacktrack := function( V, words )
         Remove( W, 1 );
         Remove( new, 1 );
     fi;
+
+    if IsEmpty( W ) then
+        return [ [ ], [ ] ];
+    fi;
     
     for i in [1..Length(W)] do
         if LexicographicOrderNSet( W[i]^-1, W[i]) then
