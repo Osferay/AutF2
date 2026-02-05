@@ -975,7 +975,7 @@ ReduceGeneratorSetSubgroupSL2Z := function( gens )
 end;
 
 ReduceParallelGeneratorSetSubgroupSL2Z := function( gens, w )
-    local new, i, tmp;
+    local new, i, tmp, v;
 
     if Length(gens) = 1 then
         return [ gens, w ];
