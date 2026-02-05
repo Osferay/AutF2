@@ -410,7 +410,7 @@ CentralizerHyperbolicMatrix := function( A )
     c     := A[2][1];
 
     C     := [ [ 1/2*(u+ad*v), b*v ], [ c*v, 1/2*(u-ad*v) ] ];
-
+    
     e     := 1;
     U     := [ u ];
     V     := [ v ];
@@ -450,6 +450,10 @@ end );
 WordSL2ZinST := function( M )
 
     local A, S, T, C, N, s, c;
+
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
 
     S := [[0,-1],[1,0]];
     T := [[1,1],[0,1]];
@@ -542,6 +546,10 @@ end;
 WordSL2ZinSU := function( M )
 
     local w, v, i, t;
+
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
 
     w := WordSL2ZinST( M );
     v := [];
@@ -637,6 +645,10 @@ end;
 LengthWordMatrixSL2ZinSU := function( M )
     local w;
 
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
+
     w := WordSL2ZinSU( M );
 
     return Length( w.w ) + w.s;
@@ -644,6 +656,10 @@ end;
 
 HomomorphismSL2Zto12Z := function( M )
     local w, eU, eS, G, u, s;
+
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
 
     w := WordSL2ZinSU( M );
 
@@ -657,6 +673,10 @@ end;
 MembershipCommutatorSL2Z := function( M )
 
     local   w, x, y, N, I, F, new, z;
+
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
 
     if HomomorphismSL2Zto12Z( M ) <> 0 then
         return false;
@@ -705,16 +725,21 @@ TransversalRepresentativeCommutatorSL2Z := function( T, M )
 
     local t;
 
+    if DeterminantIntMat(M) <> 1 then
+        Error( "M has to be in SL2Z" );
+    fi;
+
     t := HomomorphismSL2Zto12Z( M );
 
     return T[t+1];
 end;
 
 OrbitStabilizerMembership := function( T, t, gens )
-    local I, S, w, dict, orbit, stab, o, i, y, j, todo, new;
+    local I, S, w, dict, orbit, stab, o, i, y, j, todo, new, sdic, tmp;
 
     I     := [[1,0],[0,1]];
     dict  := NewDictionary( I, true );
+    sdic  := NewDictionary( I, true );
     AddDictionary( dict, t, 1 );
     orbit := [ [ t, I, [] ] ];
     todo  := [ [ t, I, [] ] ];
@@ -734,8 +759,12 @@ OrbitStabilizerMembership := function( T, t, gens )
                 Add( orbit, [y, gens[1][i]*o[2], Concatenation( gens[2][i], o[3] ) ] );
                 Add( todo, [y, gens[1][i]*o[2], Concatenation( gens[2][i], o[3] ) ] );
             else
-                Add( stab, (orbit[j][2])^-1*gens[1][i]*o[2] );
-                Add( new, Concatenation( -1*Reversed( orbit[j][3] ), Concatenation( gens[2][i], o[3] ) ) );
+                tmp := (orbit[j][2])^-1*(gens[1][i]*o[2]);
+                if IsBool( LookupDictionary( sdic, tmp ) ) then
+                    AddDictionary( sdic, tmp, Length(stab)+1 );
+                    Add( stab, tmp );
+                    Add( new, Concatenation( -1*Reversed( orbit[j][3] ), Concatenation( gens[2][i], o[3] ) ) );
+                fi;
             fi;
         od;
     od;
@@ -757,7 +786,7 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
     for t in T do
         S := OrbitStabilizerMembership( T, t, S );
     od;
-
+    
     w := S[2];
     S := List( S[1], MembershipCommutatorSL2Z );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
@@ -770,6 +799,10 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
     
     U := NielsenReducedSetBacktrack( S, b ); 
     
+    if IsEmpty(U[1]) then
+        return U;
+    fi;
+
     A := [];
     for i in [1..Length( U[2] ) ] do
         S := [];
@@ -832,15 +865,14 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
     od;
     
     h := false;
-
+    
     #Use the Schreier vector to obtain h
+    i := 1;
     while IsBool( h ) do 
-        i := 1;
 
         t := T[i];
         j := v[i];
         if j <> 0 then
-            
             h := I;
             y := t;
 
@@ -852,7 +884,7 @@ SchreierVectorTransversalCommutatorSL2Z := function( T, gens, M )
                 j := v[i];
             od;
         fi;
-
+        
         i := i+1;
     od;
     
@@ -862,6 +894,10 @@ end;
 CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
     local   S, U, F, T, I, wU, t, wh, h, u, wv;
+
+    if ForAny( gens, x -> DeterminantIntMat(x) <> 1) or DeterminantIntMat(M) <> 1 then
+        Error( "gens and M have to be in SL2Z" );
+    fi;
 
     I  := [[1,0],[0,1]];
     S  := [[0,-1],[1,0]];
@@ -913,4 +949,59 @@ MembershipSubgroupSL2Z := function( gens, M )
         return false;
     fi;
 
+end;
+
+ReduceGeneratorSetSubgroupSL2Z := function( gens )
+    local new, i, tmp;
+
+    if ForAny( gens, x -> DeterminantIntMat(x) <> 1) then
+        Error( "gens have to be in SL2Z" );
+    fi;
+
+    if Length(gens) = 1 then
+        return gens;
+    fi;
+
+    new := ShallowCopy( gens );
+
+    for i in [1..Length(new)] do
+        tmp := Concatenation( new{[1..(i-1)]}, new{[(i+1).. Length(new)]} );
+        if not IsBool( MembershipSubgroupSL2Z( tmp, new[i] ) ) then
+            return ReduceGeneratorSetSubgroupSL2Z( tmp );
+        fi;
+    od;
+
+    return new;
+end;
+
+ReduceParallelGeneratorSetSubgroupSL2Z := function( gens, w )
+    local new, i, tmp;
+
+    if Length(gens) = 1 then
+        return [ gens, w ];
+    fi;
+    
+    new := ShallowCopy( gens );
+    v   := ShallowCopy( w );
+
+    for i in [1..Length(new)] do
+        tmp := Concatenation( new{[1..(i-1)]}, new{[(i+1).. Length(new)]} );
+        if not IsBool( MembershipSubgroupSL2Z( tmp, new[i] ) ) then
+            Remove( v, i );
+            return ReduceParallelGeneratorSetSubgroupSL2Z( tmp, v );
+        fi;
+    od;
+
+    return [ new, v ];
+end;
+
+MatrixbyWordInGens := function( gens, w )
+    local v, M;
+
+    M := [[1,0],[0,1]];
+    for v in w do
+        M := M*gens[ AbsInt(v) ]^SignInt(v);
+    od;
+
+    return M;
 end;
