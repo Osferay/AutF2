@@ -790,14 +790,8 @@ GeneratorsOfIntersectionCommutatorSL2Z := function( T, gens, F )
     w := S[2];
     S := List( S[1], MembershipCommutatorSL2Z );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
-    # We compute U = < <gens> \cap G' >
-
-    b := [];
-    for i in [1..Length(S)] do
-        Add( b, [ i ] );
-    od;
-    
-    U := NielsenReducedSetBacktrack( S, b ); 
+    # We compute U = < <gens> \cap G' >   
+    U := NielsenReducedSetBacktrack( S ); 
     
     if IsEmpty(U[1]) then
         return U;
@@ -929,7 +923,7 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
 end;
 
-MembershipSubgroupSL2Z := function( gens, M )
+InstallGlobalFunction( MembershipSubgroupSL2Z, function( gens, M )
 
     local r, w, i;
 
@@ -949,7 +943,7 @@ MembershipSubgroupSL2Z := function( gens, M )
         return false;
     fi;
 
-end;
+end );
 
 ReduceGeneratorSetSubgroupSL2Z := function( gens )
     local new, i, tmp;
@@ -1005,3 +999,51 @@ MatrixbyWordInGens := function( gens, w )
 
     return M;
 end;
+
+IdentityProblemSL2Z := function( gens )
+
+    local I, S, U, F, t, i, T, w, v;
+
+    if ForAny( gens, x -> DeterminantIntMat(x) <> 1) then
+        Error( "gens have to be in SL2Z" );
+    fi;
+
+    I  := [[1,0],[0,1]];
+    S  := [[0,-1],[1,0]];
+    U  := [[0,-1],[1,1]];
+    F  := FreeGroup( 2 );
+
+    #This is a transversal of the commutator for SL2Z
+    T  := [ I, S^3*U^2, U, S, U^2, S*U, S^2, S*U^2, S^2*U, S^3, S^2*U^2, S^3*U ];
+
+    S := [ gens, [] ];
+
+    for i in [1..Length(gens)] do
+        Add(S[2], [i]);
+    od;
+    
+    for t in T do
+        S := OrbitStabilizerMembership( T, t, S );
+    od;
+    
+    w := S[2];
+    S := List( S[1], MembershipCommutatorSL2Z );
+    S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
+    # We compute U = < <gens> \cap G' >
+    U := IdentityProblemF2( S ); 
+
+    if IsBool(U) then
+        return false;
+    fi;
+
+    v := [];
+    for i in [1..Length(U)] do
+        if U[i] > 0 then
+            v := Concatenation( v, w[U[i]]);
+        else
+            v := Concatenation( v, -1*Reversed( w[AbsInt(U[i])] ) );
+        fi;
+    od;
+
+    return v;
+end; 

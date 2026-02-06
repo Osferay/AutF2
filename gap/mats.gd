@@ -12,3 +12,7 @@ DeclareGlobalFunction( "ConjugacyGL2Z" );
 #! Given a matrix $A$, computes a matrix $C$ such that $\langle -C, C \rangle = C_{\operatorname{GL}_2(\mathbb{Z})}(A)$ and an integer $n$ such that $C^n=A$.
 #! @Arguments A,B
 DeclareGlobalFunction( "CentralizerGL2Z" );
+#! @Description
+#! Given a matrix $A$, decides whether $A\in\langle gens \rangle$ and if so computes a word $w$ in the generators that represent $A$.
+#! @Arguments gens,A
+DeclareGlobalFunction( "MembershipSubgroupSL2Z" );
