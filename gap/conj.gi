@@ -13,7 +13,7 @@ AreConjugateSA2 := function( a, b )
 		AutF2CallCpp( "conj" );
 		conj := AutF2ReadJSON();
 
-		if IsBool( conj ) then
+		if IsBool( conj[1] ) then
 			return false;
 		else
 			conj := WordOfSpecialAutomorphismOfF2ToBraidWord( conj );

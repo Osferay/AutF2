@@ -101,9 +101,12 @@ int main(int argc, char* argv[])
                     }
                 }
             }
-
+            if( wlcf.size() == 0 ){
+                wordlcf.push_back(0);
+            }
+            
             for (int x : wlcf) {
-                wordlcf.push_back(x);
+                    wordlcf.push_back(x);
             }
         }
         else{

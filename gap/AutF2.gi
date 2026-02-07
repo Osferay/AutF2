@@ -428,6 +428,10 @@ WordOfSpecialAutomorphismOfF2ToBraidWord := function( word )
 	local braid, delta, i;
 
 	braid := ShallowCopy( word );
+	if braid[1] = 0 then
+		return [];
+	fi;
+	
 	for i in [1..Length( braid )] do
 
 		if AbsInt( braid[i] ) = 1 then
