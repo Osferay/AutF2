@@ -1,4 +1,4 @@
-AreConjugateSA2 := function( a, b )
+ConjugacySA2 := function( a, b )
 	local	b1, b2, j, conj, v, d, a1, f, z0, h0;
 
 	b1 := WordOfAutomorphismOfF2( a );
@@ -53,7 +53,7 @@ ReduceToQuestion2 := function( b, v, b1 )
 
 	z  := b1^-1*b^-1*b1*b*v;
 	a1 := b^b1;
-	t  := AreConjugateSA2( a1^2, (a1*z)^2 );
+	t  := ConjugacySA2( a1^2, (a1*z)^2 );
 
 	if IsBool(t) then
 		return false;
@@ -93,7 +93,7 @@ SolveQuestion2 := function( a, z )
 
 end;
 
-AreConjugate := function( a, b )
+InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 	local	b1, v, d, F, s3, B, C, i, j, a1, f, z0, h0;
 
 
@@ -132,4 +132,4 @@ AreConjugate := function( a, b )
 
 	return false;
 
-end;
+end );
