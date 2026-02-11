@@ -593,25 +593,38 @@ InstallGlobalFunction( AreEquivalent, function( V, W )
 
 end );
 
-IdentityProblemF2Step2Backtrack := function( V, words )
+NielsenReducedSetStep2BacktrackIdentity := function( V, words, id )
 
-    local   one, new, W, i, j, w;
+    local   one, new, idd, W, i, j, w;
 
     one := V[1]^0;
     W   := ShallowCopy( V );
     new := ShallowCopy( words );
+    idd := ShallowCopy( id );
 
     for i in [1..Length(W)] do
         for j in [1..Length(W)] do
             if i <> j then
                 if W[i]*W[j] = one then
-                    return [ true, Concatenation( new[i], new[j] ) ];
+                    Add( idd, Concatenation( new[i], new[j] ) );
+                    Remove( W, i );
+                    Remove( new, i );
+                    return [ W, new, idd ];
                 elif W[i]^-1*W[j] = one then
-                    return [ true, Concatenation( -1*Reversed( new[i] ), new[j] ) ];
+                    Add( idd, Concatenation( -1*Reversed( new[i] ), new[j] ) );
+                    Remove( W, i );
+                    Remove( new, i );
+                    return [ W, new, idd ];
                 elif W[i]*W[j]^-1 = one then
-                    return [ true, Concatenation( new[i], -1*Reversed( new[j] ) ) ];
+                    Add( idd, Concatenation( new[i], -1*Reversed( new[j] ) ) );
+                    Remove( W, i );
+                    Remove( new, i );
+                    return [ W, new, idd ];
                 elif W[i]^-1*W[j]^-1 = one then
-                    return [ true, -1*Reversed( Concatenation( new[i], new[j] ) ) ];
+                    Add( idd, -1*Reversed( Concatenation( new[i], new[j] ) ) );
+                    Remove( W, i );
+                    Remove( new, i );
+                    return [ W, new, idd ];
 
                 elif LexicographicOrderNSet( W[i]*W[j], W[i] ) then
                     w := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j], (W[i]*W[j])^-1 );
@@ -622,7 +635,7 @@ IdentityProblemF2Step2Backtrack := function( V, words )
                     fi;
                     W[i] := w[1];
 
-                    return [ W, new ];
+                    return [ W, new, idd ];
                 elif LexicographicOrderNSet( W[i]^-1*W[j], W[i] ) then
                     w := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j], W[j]^-1*W[i] );
                     if w[2] = 1 then
@@ -632,7 +645,7 @@ IdentityProblemF2Step2Backtrack := function( V, words )
                     fi;
                     W[i] := w[1];
 
-                    return [ W, new ];
+                    return [ W, new, idd ];
                 elif LexicographicOrderNSet( W[i]*W[j]^-1, W[i] ) then
                     w := MinimumLexicographicOrderNSetBacktrack( W[i]*W[j]^-1, W[j]*W[i]^-1 );
                     if w[2] = 1 then
@@ -642,7 +655,7 @@ IdentityProblemF2Step2Backtrack := function( V, words )
                     fi;
                     W[i] := w[1];
                     
-                    return [ W, new ];
+                    return [ W, new, idd ];
                 elif LexicographicOrderNSet( W[i]^-1*W[j]^-1, W[i] ) then
                     w := MinimumLexicographicOrderNSetBacktrack( W[i]^-1*W[j]^-1, W[j]*W[i] );
                     if w[2] = 1 then
@@ -652,7 +665,7 @@ IdentityProblemF2Step2Backtrack := function( V, words )
                     fi;
                     W[i] := w[1];
 
-                    return [ W, new ];
+                    return [ W, new, idd ];
                 fi;
             fi;
         od;
@@ -661,12 +674,14 @@ IdentityProblemF2Step2Backtrack := function( V, words )
     return false;
 end;
 
-IdentityProblemF2Step3Backtrack := function( V, words )
+NielsenReducedSetStep3BacktrackIdentity := function( V, words, id )
 
-    local   W, new, even, ewor, i, v, y, p, q, n, flag, w;
+    local   W, new, idd, even, ewor, i, v, y, p, q, n, flag, w;
 
     W    := ShallowCopy( V );
     new  := ShallowCopy( words );
+    idd  := ShallowCopy( id );
+
     even := Filtered( W, x -> IsEvenInt(Length(x)) );
     ewor := Filtered( [1..Length(W) ], i -> IsEvenInt(Length(W[i])) );
     ewor := words{ ewor };
@@ -695,11 +710,12 @@ IdentityProblemF2Step3Backtrack := function( V, words )
             
             flag := true;
             while flag do
-                flag := NielsenReducedSetStep2Backtrack( W, new );
+                flag := NielsenReducedSetStep2BacktrackIdentity( W, new, idd );
         
                 if not IsBool( flag ) then
                     W    := flag[1];
                     new  := flag[2];
+                    idd  := flag[3];
                     flag := true;
                 fi;
             od;
@@ -722,20 +738,17 @@ IdentityProblemF2Step3Backtrack := function( V, words )
 
             flag := true;
             while flag do
-                flag := IdentityProblemF2Step2Backtrack( W, new );
+                flag := NielsenReducedSetStep2BacktrackIdentity( W, new, idd );
         
                 if not IsBool( flag ) then
-                    if IsBool( flag[1] ) then
-                        return flag;
-                    else
-                        W    := flag[1];
-                        new  := List( flag[2], ReduceLetterRep );
-                        flag := true;
-                    fi;
+                    W    := flag[1];
+                    new  := flag[2];
+                    idd  := flag[3];
+                    flag := true;
                 fi;
             od;
 
-            return [ W, new ];
+            return [ W, new, idd ];
         fi; 
 
     od;
@@ -743,11 +756,12 @@ IdentityProblemF2Step3Backtrack := function( V, words )
     return false;
 end;
 
-IdentityProblemF2 := function( V )
-    local   W, i, v, w, todo1, p, even, r, flag, todo2, new, n;
+NielsenReducedSetBacktrackIdentity := function( V )
+    local   W, i, v, w, todo1, p, even, r, flag, todo2, new, n, idd;
 
     W   := ShallowCopy( V );
     new := [];
+    idd := [];
     for i in [1..Length(W)] do
         Add( new, [i] );
     od;
@@ -771,12 +785,13 @@ IdentityProblemF2 := function( V )
     
     #Without one
     if W[1] = W[1]^0 then
+        Add( idd, new[1] );
         Remove( W, 1 );
         Remove( new, 1 );
     fi;
 
     if IsEmpty( W ) then
-        return false;
+        return [ [ ], [ ], [ ] ];
     fi;
     
     for i in [1..Length(W)] do
@@ -788,34 +803,28 @@ IdentityProblemF2 := function( V )
 
     flag := true;
     while flag do
-        flag := IdentityProblemF2Step2Backtrack( W, new );
+        flag := NielsenReducedSetStep2BacktrackIdentity( W, new, idd );
         
         if not IsBool( flag ) then
-            if IsBool( flag[1] ) then
-                return ReduceLetterRep( flag[2] );
-            else
-                W    := flag[1];
-                new  := List( flag[2], ReduceLetterRep );
-                flag := true;
-            fi;
+            W    := flag[1];
+            new  := List( flag[2], ReduceLetterRep );
+            idd  := flag[3];
+            flag := true;
         fi;
     od;
 
     flag := true;
     while flag do
-        flag := IdentityProblemF2Step3Backtrack( W, new );
+        flag := NielsenReducedSetStep3BacktrackIdentity( W, new, idd );
         
         if not IsBool( flag ) then
-            if IsBool( flag[1] ) then
-                return ReduceLetterRep( flag[2] );
-            else
-                W    := flag[1];
-                new  := List( flag[2], ReduceLetterRep );
-                flag := true;
-            fi;
+            W    := flag[1];
+            new  := List( flag[2], ReduceLetterRep );
+            idd  := flag[3];
+            flag := true;
         fi;
     od;
 
-    return false;
+    return [ W, new, idd ];
 
 end;

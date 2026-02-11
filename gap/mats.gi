@@ -1000,9 +1000,9 @@ MatrixbyWordInGens := function( gens, w )
     return M;
 end;
 
-IdentityProblemSL2Z := function( gens )
+TrivialWordsSL2Z := function( gens )
 
-    local I, S, U, F, t, i, T, w, v;
+    local I, S, U, F, t, i, j, T, w, v;
 
     if ForAny( gens, x -> DeterminantIntMat(x) <> 1) then
         Error( "gens have to be in SL2Z" );
@@ -1030,20 +1030,20 @@ IdentityProblemSL2Z := function( gens )
     S := List( S[1], MembershipCommutatorSL2Z );
     S := List( S, s -> AssocWordByLetterRep( FamilyObj( One(F) ), s ) );
     # We compute U = < <gens> \cap G' >
-    U := IdentityProblemF2( S ); 
+    U := NielsenReducedSetBacktrackIdentity( S )[3]; 
 
-    if IsBool(U) then
-        return false;
-    fi;
-
-    v := [];
+    I := [];
     for i in [1..Length(U)] do
-        if U[i] > 0 then
-            v := Concatenation( v, w[U[i]]);
-        else
-            v := Concatenation( v, -1*Reversed( w[AbsInt(U[i])] ) );
-        fi;
+        v := [];
+        for j in [1..Length(U[i])] do
+            if U[i][j] > 0 then
+                v := Concatenation( v, w[U[i][j]]);
+            else
+                v := Concatenation( v, -1*Reversed( w[AbsInt(U[i][j])] ) );
+            fi;
+        od;
+        Add( I, ReduceLetterRep(v) );
     od;
 
-    return v;
+    return I;
 end; 
