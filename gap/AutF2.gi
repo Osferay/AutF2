@@ -21,7 +21,7 @@ InstallMethod(AutomorphismOfF2Family,
 
 GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 	local	gens, i,
-			sigma,
+			sigma, delta,
 			phi1, phi2, phi3;
 
 	gens  := GeneratorsOfGroup( F );
@@ -47,8 +47,18 @@ GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 	phi3 := function( w )
 		return EliminatedWord( w, gens[1], gens[2]^-1*gens[1] );
 	end;
+	delta := function( w )
+		local new;
 
-	return [ sigma, phi1, phi2, phi3 ];
+		new := ShallowCopy( w );
+		new := EliminatedWord( new, gens[1], gens[1]^-1 );
+		new := EliminatedWord( new, gens[2], gens[2]^-1 );
+		new := EliminatedWord( new, gens[1], gens[2]*gens[1]*gens[2]^-1 );
+
+		return new;
+	end;
+
+	return [ sigma, phi1, phi2, phi3, delta ];
 end;
 
 InverseOfGeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
@@ -84,6 +94,9 @@ ReduceWordOfAutomorphismOfF2 := function( word )
 		elif red[i] = "s" and red[i+1] = "s" then
 			Remove( red, i+1 ); Remove( red, i );
 			return ReduceWordOfAutomorphismOfF2( red );
+		elif red[i] = "d" and red[i+1] = "d" then
+			Remove( red, i+1 ); Remove( red, i );
+			return ReduceWordOfAutomorphismOfF2( red );
 		fi;
 	od;
 
@@ -98,7 +111,12 @@ MoveSigmaToLeft := function( word )
 
 	if pos <> [1] and not IsEmpty( pos ) then 
 		pos := Last( pos );
-		if AbsInt( mov[ pos-1 ] ) = 1 then
+		if mov[ pos-1 ] = "d" then
+			tmp := mov{[1..pos-2]};
+			Append( tmp, [ "s", -1, 2, -1, -1, 2, 3] );
+			Append( tmp, mov{ [pos+1..Length(mov) ] } );
+			mov := ShallowCopy( tmp );
+		elif AbsInt( mov[ pos-1 ] ) = 1 then
 			mov[ pos ] := SignInt( mov[ pos-1 ] )*2;
 			mov[ pos-1 ] := "s";
 		elif AbsInt( mov[ pos-1 ] ) = 2 then
@@ -118,51 +136,86 @@ MoveSigmaToLeft := function( word )
 	return mov;
 end;
 
+WordOfSpecialAutomorphismOfF2ToBraidWord := function( word )
+	local braid, i;
+
+	braid := ShallowCopy( word );
+
+	for i in [1..Length( braid )] do
+
+		if braid[i] = "d" then
+			braid[i] := 4;
+		elif AbsInt( braid[i] ) = 1 then
+			braid[i] := -1*braid[i];
+		fi;
+	
+	od;
+	
+	return braid;
+end;
+
+BraidWordToWordOfSpecialAutomorphismOfF2 := function( braid )
+	local word, i;
+
+	word := ShallowCopy( braid );
+	if word[1] = 0 then
+		return [];
+	fi;
+
+	if word[1] = 4 then
+		word[1] := "d";
+	elif AbsInt( word[1] ) = 1 then
+		word[1] := -1*word[1];
+	fi;
+	
+	for i in [2..Length( word )] do
+
+		if AbsInt( word[i] ) = 1 then
+			word[i] := -1*word[i];
+		fi;
+	
+	od;
+	
+	return word;
+end;
+
+LeftCanonicalFormAutomorphismOfF2 := function( word )
+	local	lcf, i;
+
+	if IsEmpty( word ) then
+		return [];
+	fi;
+
+	if word[1] = "s" then
+		lcf := word{[2..Length(word)]};
+	else
+		lcf := ShallowCopy( word );
+	fi;
+	lcf := WordOfSpecialAutomorphismOfF2ToBraidWord( lcf );
+	
+	AutF2WriteJSON( lcf );
+	AutF2CallCpp( "lcf" );
+	lcf := AutF2ReadJSON();
+	
+	lcf := BraidWordToWordOfSpecialAutomorphismOfF2( lcf );
+	
+	if word[1] = "s" then
+		Add( lcf, "s", 1 );
+	fi;
+
+	return lcf;
+end;
+
 InstallMethod( AutomorphismOfF2, 
     "for a free group and a word of automorphisms", 
     [ IsFreeGroup, IsList ], 
     function( F, word ) 
-        local aut, autw, v, w, i, funs, gens, invs, identityfunction;
+        local aut, lcf, v, w, i, funs, gens, invs, identityfunction;
 
-		gens := GeneratorsOfGroupOfAutomorphismsOfF2( F );
-		invs := InverseOfGeneratorsOfGroupOfAutomorphismsOfF2( F );
-		autw := MoveSigmaToLeft( word );
-		funs := [];
-		for i in [1..Length(autw)] do
-			if autw[i] = 1 then
-				Add( funs, gens[2] );
-			elif autw[i] = 2 then
-				Add( funs, gens[3] );
-			elif autw[i] = 3 then
-				Add( funs, gens[4] );
-			elif autw[i] = -1 then
-				Add( funs, invs[1] );
-			elif autw[i] = -2 then
-				Add( funs, invs[2] );
-			elif autw[i] = -3 then
-				Add( funs, invs[3] );
-			elif autw[i] = "s" then
-				Add( funs, gens[1] );
-			else
-				Error( "Word is not a word of automorphisms." );
-			fi;
-		od;
-
-		if IsEmpty(funs) then
-			identityfunction := function(w)
-				return w;
-			end;
-			Add( funs, identityfunction );
-		fi;
-
-		v := GeneratorsOfGroup( F )[1];
-		w := GeneratorsOfGroup( F )[2];
-		for i in [1..Length(funs)] do
-			v := funs[i]( v );
-			w := funs[i]( w );
-		od;
+		lcf := MoveSigmaToLeft( word );
+		lcf := LeftCanonicalFormAutomorphismOfF2( lcf );
         
-        aut := rec( functions := funs, freeGroup := F, images := [v,w], word := autw );
+        aut := rec( freeGroup := F, lcf := lcf );
 
         aut := Objectify( NewType( AutomorphismOfF2Family( FamilyObj( aut ) ), IsAutomorphismOfF2 and RepAutomorphismOfF2 ),
                        aut ) ;
@@ -172,23 +225,69 @@ InstallMethod( AutomorphismOfF2,
 
 InstallMethod( WordOfAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
 	function( aut )
-		return aut!.word;
+		return aut!.lcf;
 end );
+
+FunctionsAutomorphismOfF2 := function( aut )
+	local F, autw, gens, invs, funs, i, identityfunction, v, w;
+
+	F    := aut!.freeGroup;
+	autw := aut!.lcf;		
+	gens := GeneratorsOfGroupOfAutomorphismsOfF2( F );
+	invs := InverseOfGeneratorsOfGroupOfAutomorphismsOfF2( F );
+	funs := [];
+	for i in [1..Length(autw)] do
+		if autw[i] = 1 then
+			Add( funs, gens[2] );
+		elif autw[i] = 2 then
+			Add( funs, gens[3] );
+		elif autw[i] = 3 then
+			Add( funs, gens[4] );
+		elif autw[i] = -1 then
+			Add( funs, invs[1] );
+		elif autw[i] = -2 then
+			Add( funs, invs[2] );
+		elif autw[i] = -3 then
+			Add( funs, invs[3] );
+		elif autw[i] = "s" then
+			Add( funs, gens[1] );
+		elif autw[i] = "d" then
+			Add( funs, gens[5] );
+		else
+			Error( "Word is not a word of automorphisms." );
+		fi;
+	od;
+
+	if IsEmpty(funs) then
+		identityfunction := function(w)
+			return w;
+		end;
+		Add( funs, identityfunction );
+	fi;
+
+	return funs;
+end;
 
 InstallMethod( ImagesAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
 	function( aut )
-		return [ aut!.images[1], aut!.images[2] ];	
+		local F, v, w, funs, i;
+
+		F    := aut!.freeGroup;
+		funs := FunctionsAutomorphismOfF2( aut );
+
+		v := GeneratorsOfGroup( F )[1];
+		w := GeneratorsOfGroup( F )[2];
+		for i in [1..Length(funs)] do
+			v := funs[i]( v );
+			w := funs[i]( w );
+		od;
+
+		return [ v, w ];
 end );
 
 InstallMethod( PrintObj, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
     function( aut )
-		local gens, imgs;
-
-		gens := GeneratorsOfGroup( aut!.freeGroup );
-		imgs := ImagesAutomorphismOfF2( aut );
-
-		Print( gens[1], " -> ", imgs[1], "\n" );
-		Print( gens[2], " -> ", imgs[2] );
+		Print( "Automorphism of F2 with word ", aut!.lcf );
     end 
 );
 
@@ -196,11 +295,7 @@ InstallMethod( IsIdentityAutomorphismOfF2,
 	"for an automorphism of F2",
 	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local gens, imgs;
-
-		gens := GeneratorsOfGroup( aut!.freeGroup );
-		imgs := ImagesAutomorphismOfF2( aut );
-		return ( gens[1] = imgs[1] and gens[2] = imgs[2] );
+		return ( IsEmpty( aut!.lcf) );
 
 end);
 
@@ -208,16 +303,24 @@ InstallMethod( MatrixRepresentationOfAutomorphismOfF2,
 	"for an automorphism of F2",
 	[ IsAutomorphismOfF2 ],
 	function( aut )
-		local M, gens, imgs;
+		local M, lcf, i;
 
-		M := [[0,0],[0,0]];
-		gens := GeneratorsOfGroup( aut!.freeGroup );
-		imgs := ImagesAutomorphismOfF2( aut );
+		M 	:= [[1,0],[0,1]];
+		lcf := aut!.lcf;
 
-		M[1][1] := ExponentSumWord( imgs[1], gens[1] );
-		M[1][2] := ExponentSumWord( imgs[1], gens[2] );
-		M[2][1] := ExponentSumWord( imgs[2], gens[1] );
-		M[2][2] := ExponentSumWord( imgs[2], gens[2] );
+		for i in [1..Length( lcf )] do
+			if lcf[i] = "s"	then
+				M := M*[[0,1],[1,0]];
+			elif lcf[i] = "d" then
+				M := M*[[-1,0],[0,-1]];
+			elif AbsInt(lcf[i]) = 1 then
+				M := M*[[ 1, SignInt( lcf[i] )*1 ],[ 0, 1 ]];
+			elif AbsInt(lcf[i]) = 2 then
+				M := M*[[ 1, 0 ],[ SignInt( lcf[i] )*1, 1 ]];
+			elif AbsInt(lcf[i]) = 3 then
+				M := M*[[ 1, -1*SignInt( lcf[i])*1 ],[ 0, 1 ]];
+			fi;
+		od;
 
 		return M;
 end );
@@ -242,7 +345,7 @@ InstallOtherMethod( \*,
 			Error( "The free groups of the automorphisms are different." );
 		fi;
 
-		w := Concatenation( aut1!.word, aut2!.word );
+		w := Concatenation( aut1!.lcf, aut2!.lcf );
 		aut := AutomorphismOfF2( aut1!.freeGroup, w );
 
 		return aut;	
@@ -256,17 +359,19 @@ InstallOtherMethod( Inverse,
 				inv,
 				i;
 
-		word := aut!.word;
+		word := aut!.lcf;
 		inv := [];
 
 		for i in [1..Length( word )] do
 			if IsInt(word[i]) then
 				Add( inv, -word[i] );
-			else
+			elif word[i] = "s" then
 				Add( inv, "s" );
+			else
+				Add( inv, "d" );
 			fi;
 		od;
-			
+		
 		return AutomorphismOfF2( aut!.freeGroup, Reversed(inv) );
 end );
 
@@ -277,7 +382,7 @@ InstallOtherMethod( \^,
 		local i, pow, mul;
 		
 		if e = 0 then
-			return aut*Inverse( aut );
+			return AutomorphismOfF2( aut!.freeGroup, [] );
 		fi;
 		
 		if e < 0 then
@@ -337,7 +442,7 @@ InstallMethod( ImageAutomorphismOfF2,
 		Error( "The given word has to be in the same free group as the automorphism." );
 	fi;
 
-	funs := aut!.functions;
+	funs := FunctionsAutomorphismOfF2( aut );
 	
 	v := ShallowCopy( w );
 	for i in [1..Length(funs)] do
@@ -424,65 +529,12 @@ InstallMethod( ConjugacyAutomorphismOfF2,
 		return aut;
 end);
 
-WordOfSpecialAutomorphismOfF2ToBraidWord := function( word )
-	local braid, delta, i;
-
-	braid := ShallowCopy( word );
-	if braid[1] = 0 then
-		return [];
-	fi;
-	
-	for i in [1..Length( braid )] do
-
-		if AbsInt( braid[i] ) = 1 then
-			braid[i] := -1*braid[i];
-		fi;
-	
-	od;
-
-	if braid[1] = 4 then 
-		delta := [ -1, 2, -1, 3, 2, -1 ];
-		braid := Concatenation( delta, braid{[2..Length(braid)]});
-	fi;
-	
-	return braid;
-end;
-
-InstallMethod( LeftCanonicalFormAutomorphismOfF2,
-	"for an automorphism of F2",
-	[ IsAutomorphismOfF2 ],
-	function( aut )
-		local	word, lcf, i;
-
-		word := WordOfAutomorphismOfF2( aut );
-
-		if word[1] = "s" then
-			lcf := word{[2..Length(word)]};
-		else
-			lcf := ShallowCopy( word );
-		fi;
-		lcf := WordOfSpecialAutomorphismOfF2ToBraidWord( lcf );
-
-		AutF2WriteJSON( lcf );
-		AutF2CallCpp( "lcf" );
-		lcf := AutF2ReadJSON();
-
-		lcf := WordOfSpecialAutomorphismOfF2ToBraidWord( lcf );
-
-		if word[1] = "s" then
-			Add( lcf, "s", 1 );
-		fi;
-
-		return lcf;
-
-end );
-
 InstallOtherMethod( \=,
 	"for two automorphisms of F2",
 	[ IsAutomorphismOfF2, IsAutomorphismOfF2 ],
 	function( a, b )
 
-	return LeftCanonicalFormAutomorphismOfF2( a ) = LeftCanonicalFormAutomorphismOfF2( b );
+	return a!.lcf = b!.lcf;
 end );
 
 CentralizerAutomorphismOfF2 := function( a )
