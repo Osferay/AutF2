@@ -173,7 +173,7 @@ InstallMethod( AutomorphismOfF2,
 InstallMethod( WordOfAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
 	function( aut )
 		return aut!.word;
-	end );
+end );
 
 InstallMethod( ImagesAutomorphismOfF2, "for an automorphism of F2", [ IsAutomorphismOfF2 ],
 	function( aut )

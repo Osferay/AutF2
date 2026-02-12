@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
         // We translate the left canonical form to a readeable list.
         // 4 represents the element delta, since we are in B_4/Z(B_4) this can only be one.
-        if(C.LeftDelta % 2 != 0){
+        if(B1.LeftDelta % 2 != 0){
             wlcf.push_back( 4 );
         }
     
@@ -64,6 +64,9 @@ int main(int argc, char* argv[])
 	                F[j-1]=k;
 	            }
 	        }
+        }
+        if( wlcf.size() == 0 ){
+            wordlcf.push_back(0);
         }
 
         // We put all the elements into a json list.
