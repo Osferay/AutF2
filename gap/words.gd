@@ -15,6 +15,10 @@ DeclareOperation( "IsPrefix", [ IsAssocWordWithInverse, IsAssocWordWithInverse ]
 #! @Arguments u,v.
 DeclareOperation( "IsSuffix", [ IsAssocWordWithInverse, IsAssocWordWithInverse ] );
 #! @Description
+#! Returns a word $w$ and an integer $r$ such that $w^r=v$ and $r$ is maximal.
+#! @Arguments v.
+DeclareOperation( "RootFreeGroup", [ IsAssocWordWithInverse ] );
+#! @Description
 #! Given a sequence of elements $V$ of a free group, returns a Nielsen reduced set $W$ that is equivalent to $V$.
 #! @Arguments V.
 DeclareGlobalFunction( "NielsenReducedSet" );

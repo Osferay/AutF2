@@ -65,6 +65,28 @@ InstallMethod( IsSuffix,
     
 end );
 
+InstallMethod( RootFreeGroup, "for a word in a free group",
+    [ IsAssocWordWithInverse ],
+    function( v )
+        local r, n, D, d, u;
+
+        r := LetterRepAssocWord( v );
+        n := Length( r );
+        D := DivisorsInt(n);
+
+        for d in D do
+            if d < n then
+                u := r{[1..d]};
+                if Concatenation( List([1..n/d], i -> u) ) = r then
+                    return [ AssocWordByLetterRep( FamilyObj(v), u ), n/d ];
+                fi;
+            fi;
+        od;
+
+        return [ v, 1 ];
+    
+end);
+
 LexicographicOrderNSet := function( v, w )
     local l1, l2, r1, r2, i;
 
