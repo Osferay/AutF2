@@ -393,7 +393,7 @@ InstallOtherMethod( \^,
 			mul := aut;
 		fi;
 
-		for i in [2..e] do
+		for i in [2.. AbsInt(e)] do
 			pow := pow * mul;
 		od;
 		return pow;
@@ -405,20 +405,19 @@ ProductAutomorphismsOfF2ByWord := function( gens, word )
 	new := [];
 	w   := List( gens, WordOfAutomorphismOfF2 );
 	for i in [1..Length( word )] do
-		p := w[ AbsInt(word[i]) ];
+		p := ShallowCopy( w[ AbsInt(word[i]) ] );
 		if word[i] > 0 then
 			new := Concatenation( new, p );
 		else
-			inv := ShallowCopy( p );
-			for j in [1..Length( inv )] do
-				if IsInt( inv[j] ) then
-					inv[j] := -1*inv[j];
+			for j in [1..Length( p )] do
+				if IsInt( p[j] ) then
+					p[j] := -1*p[j];
 				fi;
 			od;
-			new := Concatenation( new, Reversed( inv ) );
+			new := Concatenation( new, Reversed( p ) );
 		fi;
 	od;
-
+	Error();
 	aut := AutomorphismOfF2( gens[1]!.freeGroup, new );
 
 	return aut;

@@ -245,6 +245,10 @@ InstallGlobalFunction( NielsenReducedSet, function( V )
         Remove( W, 1 );
     fi;
 
+    if IsEmpty( W ) then
+        return W;
+    fi;
+
     for i in [1..Length(W)] do
         if LexicographicOrderNSet( W[i]^-1, W[i]) then
             W[i] := W[i]^-1;
