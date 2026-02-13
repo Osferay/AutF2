@@ -24,7 +24,7 @@ gap> phi4 := phi3^-1*phi2^-1*phi1*phi2*phi3;;
 gap> cent := CentralizerAutomorphismOfF2( phi4 );;
 gap> ForAll( cent, x -> phi4*x = x*phi4 );
 true
-gap> ImageAutomorphismOfF2( phi1*phi3*phi4, F.1*F.2 );
+gap> ImageByAutomorphismOfF2( phi1*phi3*phi4, F.1*F.2 );
 f2^-1*f1*f2*f1^-1*f2
 gap> imgs := ImagesAutomorphismOfF2( aut );;
 gap> AutomorphismOfF2ByImages( F, imgs[1], imgs[2] ) = aut;

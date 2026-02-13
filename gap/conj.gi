@@ -16,7 +16,7 @@ ConjugacySA2 := function( a, b )
 		if IsBool( conj[1] ) then
 			return false;
 		else
-			conj := WordOfSpecialAutomorphismOfF2ToBraidWord( conj );
+			conj := BraidWordToWordOfSpecialAutomorphismOfF2( conj );
 			return AutomorphismOfF2( a!.freeGroup, conj );
 		fi;
 	fi;

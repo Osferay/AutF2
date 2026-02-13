@@ -36,16 +36,16 @@ InstallGlobalFunction( FixedSubgroupAutomorphismOfF2, function( aut )
         fix2 := FixedSubgroupSA2( aut^2 );
 
         if Length( fix2 ) = 2 then
-            if ImageAutomorphismOfF2( aut, fix2[1] ) = fix2[1] then
+            if ImageByAutomorphismOfF2( aut, fix2[1] ) = fix2[1] then
                 return [ fix2[1] ];
-            elif ImageAutomorphismOfF2( aut, fix2[2] ) = fix2[2] then
+            elif ImageByAutomorphismOfF2( aut, fix2[2] ) = fix2[2] then
                 return [ fix2[2] ];
             else
                 return [];
             fi;
 
         elif Length( fix2 ) = 1 then
-            if ImageAutomorphismOfF2( aut, fix2[1] ) = fix2[1] then
+            if ImageByAutomorphismOfF2( aut, fix2[1] ) = fix2[1] then
                 return [ fix2[1] ];
             else
                 return [];
@@ -63,7 +63,7 @@ InstallGlobalFunction( FixedSubgroupAutomorphismOfF2, function( aut )
             return [];
         else
             d := ConjugacyAutomorphismOfF2( aut, s4 );
-            return [ ImageAutomorphismOfF2( d^-1, aut!.freeGroup.1 ) ];
+            return [ ImageByAutomorphismOfF2( d^-1, aut!.freeGroup.1 ) ];
         fi;
     fi;
 end );       

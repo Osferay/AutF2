@@ -38,7 +38,7 @@ WhiteheadLengthReduction := function( W, w )
     local i, img;
 
     for i in [1..Length(W)] do
-        img := ImageAutomorphismOfF2( W[i], w );
+        img := ImageByAutomorphismOfF2( W[i], w );
         if Length( img ) < Length(w) then
             return rec( aut := W[i], img := img );
         fi;
@@ -63,7 +63,7 @@ WhiteheadReductionAlgorithm := function( F, w )
         u   := WhiteheadLengthReduction( W, u );
     od;
 
-    return rec( aut := aut, min := ImageAutomorphismOfF2( aut, w ) );
+    return rec( aut := aut, min := ImageByAutomorphismOfF2( aut, w ) );
 
 end;
 
@@ -81,7 +81,7 @@ InstallMethod( AreAutomorphicEquivalent,
 				W := WhiteheadAutomorphismsOfF2( F ).type1;
 
 				for w in W do
-					if ImageAutomorphismOfF2( w, red1.min ) = red2.min then
+					if ImageByAutomorphismOfF2( w, red1.min ) = red2.min then
 						return red1.aut*w*red2.aut^-1;
 					fi;
 				od;
@@ -101,7 +101,7 @@ InstallMethod( AreAutomorphicEquivalent,
 				return false;
 			fi;
 
-			conj := RepresentativeAction( F, ImageAutomorphismOfF2( ae, u ), v );
+			conj := RepresentativeAction( F, ImageByAutomorphismOfF2( ae, u ), v );
 			if IsBool( conj ) then
 				return false;
 			fi;
@@ -121,9 +121,9 @@ InstallMethod( AutomorphismOfF2ByImages,
 		reduce := function( W, aut, w )
 			local	a, img;
 
-			img := ImageAutomorphismOfF2( aut, w );
+			img := ImageByAutomorphismOfF2( aut, w );
 			for a in W{[2..Length(W)]} do 
-				if Length( ImageAutomorphismOfF2( a, img ) ) < Length( img ) then
+				if Length( ImageByAutomorphismOfF2( a, img ) ) < Length( img ) then
 					return a;
 				fi;
 			od;
@@ -142,9 +142,9 @@ InstallMethod( AutomorphismOfF2ByImages,
 			
 			while not IsBool( r ) do
 				ae := ae*r;
-				if ImageAutomorphismOfF2( ae, v ) = gens[2] then
+				if ImageByAutomorphismOfF2( ae, v ) = gens[2] then
 					return Inverse( ae );
-				elif ImageAutomorphismOfF2( ae, v ) = gens[2]^-1 then
+				elif ImageByAutomorphismOfF2( ae, v ) = gens[2]^-1 then
 					return Inverse( ae*W[1] );
 				fi;
 				r := reduce( W, ae, v );

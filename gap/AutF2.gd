@@ -34,7 +34,7 @@ DeclareAttribute( "ImagesAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
 #! Returns the image of the given word by the given automorphism.
 #! @Arguments aut, w
-DeclareOperation( "ImageAutomorphismOfF2", [ IsAutomorphismOfF2, IsAssocWordWithInverse ] );
+DeclareOperation( "ImageByAutomorphismOfF2", [ IsAutomorphismOfF2, IsAssocWordWithInverse ] );
 #! @Description
 #! Returns whether or not an automorphism is trivial.
 #! @Arguments aut

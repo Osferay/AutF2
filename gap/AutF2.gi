@@ -432,7 +432,7 @@ InstallOtherMethod( Order,
 		return infinity;
 end);
 
-InstallMethod( ImageAutomorphismOfF2,
+InstallMethod( ImageByAutomorphismOfF2,
 	"for an automorphism of F2 and an element of F2",
 	[ IsAutomorphismOfF2, IsAssocWordWithInverse ],
 	function( aut, w )
@@ -552,7 +552,7 @@ CentralizerAutomorphismOfF2 := function( a )
 	cent := AutF2ReadJSON( );
 
 	for i in [1..Length(cent)] do
-		cent[i] := WordOfSpecialAutomorphismOfF2ToBraidWord( cent[i] );
+		cent[i] := BraidWordToWordOfSpecialAutomorphismOfF2( cent[i] );
 		cent[i] := AutomorphismOfF2( a!.freeGroup, cent[i] );
 	od; 
 
