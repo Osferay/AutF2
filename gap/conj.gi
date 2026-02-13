@@ -69,10 +69,7 @@ ReduceToQuestion2 := function( b, v, b1 )
 		return false;
 	fi;
 
-	t0 := b^0;
-	for i in [1..Length(w)] do
-		t0 := t0*gens[2][ AbsInt(w[i]) ]^SignInt(w[i]);
-	od;
+	t0 := ProductAutomorphismsOfF2ByWord( gens[2], w );
 	f  := t0*t;
 
 	if not IsConjugacyAutomorphismOfF2( f ) then

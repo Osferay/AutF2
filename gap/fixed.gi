@@ -1,5 +1,5 @@
 FixedSubgroupSA2 := function( aut )
-    local cent, gens, word, fix, i, j, w, t;
+    local cent, gens, word, fix, i, j, t;
 
     if not IsSpecialAutomorphismOfF2( aut ) then
         Error( "input has to be a special automorphism." );
@@ -11,11 +11,7 @@ FixedSubgroupSA2 := function( aut )
     fix  := [];
     
     for i in [1..Length(word)] do
-        w := word[i];
-        t := aut^0;
-        for j in [1..Length(w)] do
-		    t := t*cent[ AbsInt(w[j]) ]^SignInt(w[j]);
-        od;
+        t := ProductAutomorphismsOfF2ByWord( cent, word[i] );
         Add( fix, t );
 	od;
     
