@@ -417,7 +417,7 @@ ProductAutomorphismsOfF2ByWord := function( gens, word )
 			new := Concatenation( new, Reversed( p ) );
 		fi;
 	od;
-	Error();
+	
 	aut := AutomorphismOfF2( gens[1]!.freeGroup, new );
 
 	return aut;
