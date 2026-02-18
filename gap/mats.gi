@@ -139,61 +139,104 @@ ConjugacyClassParabolicMatrix := function( A )
 
 end;
 
+IsStandardHyperbolic := function( A )
+    local a,b,c,d;
+
+    a := A[1][1];
+    b := A[1][2];
+    c := A[2][1];
+    d := A[2][2];
+
+    if A = [[1,1],[1,0]] then
+        return true;
+    fi;
+
+    return ( 0 <= d and d <= b and d <= c and b < a and c < a );
+end;
+
 ConjugacyClassHyperbolicMatrix := function( A )
 
-    local R, P, Q, n;
+    local R, P, Q, t, p, n;
 
     P := [[1,0],[0,1]];
     R := ShallowCopy( A );
+
+    t := Trace( R );
+
+    if t < 0 then
+        R := -1*R;
+    fi;
 
     #Step 1
     if R[1][1] < R[2][2] then
         Q := [[0,1],[1,0]];
         P := P*Q;
-        R := Q^-1*R*Q;
+        R := R^Q;
     fi;
-    
-    #Step 2
-    if AbsInt( R[1][2] ) <= AbsInt(R[1][1]) and R[1][2]<0 then
+
+    if R[1][2] <= 0 and R[2][1] <= 0 then
         Q := [[1,0],[0,-1]];
         P := P*Q;
-        R := Q^-1*R*Q;
-    
-    elif AbsInt( R[2][1] ) <= AbsInt(R[1][1]) and R[2][1]<0 then
-        Q := [[1,0],[0,-1]];
-        P := P*Q;
-        R := Q^-1*R*Q;
-    fi;
-    
-    #Step 3
-    if 0 < R[1][2] and R[1][2] <= R[1][1] and R[2][2] < 0 then
-        n := FloorRat( R[2][2]/R[1][2] );
-        Q := [[1,0],[n,1]];
-        P := P*Q;
-        R := Q^-1*R*Q;
-
-    elif 0 < R[2][1] and R[2][1] <= R[1][1] and R[2][2] < 0 then
-        n := CeilRat( -R[2][2]/R[2][1] );
-        Q := [[1,n],[0,1]];
-        P := P*Q;
-        R := Q^-1*R*Q;
-
+        R := R^Q;
     fi;
 
-    #Step 4 and 5
-    if R[1][2] < R[2][2] then
-        n := FloorRat( (R[2][1]-R[2][2])/R[2][1] );
-        Q := [[1,n],[0,1]];
+    if R[2][2] < 0 then
+        n := [ R[1][2], R[2][1] ];
+        p := PositionMinimum( List( n, AbsInt ) );
+        n := n[ p ];
+        
+        if n < 0 then 
+            Q := [[1,0],[0,-1]];
+            P := P*Q;
+            R := R^Q;
+            n := -1*n;
+        fi;
+        
+        n := CeilRat( -R[2][2]/n );
+        
+        if p = 1 then
+            Q := [[1,0], [-n,1]];
+        else
+            Q := [[1,n], [0,1] ];
+        fi;
+
         P := P*Q;
-        R := Q^-1*R*Q;
+        R := R^Q;
+
+        if R[1][1] < R[2][2] then
+            Q := [[0,1],[1,0]];
+            P := P*Q;
+            R := R^Q;
+        fi;
+    fi;
+    
+    if IsStandardHyperbolic( R ) then
+        return rec( rep := R, P := P );
+    fi;
+
+    if R[1][2] = 1 and R[2][1] = -1 then
+        Q := [[1,0],[-1,1]];
+        return rec( rep := R^Q, P := P*Q );
+    elif R[2][1] = 1 and R[1][2] = -1 then
+        Q := [[1,1],[0,1]];
+        return rec( rep := R^Q, P := P*Q );
+    elif R[2][1] < R[2][2] then
+        n := -1*CeilRat( R[2][2]-R[2][1], R[2][1] );
+        Q := [[1,n],[0,1]];
+        return rec( rep := R^Q, P := P*Q );
     elif R[1][2] < R[2][2] then
-        n := CeilRat( (R[2][2]-R[1][2])/R[1][2] );
+        n := CeilRat( R[2][2]-R[1][2], R[1][2] );
         Q := [[1,0],[n,1]];
-        P := P*Q;
-        R := Q^-1*R*Q;
+        return rec( rep := R^Q, P := P*Q );
+    elif R[2][2] = R[2][1] and R[1][1] <= R[1][2] then
+        Q := [[1,-1],[0,1]];
+        return rec( rep := R^Q, P := P*Q );
+    elif R[2][2] = R[1][2] and R[1][1] <= R[2][1] then
+        Q := [[1,0],[1,1]];
+        return rec( rep := R^Q, P := P*Q );
     fi;
 
-    return rec( rep := R, P := P );
+    return fail;
 end;
 
 ContinuedFraction := function( a, b )

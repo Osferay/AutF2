@@ -31,4 +31,5 @@ gap> AutomorphismOfF2ByImages( F, imgs[1], imgs[2] ) = aut;
 true
 gap> B := [ [ 1, 1 ], [ -3, -2 ] ];;
 gap> AutomorphismOfF2ByMatrix( F, B );
-Automorphism of F2 with word [ "d", 2, 3, 2, 2, -1, 3, 2, -1, 2, -1, 3, -1, 2, 3 ]
+Automorphism of F2 with word [ "d", 2, 3, 2, 2, -1, 3, 2, -1, 2, -1, 3, -1, 
+  2, 3 ]
