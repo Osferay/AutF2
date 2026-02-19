@@ -108,9 +108,8 @@ ConjugacyClassElipticMatrix := function( A )
         
         QF := [ R[2][1], R[2][2]-R[1][1], -R[1][2] ];
         QF := ReduceElitpicBQF( QF, P );
-        P  := P*QF.P;
 
-        return  rec( rep:= QF.QF, P := P );
+        return  rec( rep:= QF.QF, P := QF.P );
     fi;
                 
 end;
@@ -180,7 +179,7 @@ ConjugacyClassHyperbolicMatrix := function( A )
         R := R^Q;
     fi;
 
-    if R[2][2] < 0 then
+    if R[2][2] < 0 or R[2][2] = R[1][1] then
         n := [ R[1][2], R[2][1] ];
         p := PositionMinimum( List( n, AbsInt ) );
         n := n[ p ];
@@ -221,11 +220,11 @@ ConjugacyClassHyperbolicMatrix := function( A )
         Q := [[1,1],[0,1]];
         return rec( rep := R^Q, P := P*Q );
     elif R[2][1] < R[2][2] then
-        n := -1*CeilRat( R[2][2]-R[2][1], R[2][1] );
+        n := -1*CeilRat( (R[2][2]-R[2][1])/R[2][1] );
         Q := [[1,n],[0,1]];
         return rec( rep := R^Q, P := P*Q );
     elif R[1][2] < R[2][2] then
-        n := CeilRat( R[2][2]-R[1][2], R[1][2] );
+        n := CeilRat( (R[2][2]-R[1][2])/R[1][2] );
         Q := [[1,0],[n,1]];
         return rec( rep := R^Q, P := P*Q );
     elif R[2][2] = R[2][1] and R[1][1] <= R[1][2] then
@@ -389,7 +388,7 @@ CentralizerElipticMatrix := function( A )
     if A = I or A = -I then
         return [ [[0,-1],[1,1]], [[0,-1],[1,0]], [[0,1],[1,0]] ];
     else
-        return rec( gen := A, exponent := 1 );
+        return rec( gen := A^(Order(A)-1), exponent := Order(A)-1 );
     fi;
 
 end;
@@ -440,29 +439,37 @@ fundamentalUnit := function( delta )
 end;
 
 CentralizerHyperbolicMatrix := function( A )
-    local   t, delta, u, v, ad, b, c, C, e, U, V, Uu, Vv;
+    local   t, delta, u, v, ad, b, c, C, e, U, V, Un, Vn,d;
 
     t     := Trace(A);
-    delta := DiscriminantMatrix22( A );
+    d     := Gcd( A[1][1]-A[2][2], A[1][2], A[2][1] );
+
+    ad    := (A[1][1]-A[2][2])/d;
+    b     := (A[1][2])/d;
+    c     := (A[2][1])/d;
+
+    delta := ad^2+4*b*c;
     u     := fundamentalUnit( delta );
     v     := u[2];
     u     := u[1];
 
-    ad    := A[1][1]-A[2][2];
-    b     := A[1][2];
-    c     := A[2][1];
-
     C     := [ [ 1/2*(u+ad*v), b*v ], [ c*v, 1/2*(u-ad*v) ] ];
     
     e     := 1;
-    U     := [ u ];
-    V     := [ v ];
-    while Last(U) <> t do
-        Uu := u*Last(U)+v*Last(V)*delta;
-        Vv := u*Last(V)+v*Last(U);
-        Add( U, Uu );
-        Add( V, Vv );
+    Un    := u;
+    Vn    := v;
+    
+    while Un <> t and Un <> -t do
+        U := (u*Un+v*Vn*delta)/2;
+        V := (u*Vn+v*Un)/2;
+        Un := U;
+        Vn := V;
+        e  := e+1;
     od;
+
+    if Un = -t then
+        C := C^-1;
+    fi;
 
     return rec( gen := C, exponent := e );
 
