@@ -79,6 +79,7 @@ ReduceToQuestion2 := function( b, v, b1 )
 	z0  := f*z^-1*a1^-1*f^-1*a1;
 
 	if IsConjugacyAutomorphismOfF2( z0 ) then
+		z0 := ConjugacyElementConjugacyAutomorphismOfF2( z0 );
 		return [a1, z0, f];
 	else
 		Error( "z0 has to be a conjugacy automorphism");
@@ -88,7 +89,73 @@ end;
 
 SolveQuestion2 := function( a, z )
 
-end;
+	local A, F, t, d, r, C, p, b, w, a0, A0, gens, c, c1;
+
+	if z = z^0 then
+		return z;
+	fi;
+
+	if ImageByAutomorphismOfF2( a, z ) <> z^-1 then
+		return false;
+	fi;
+
+	A := MatrixRepresentationOfAutomorphismOfF2( a );
+	F := a!.freeGroup;
+	t := Trace( A^2 );
+	d := DeterminantIntMat( A^2 );
+	r := 1;
+
+	if AbsInt(t) = 2 and d = 1 then
+		C := ConjugacyClassParabolicMatrix( A ).rep;
+		t := C[1][2]; 
+		p := AutomorphismOfF2( F, [ -3, -2, -1, 2, 3 ] );
+		b := ConjugacySA2( a^2, p^t );
+
+		if not IsBool( b ) then
+			r := 2;
+		fi;
+	fi;
+
+	if r = 1 then
+		w := RootFreeGroup( z );
+		r := w[2];
+		w := w[1];
+
+		if IsEvenInt( r ) then	
+			return w^(-r/2);
+		else
+			return false;
+		fi;
+
+	else
+		a0 := a^b;
+		A0 := MatrixRepresentationOfAutomorphismOfF2( a0 );
+		if A0[1] = 1 then 
+			return false;
+		fi;
+
+		w    := RootFreeGroup( z );
+		r    := w[2];
+		w    := w[1];
+		gens := GeneratorsOfGroup( F );
+		C    := [ gens[1], gens[1]^2, gens[2]^-1*gens[1]*gens[2], gens[2]^-1*gens[1]^-1*gens[2] ];
+		
+		for c in C do
+			c1   := RepresentativeAction( F, c, w );
+			if not IsBool( c1 ) then
+				if IsEvenInt( r ) then
+					return w^(r/2);
+				else
+					return false;
+				fi;
+			fi;
+		od;
+
+		if IsEvenInt( r ) then
+			return w^(-r/2);
+		fi;
+	fi;
+end;	
 
 InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 	local	b1, v, d, F, s3, B, C, i, j, a1, f, z0, h0;
@@ -112,17 +179,17 @@ InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 		for j in [0..(C.exponent-1)] do	
 			b1 := s3^i*AutomorphismOfF2ByMatrix( F, C.gen )^j;
 			a1 := ReduceToQuestion2( b, v, b1 );
-
+			
 			if not IsBool( a1 ) then
 				f  := a1[3];
 				z0 := a1[2];
 				a1 := a1[1];
-				Error();
-				#h0 := SolveQuestion2( a1, z0 );
+				h0 := SolveQuestion2( a1, z0 );
 
-				#if not IsBool(h0) then
-				#	return d*(b1*h0*f)^-1;
-				#fi;
+				if not IsBool(h0) then
+					h0 := ConjugacyAutomorphismOfF2( F, h0 );
+					return d*(b1*h0*f)^-1;
+				fi;
 			fi;
 		od;
 	od;
