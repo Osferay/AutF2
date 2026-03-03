@@ -1,25 +1,61 @@
+ExponentOfBraidWord := function( b )
+	local e, i;
+
+	if b[1] = 4 then
+		e := 6;
+	else
+		if b[1] > 0 then
+			e := 1;
+		else
+			e := -1;
+		fi;
+	fi;
+
+	for i in [2..Length(b)] do
+		if b[i] > 0 then
+			e := e + 1;
+		else
+			e := e - 1;
+		fi;
+	od;
+
+	return e;
+
+end;
+
 ConjugacySA2 := function( a, b )
-	local	b1, b2, j, conj, v, d, a1, f, z0, h0;
+	local	e, b1, b2, j, conj, v, d, a1, f, z0, h0;
 
 	b1 := WordOfAutomorphismOfF2( a );
 	b2 := WordOfAutomorphismOfF2( b );
+	b1 := WordOfSpecialAutomorphismOfF2ToBraidWord( b1 );
+	b2 := WordOfSpecialAutomorphismOfF2ToBraidWord( b2 );
+	e  := ExponentOfBraidWord( b1 )-ExponentOfBraidWord( b2 );
 
-	if IsSpecialAutomorphismOfF2( a ) and IsSpecialAutomorphismOfF2( b ) then
-		b1 := WordOfSpecialAutomorphismOfF2ToBraidWord( b1 );
-		b2 := WordOfSpecialAutomorphismOfF2ToBraidWord( b2 );
-		j  := rec( word1 := b1, word2 := b2 );
-
-		AutF2WriteJSON( j );
-		AutF2CallCpp( "conj" );
-		conj := AutF2ReadJSON();
-
-		if IsBool( conj[1] ) then
-			return false;
+	if e mod 12 <> 0 then
+		return false;
+	else
+		e := e/6;
+		if e > 0 then 
+			b2 := Concatenation( b2, ListWithIdenticalEntries( e, 4 ) );
 		else
-			conj := BraidWordToWordOfSpecialAutomorphismOfF2( conj );
-			return AutomorphismOfF2( a!.freeGroup, conj );
+			b2 := Concatenation( b2, ListWithIdenticalEntries( AbsInt(e), -4 ) );
 		fi;
 	fi;
+	
+	j  := rec( word1 := b1, word2 := b2 );
+
+	AutF2WriteJSON( j );
+	AutF2CallCpp( "conj" );
+	conj := AutF2ReadJSON();
+
+	if IsBool( conj[1] ) then
+		return false;
+	else
+		conj := BraidWordToWordOfSpecialAutomorphismOfF2( conj );
+		return AutomorphismOfF2( a!.freeGroup, conj );
+	fi;
+	
 end;
 
 ReduceToQuestion1 := function( a, b )
@@ -160,6 +196,9 @@ end;
 InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 	local	b1, v, d, F, s3, B, C, i, j, a1, f, z0, h0;
 
+	if IsSpecialAutomorphismOfF2( a ) and IsSpecialAutomorphismOfF2( b ) then
+		return ConjugacySA2( a, b );
+	fi;
 
 	v  := ReduceToQuestion1( a, b );
 
