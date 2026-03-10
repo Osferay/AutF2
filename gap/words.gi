@@ -70,6 +70,10 @@ InstallMethod( RootFreeGroup, "for a word in a free group",
     function( v )
         local r, n, D, d, u;
 
+        if v = v^0 then
+            return [v,0];
+        fi;
+
         r := LetterRepAssocWord( v );
         n := Length( r );
         D := DivisorsInt(n);

@@ -9,7 +9,7 @@ gap> ConjugacyGL2Z( A, B );
 gap> A := [ [ -4, 1 ], [ -13, 3 ] ];;
 gap> B := [ [ 1, 1 ], [ -3, -2 ] ];;
 gap> ConjugacyGL2Z( A, B );
-[ [ 1, -1 ], [ -2, 3 ] ]
+[ [ 1, 1 ], [ 2, 3 ] ]
 gap> A := [ [ -3, -1 ], [ 10, 3 ] ];;
 gap> B := [ [ 2, -1 ], [ 5, -2 ] ];;
 gap> C := ConjugacyGL2Z( A, B );
