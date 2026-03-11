@@ -11,6 +11,38 @@ ReduceLetterRep := function(w)
 
 end;
 
+ElementByLetterRepInGens := function( W, w )
+    local e,i;
+
+    e := W[1]^0;
+
+    for i in [1..Length(w)] do
+        e := e*W[ AbsInt(w[i]) ]^SignInt( w[i] );
+    od;
+
+    return e;
+end;
+
+ReduceLetterRepInGens := function( W, w )
+    local   v,i,j,l,e;
+
+    v := ReduceLetterRep(w);
+
+    for i in Reversed( [2..Length(v)-1 ] ) do
+        for j in [1.. Length(v)-i+1 ] do
+            l := v{[j..j+i-1]};
+            e := ElementByLetterRepInGens( W, l );
+
+            if e = e^0 then
+                v := Concatenation( v{[1..j-1]}, v{[j+i..Length(v)]} );
+                return ReduceLetterRepInGens( W, v );
+            fi;
+        od;
+    od;
+
+    return v;
+end;
+
 InstallMethod( IsCyclicalyReducedWord,
 	"for a associative word with inverse",
 	[ IsAssocWordWithInverse ],
@@ -146,15 +178,14 @@ end;
 
 NielsenReducedSetStep2 := function( V )
 
-    local   one, W, i, j;
+    local  W, i, j;
 
-    one := V[1]^0;
     W   := ShallowCopy( V );
 
     for i in [1..Length(W)] do
         for j in [1..Length(W)] do
             if i <> j then
-                if W[i]*W[j] = one or W[i]^-1*W[j] = one or W[i]*W[j]^-1 = one or W[i]^-1*W[j]^-1 = one then
+                if W[i] = W[j] or W[i]^-1 = W[j] then
                     Remove( W, i );
                     return W;
                 elif LexicographicOrderNSet( W[i]*W[j], W[i] ) then
@@ -282,19 +313,28 @@ InstallGlobalFunction( NielsenReducedSet, function( V )
     return W;
 end );
 
-NielsenReducedSetStep2Backtrack := function( V, words )
+NielsenReducedSetStep2Backtrack := function( V, words, gens )
 
-    local   one, new, W, i, j, w;
+    local   new, W, i, j, w;
 
-    one := V[1]^0;
     W   := ShallowCopy( V );
     new := ShallowCopy( words );
 
     for i in [1..Length(W)] do
         for j in [1..Length(W)] do
             if i <> j then
-                if W[i]*W[j] = one or W[i]^-1*W[j] = one or W[i]*W[j]^-1 = one or W[i]^-1*W[j]^-1 = one then
+                if W[i] = W[j] then
                     Remove( W, i );
+                    if Length( new[i] ) < Length( new[j] ) then
+                        new[j] := new[i];
+                    fi;
+                    Remove( new, i );
+                    return [ W, new ];
+                elif W[i]^-1 = W[j] then
+                    Remove( W, i );
+                    if Length( new[i] ) < Length( new[j] ) then
+                        new[j] := -1*Reversed( new[i] );
+                    fi;
                     Remove( new, i );
                     return [ W, new ];
                 elif LexicographicOrderNSet( W[i]*W[j], W[i] ) then
@@ -304,6 +344,7 @@ NielsenReducedSetStep2Backtrack := function( V, words )
                     else
                         new[i] := -1*Reversed( Concatenation( new[i], new[j] ) );
                     fi;
+                    new[i] := ReduceLetterRepInGens( gens, new[i] );
                     W[i] := w[1];
 
                     return [ W, new ];
@@ -314,6 +355,7 @@ NielsenReducedSetStep2Backtrack := function( V, words )
                     else
                         new[i] := Concatenation( -1*Reversed( new[j] ), new[i] );
                     fi;
+                    new[i] := ReduceLetterRepInGens( gens, new[i] );
                     W[i] := w[1];
 
                     return [ W, new ];
@@ -324,6 +366,7 @@ NielsenReducedSetStep2Backtrack := function( V, words )
                     else
                         new[i] := Concatenation( new[j], -1*Reversed( new[i] ) );
                     fi;
+                    new[i] := ReduceLetterRepInGens( gens, new[i] );
                     W[i] := w[1];
                     
                     return [ W, new ];
@@ -334,6 +377,7 @@ NielsenReducedSetStep2Backtrack := function( V, words )
                     else
                         new[i] := Concatenation( new[j], new[i] );
                     fi;
+                    new[i] := ReduceLetterRepInGens( gens, new[i] );
                     W[i] := w[1];
 
                     return [ W, new ];
@@ -345,7 +389,7 @@ NielsenReducedSetStep2Backtrack := function( V, words )
     return false;
 end;
 
-NielsenReducedSetStep3Backtrack := function( V, words )
+NielsenReducedSetStep3Backtrack := function( V, words, gens )
 
     local   W, new, even, ewor, i, v, y, p, q, n, flag, w;
 
@@ -375,11 +419,12 @@ NielsenReducedSetStep3Backtrack := function( V, words )
             else
                 new[n] := -1*Reversed( Concatenation( y, new[n] ) );
             fi;
+            new[n] := ReduceLetterRepInGens( gens, new[n] );
             W[n] := w[1];
             
             flag := true;
             while flag do
-                flag := NielsenReducedSetStep2Backtrack( W, new );
+                flag := NielsenReducedSetStep2Backtrack( W, new, gens );
         
                 if not IsBool( flag ) then
                     W    := flag[1];
@@ -402,11 +447,12 @@ NielsenReducedSetStep3Backtrack := function( V, words )
             else
                 new[n] := Concatenation( new[n], -1*Reversed( y ) );
             fi;
+            new[n] := ReduceLetterRepInGens( gens, new[n] );
             W[n] := w[1];
 
             flag := true;
             while flag do
-                flag := NielsenReducedSetStep2Backtrack( W, new );
+                flag := NielsenReducedSetStep2Backtrack( W, new, gens );
         
                 if not IsBool( flag ) then
                     W    := flag[1];
@@ -468,22 +514,21 @@ NielsenReducedSetBacktrack := function( V )
 
     flag := true;
     while flag do
-        flag := NielsenReducedSetStep2Backtrack( W, new );
+        flag := NielsenReducedSetStep2Backtrack( W, new, V );
         
         if not IsBool( flag ) then
             W    := flag[1];
-            new  := List( flag[2], ReduceLetterRep );
+            new  := flag[2];
             flag := true;
         fi;
     od;
-
     flag := true;
     while flag do
-        flag := NielsenReducedSetStep3Backtrack( W, new );
+        flag := NielsenReducedSetStep3Backtrack( W, new, V );
         
         if not IsBool( flag ) then
             W    := flag[1];
-            new  := List( flag[2], ReduceLetterRep );
+            new  := flag[2];
             flag := true;
         fi;
     od;
@@ -493,17 +538,15 @@ NielsenReducedSetBacktrack := function( V )
 end;
 
 InstallGlobalFunction( IsNielsenReducedSet, function( V )
-    local one, i, j, k;
+    local i, j, k;
 
     if ForAny( V, x -> x^-1 in V ) then
         return false;
     fi;
 
-    one := V[1]^0;
-
     for i in [1..Length(V)] do
         for j in [1..Length(V)] do
-            if V[i]*V[j] <> one and Length( V[i]*V[j] ) < Length( V[i] ) then
+            if V[i] <> V[j]^-1 and Length( V[i]*V[j] ) < Length( V[i] ) then
                 return false;
             fi;
         od;
@@ -512,7 +555,7 @@ InstallGlobalFunction( IsNielsenReducedSet, function( V )
     for i in [1..Length(V)] do
         for j in [1..Length(V)] do
             for k in [1..Length(V)] do
-                if V[i]*V[j] <> one and V[j]*V[k] <> one and Length( V[i]*V[j]*V[k] ) < Length( V[i] ) - Length( V[j] ) + Length( V[k] ) then 
+                if V[i] <> V[j]^-1 and V[j] <> V[k]^-1 and Length( V[i]*V[j]*V[k] ) < Length( V[i] ) - Length( V[j] ) + Length( V[k] ) then 
                     return false;
                 fi;
             od;
@@ -625,9 +668,8 @@ end );
 
 NielsenReducedSetStep2BacktrackIdentity := function( V, words, id )
 
-    local   one, new, idd, W, i, j, w;
+    local   new, idd, W, i, j, w;
 
-    one := V[1]^0;
     W   := ShallowCopy( V );
     new := ShallowCopy( words );
     idd := ShallowCopy( id );
@@ -635,23 +677,13 @@ NielsenReducedSetStep2BacktrackIdentity := function( V, words, id )
     for i in [1..Length(W)] do
         for j in [1..Length(W)] do
             if i <> j then
-                if W[i]*W[j] = one then
+                if W[i] = W[j]^-1 then
                     Add( idd, Concatenation( new[i], new[j] ) );
                     Remove( W, i );
                     Remove( new, i );
                     return [ W, new, idd ];
-                elif W[i]^-1*W[j] = one then
-                    Add( idd, Concatenation( -1*Reversed( new[i] ), new[j] ) );
-                    Remove( W, i );
-                    Remove( new, i );
-                    return [ W, new, idd ];
-                elif W[i]*W[j]^-1 = one then
+                elif W[i] = W[j] then
                     Add( idd, Concatenation( new[i], -1*Reversed( new[j] ) ) );
-                    Remove( W, i );
-                    Remove( new, i );
-                    return [ W, new, idd ];
-                elif W[i]^-1*W[j]^-1 = one then
-                    Add( idd, -1*Reversed( Concatenation( new[i], new[j] ) ) );
                     Remove( W, i );
                     Remove( new, i );
                     return [ W, new, idd ];

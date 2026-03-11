@@ -1,6 +1,10 @@
 ExponentOfBraidWord := function( b )
 	local e, i;
 
+	if IsEmpty( b ) then
+		return 0;
+	fi;
+
 	if b[1] = 4 then
 		e := 6;
 	else
@@ -95,7 +99,7 @@ ReduceToQuestion2 := function( b, v, b1 )
 		return false;
 	fi;
 
-	cent := CentralizerAutomorphismOfF2( a1^2 );
+	cent := CentralizerAutomorphismOfF2InSA( a1^2 );
 	gens := List( cent, MatrixRepresentationOfAutomorphismOfF2 );
 	gens := ReduceParallelGeneratorSetSubgroupSL2Z( gens, cent );
 	M := MatrixRepresentationOfAutomorphismOfF2( t^-1 );
@@ -191,7 +195,7 @@ end;
 
 SolveQuestion2Order2 := function( F, i, z )
 
-	local sigma, w, r, p, w2, v, u, z1, w1, s;
+	local sigma, w, r, p, w2, v, u, z1, z2, w1, s;
 
 	if i = 2 then
 		sigma := AutomorphismOfF2( F, [ "s" ] );
@@ -206,22 +210,23 @@ SolveQuestion2Order2 := function( F, i, z )
 	w    := RootFreeGroup( z );
 	r    := w[2];
 	w    := w[1];
-	
+
+	w2 := WordConjugateToInverseBySigma( F, i, w );
+	v  := w2.u1^-1;
+	u  := w2.u^-1;
+	z1 := w2.sym[2];
+	z2 := w2.sym[1];
+	w1 := w2.w1;
+	w2 := w2.w2;
+
 	if IsEvenInt( r ) then
-		return w^(-r/2);
+		return rec( h := w^(-r/2), u := u );
 	else
 		p  := (r-1)/2;
-		w2 := WordConjugateToInverseBySigma( F, i, w );
 		
-		if w2.sym[1] <> w2.sym[2] then
+		if z2 <> z1 then
 			return false;
 		fi;
-
-		v  := w2.u1^-1;
-		u  := w2.u^-1;
-		z1 := w2.sym[2];
-		w1 := w2.w1;
-		w2 := w2.w2;
 
 		s := v^-1*z1*ImageByAutomorphismOfF2( sigma, v )*u;
 		if s = s^0 then
@@ -256,8 +261,7 @@ AutOrder2Conjugate := function( a )
 
 		if not IsBool( C ) then
 			c := AutomorphismOfF2ByMatrix( F, C );
-
-			return rec( c := c, i := i );
+			return rec( c := c, i := i+1 );
 		fi;
 	od;
 
@@ -283,7 +287,11 @@ SolveQuestion2 := function( a, z )
 		c := c.c;
 		h := SolveQuestion2Order2( F, i, ImageByAutomorphismOfF2( c, z ) );
 
-		return ImageByAutomorphismOfF2( c^-1, h );
+		if IsBool(h) then
+			return false;
+		else
+			return ImageByAutomorphismOfF2( c^-1, h.h );
+		fi;
 	fi;
 
 	A := MatrixRepresentationOfAutomorphismOfF2( a );
@@ -321,7 +329,7 @@ SolveQuestion2 := function( a, z )
 		fi;
 		h := SolveQuestion2Order2( F, 3, ImageByAutomorphismOfF2( z ) );
 
-		return ImageByAutomorphismOfF2( b^-1, h );
+		return ImageByAutomorphismOfF2( b^-1, h.h );
 	fi;
 end;	
 
@@ -345,7 +353,7 @@ InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 	s3 := AutomorphismOfF2( F, [-1,2,-1,3,2,3] );
 	B  := MatrixRepresentationOfAutomorphismOfF2( b );
 	C  := CentralizerGL2Z( B );
-	
+
 	for i in [0,1] do
 		for j in [0..(C.exponent-1)] do	
 			b1 := s3^i*AutomorphismOfF2ByMatrix( F, C.gen )^j;
@@ -355,10 +363,10 @@ InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 				f  := a1[3];
 				z0 := a1[2];
 				a1 := a1[1];
+				
 				h0 := SolveQuestion2( a1, z0 );
 
 				if not IsBool(h0) then
-					h0 := SolveQuestion2( F, h0 );
 					h0 := ConjugacyAutomorphismOfF2( a!.freeGroup, h0 );
 					return d*(b1*h0*f)^-1;
 				fi;

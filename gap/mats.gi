@@ -655,10 +655,6 @@ end;
 WordGL2ZinSU := function( M )
 
     local A, e, w;
-
-    if M = [[1,0],[0,1]] then
-        return rec( e := 0, s := 0, U := [] );
-    fi;
     
     A := M;
 
@@ -950,7 +946,6 @@ CosetRepresentativeSubgroupSL2Z := function( gens, M )
 
     #This is a transversal of the commutator for SL2Z
     T  := [ I, S^3*U^2, U, S, U^2, S*U, S^2, S*U^2, S^2*U, S^3, S^2*U^2, S^3*U ];
-
     U  := GeneratorsOfIntersectionCommutatorSL2Z( T, gens, F );
     wU := U[2];
     U  := U[1];

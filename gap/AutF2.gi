@@ -332,7 +332,12 @@ InstallMethod( IsSpecialAutomorphismOfF2,
 		#local M;
 		#M := MatrixRepresentationOfAutomorphismOfF2(aut);
 		#return DeterminantIntMat(M) = 1;
-		return WordOfAutomorphismOfF2( aut )[1] <> "s";
+
+		if IsIdentityAutomorphismOfF2( aut ) then
+			return true;
+		else
+			return WordOfAutomorphismOfF2( aut )[1] <> "s";
+		fi;
 end);
 
 InstallOtherMethod( \*,
@@ -561,11 +566,15 @@ InstallOtherMethod( \=,
 	return a!.lcf = b!.lcf;
 end );
 
-CentralizerAutomorphismOfF2 := function( a )
+CentralizerAutomorphismOfF2InSA := function( a )
 	local b, cent, i;
 
 	if not IsSpecialAutomorphismOfF2( a ) then
-		Error( "not yet." );
+		Error( "a must be a special automorphism." );
+	fi;
+
+	if IsIdentityAutomorphismOfF2( a ) then
+		return List( [1,2,3], x -> AutomorphismOfF2( a!.freeGroup, [x] ) );
 	fi;
 	
 	b := WordOfAutomorphismOfF2( a );

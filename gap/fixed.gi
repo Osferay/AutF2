@@ -5,7 +5,7 @@ FixedSubgroupSA2 := function( aut )
         Error( "input has to be a special automorphism." );
     fi;
 
-    cent := CentralizerAutomorphismOfF2( aut );
+    cent := CentralizerAutomorphismOfF2InSA( aut );
     gens := List( cent, MatrixRepresentationOfAutomorphismOfF2 );
     word := TrivialWordsSL2Z( gens );
     fix  := [];

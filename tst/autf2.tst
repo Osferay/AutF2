@@ -21,7 +21,7 @@ gap> aut := AutomorphismOfF2( F, [ 1, 3, 2, -3, -2, 1, 2, 3 ] );;
 gap> ConjugacyElementConjugacyAutomorphismOfF2( aut );
 f2*f1
 gap> phi4 := phi3^-1*phi2^-1*phi1*phi2*phi3;;
-gap> cent := CentralizerAutomorphismOfF2( phi4 );;
+gap> cent := CentralizerAutomorphismOfF2InSA( phi4 );;
 gap> ForAll( cent, x -> phi4*x = x*phi4 );
 true
 gap> ImageByAutomorphismOfF2( phi1*phi3*phi4, F.1*F.2 );
