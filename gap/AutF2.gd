@@ -1,7 +1,5 @@
 #
 # AutF2: Computations for the automorphisms group of F2
-#
-#! @Chapter Introduction
 #!
 #! AutF2 is a package to compute with automorphisms of F2.
 #!
@@ -9,8 +7,9 @@
 #! @ChapterLabel autos
 #! @ChapterTitle Automorphisms
 
+#! @Section Automorphisms
+
 #! @Description
-#! Object that represents an automorphism.
 DeclareCategory( "IsAutomorphismOfF2", IsObject);
 
 DeclareCategoryCollections( "IsAutomorphismOfF2" );
@@ -36,19 +35,17 @@ DeclareAttribute( "ImagesAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Arguments aut, w
 DeclareOperation( "ImageByAutomorphismOfF2", [ IsAutomorphismOfF2, IsAssocWordWithInverse ] );
 #! @Description
-#! Returns whether or not an automorphism is trivial.
 #! @Arguments aut
 DeclareProperty( "IsIdentityAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
-#! Returns the representation of an automorphism in $GL_2(\mathbb{Z})$.
+#! Returns the representation of an automorphism in $\mathrm{GL}_2(\mathbb{Z})$.
 #! @Arguments aut
 DeclareAttribute( "MatrixRepresentationOfAutomorphismOfF2", IsAutomorphismOfF2);
 #! @Description
-#! Returns whether or not an automorphism is special, that is its representation in $GL_2(\mathbb{Z})$ has determinant 1.
+#! Returns whether or not an automorphism is special, that is its representation in $\mathrm{GL}_2(\mathbb{Z})$ has determinant 1.
 #! @Arguments aut
 DeclareAttribute( "IsSpecialAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description
-#! Returns whether the given automorphism is determined by conjugating an element
 #! @Arguments aut
 DeclareProperty( "IsConjugacyAutomorphismOfF2", IsAutomorphismOfF2 );
 #! @Description

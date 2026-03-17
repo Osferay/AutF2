@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<TitlePage>
+  <Title>
+    AutF2
+  </Title>
+  <Subtitle>
+    Computations for the automorphisms group of F2
+  </Subtitle>
+  <Version>
+    0.1
+  </Version>
+  <Author>
+    Óscar Fernández Ayala<Alt Only="LaTeX"><Br/></Alt>
+<Email>oscar.fernandez-ayala@tu-braunschweig.de</Email>
+<Homepage>https://osferay.github.io/</Homepage>
+
+  </Author>
+  <Date>
+    11 October 2025
+  </Date>
+  </TitlePage>

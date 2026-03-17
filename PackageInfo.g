@@ -16,15 +16,15 @@ License := "GPL-2.0-or-later",
 
 Persons := [
   rec(
-    FirstNames := "Oscar",
-    LastName := "Fernandez Ayala",
+    FirstNames := "Óscar",
+    LastName := "Fernández Ayala",
     WWWHome := "https://osferay.github.io/",
     Email := "oscar.fernandez-ayala@tu-braunschweig.de",
     IsAuthor := true,
     IsMaintainer := true,
     #PostalAddress := TODO,
     Place := "Braunschweig",
-    Institution := "TU BS",
+    Institution := "TU Braunschweig",
   ),
 ],
 
@@ -33,7 +33,7 @@ SourceRepository := rec(
     URL := "https://github.com/osferay/AutF2",
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
-PackageWWWHome  := "https://osferay.github.io/AutF2/",
+PackageWWWHome  := "https://osferay.github.io/research/software/autf2",
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 README_URL      := Concatenation( ~.PackageWWWHome, "README.md" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,
@@ -55,7 +55,7 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := ">= 4.13",
-  NeededOtherPackages := [ ],
+  NeededOtherPackages := [  [ "json",">=2.2.2"] ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
