@@ -6,7 +6,7 @@
 #! @Arguments A,B
 DeclareGlobalFunction( "ConjugacyGL2Z" );
 #! @Description
-#! Given a matrix $A$, computes a matrix $C$ such that $\langle -C, C \rangle = C_{\mathrm{GL}_2(\mathbb{Z})}(A)$ and an integer $n$ such that $C^n=A$.
+#! Given a matrix $A$, computes a matrix $C$ such that $C_{\mathrm{GL}_2(\mathbb{Z})}(A) = \langle -C, C \rangle$ and an integer $n$ such that $C^n=A$.
 #! @Arguments A,B
 DeclareGlobalFunction( "CentralizerGL2Z" );
 #! @Description
