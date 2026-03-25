@@ -1,0 +1,38 @@
+  
+  
+  [1XIndex[101X
+  
+  [2XAreAutomorphicEquivalent[102X, for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse 3.2-1 
+  [2XAreConjugateAutomorphismsOfF2[102X 2.2-1 
+  [2XAreEquivalent[102X 3.2-12 
+  [2XAutomorphismOfF2[102X, for IsFreeGroup, IsList 1.1-2 
+  [2XAutomorphismOfF2ByImages[102X, for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse 1.2-1 
+  [2XAutomorphismOfF2ByMatrix[102X, for IsFreeGroup, IsList 1.2-2 
+  [2XCentralizerAutomorphismOfF2[102X 2.1-1 
+  [2XCentralizerGL2Z[102X 3.1-2 
+  [2XConjugacyAutomorphismOfF2[102X, for IsFreeGroup, IsAssocWordWithInverse 1.1-11 
+  [2XConjugacyElementConjugacyAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-10 
+  [2XConjugacyGL2Z[102X 3.1-1 
+  [2XFixedSubgroupAutomorphismOfF2[102X 2.3-1 
+  [2XImageByAutomorphismOfF2[102X, for IsAutomorphismOfF2, IsAssocWordWithInverse 1.1-5 
+  [2XImagesAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-4 
+  [2XInFreeSubgroup[102X 3.2-9 
+  [2XIsAutomorphismOfF2[102X, for IsObject 1.1-1 
+  [2XIsConjugacyAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-9 
+  [2XIsCyclicalyReducedWord[102X, for IsAssocWordWithInverse 3.2-2 
+  [2XIsIdentityAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-6 
+  [2XIsNielsenReducedSet[102X 3.2-8 
+  [2XIsNormalSubgroupOfFreeSubgroup[102X 3.2-11 
+  [2XIsPrefix[102X, for IsAssocWordWithInverse, IsAssocWordWithInverse 3.2-4 
+  [2XIsSpecialAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-8 
+  [2XIsSubgroupOfFreeSubgroup[102X 3.2-10 
+  [2XIsSubword[102X, for IsAssocWordWithInverse, IsAssocWordWithInverse 3.2-3 
+  [2XIsSuffix[102X, for IsAssocWordWithInverse, IsAssocWordWithInverse 3.2-5 
+  [2XMatrixRepresentationOfAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-7 
+  [2XMembershipSubgroupSL2Z[102X 3.1-3 
+  [2XNielsenReducedSet[102X 3.2-7 
+  [2XRootFreeGroup[102X, for IsAssocWordWithInverse 3.2-6 
+  [2XWordOfAutomorphismOfF2[102X, for IsAutomorphismOfF2 1.1-3 
+  
+  
+  -------------------------------------------------------

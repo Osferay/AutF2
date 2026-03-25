@@ -1,0 +1,31 @@
+  
+  [1X2 [33X[0;0YConjugacy, fixed points subgroup and centralizer[133X[101X
+  
+  
+  [1X2.1 [33X[0;0YCentralizer[133X[101X
+  
+  [1X2.1-1 CentralizerAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XCentralizerAutomorphismOfF2[102X( [3Xaut[103X ) [32X function[133X
+  
+  [33X[0;0YReturns a generating set of the centralizer of aut.[133X
+  
+  
+  [1X2.2 [33X[0;0YConjugacy[133X[101X
+  
+  [1X2.2-1 AreConjugateAutomorphismsOfF2[101X
+  
+  [33X[1;0Y[29X[2XAreConjugateAutomorphismsOfF2[102X( [3Xa[103X, [3Xb[103X ) [32X function[133X
+  
+  [33X[0;0YReturns  a  conjugating element if the automorphisms a and b are conjugated.
+  Otherwise the function returns false.[133X
+  
+  
+  [1X2.3 [33X[0;0YFixed points subgroup[133X[101X
+  
+  [1X2.3-1 FixedSubgroupAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XFixedSubgroupAutomorphismOfF2[102X( [3Xaut[103X ) [32X function[133X
+  
+  [33X[0;0YReturns a basis of the fixed point subgroup of aut.[133X
+  

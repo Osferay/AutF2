@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (AutF2) - Chapter 1: Automorphisms</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap1"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap1.html">[MathJax off]</a></p>
+<p><a id="X7FD74CDB783F4D95" name="X7FD74CDB783F4D95"></a></p>
+<div class="ChapSects"><a href="chap1_mj.html#X7FD74CDB783F4D95">1 <span class="Heading">Automorphisms</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1_mj.html#X7FD74CDB783F4D95">1.1 <span class="Heading">Automorphisms</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X795467857E5E4235">1.1-1 IsAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X78490E7D7EE21B75">1.1-2 AutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X7F84A8D5853CD72C">1.1-3 WordOfAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X800B471778E8A146">1.1-4 ImagesAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X81E6057C87EE2FDE">1.1-5 ImageByAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X82C6EF4A85F76DE1">1.1-6 IsIdentityAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X7A3E3F398616EAC8">1.1-7 MatrixRepresentationOfAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X7D5E452E7FBB833E">1.1-8 IsSpecialAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X7A06121978540E5A">1.1-9 IsConjugacyAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X80C1889D7E274B13">1.1-10 ConjugacyElementConjugacyAutomorphismOfF2</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X854F54497FCF2AD2">1.1-11 ConjugacyAutomorphismOfF2</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1_mj.html#X836D5DDD792BF491">1.2 <span class="Heading">Recognizing automorphisms</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X78CC8F897CDE09EF">1.2-1 AutomorphismOfF2ByImages</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1_mj.html#X8608AF24834A1BC1">1.2-2 AutomorphismOfF2ByMatrix</a></span>
+</div></div>
+</div>
+
+<h3>1 <span class="Heading">Automorphisms</span></h3>
+
+<p><a id="X7FD74CDB783F4D95" name="X7FD74CDB783F4D95"></a></p>
+
+<h4>1.1 <span class="Heading">Automorphisms</span></h4>
+
+<p><a id="X795467857E5E4235" name="X795467857E5E4235"></a></p>
+
+<h5>1.1-1 IsAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsAutomorphismOfF2</code>( <var class="Arg">arg</var> )</td><td class="tdright">(&nbsp;filter&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
+
+<p><a id="X78490E7D7EE21B75" name="X78490E7D7EE21B75"></a></p>
+
+<h5>1.1-2 AutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AutomorphismOfF2</code>( <var class="Arg">F</var>, <var class="Arg">list</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Constructor of the automorphism object given a word of automorphisms.</p>
+
+<p><a id="X7F84A8D5853CD72C" name="X7F84A8D5853CD72C"></a></p>
+
+<h5>1.1-3 WordOfAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; WordOfAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Returns the word of the given automorphism.</p>
+
+<p><a id="X800B471778E8A146" name="X800B471778E8A146"></a></p>
+
+<h5>1.1-4 ImagesAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ImagesAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Returns the images of the generators of <span class="SimpleMath">\(F_2\)</span> by the given automorphism.</p>
+
+<p><a id="X81E6057C87EE2FDE" name="X81E6057C87EE2FDE"></a></p>
+
+<h5>1.1-5 ImageByAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ImageByAutomorphismOfF2</code>( <var class="Arg">aut</var>, <var class="Arg">w</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the image of the given word by the given automorphism.</p>
+
+<p><a id="X82C6EF4A85F76DE1" name="X82C6EF4A85F76DE1"></a></p>
+
+<h5>1.1-6 IsIdentityAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsIdentityAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;property&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
+
+<p><a id="X7A3E3F398616EAC8" name="X7A3E3F398616EAC8"></a></p>
+
+<h5>1.1-7 MatrixRepresentationOfAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MatrixRepresentationOfAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Returns the representation of an automorphism in <span class="SimpleMath">\(\mathrm{GL}_2(\mathbb{Z})\)</span>.</p>
+
+<p><a id="X7D5E452E7FBB833E" name="X7D5E452E7FBB833E"></a></p>
+
+<h5>1.1-8 IsSpecialAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsSpecialAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Returns whether or not an automorphism is special, that is its representation in <span class="SimpleMath">\(\mathrm{GL}_2(\mathbb{Z})\)</span> has determinant 1.</p>
+
+<p><a id="X7A06121978540E5A" name="X7A06121978540E5A"></a></p>
+
+<h5>1.1-9 IsConjugacyAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsConjugacyAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;property&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
+
+<p><a id="X80C1889D7E274B13" name="X80C1889D7E274B13"></a></p>
+
+<h5>1.1-10 ConjugacyElementConjugacyAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConjugacyElementConjugacyAutomorphismOfF2</code>( <var class="Arg">aut</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Getter of the element that determines a conjugacy automorphism</p>
+
+<p><a id="X854F54497FCF2AD2" name="X854F54497FCF2AD2"></a></p>
+
+<h5>1.1-11 ConjugacyAutomorphismOfF2</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConjugacyAutomorphismOfF2</code>( <var class="Arg">F</var>, <var class="Arg">w</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the automorphism determinated by the conjugacy of the given word in <span class="SimpleMath">\(F_2\)</span></p>
+
+<p><a id="X836D5DDD792BF491" name="X836D5DDD792BF491"></a></p>
+
+<h4>1.2 <span class="Heading">Recognizing automorphisms</span></h4>
+
+<p><a id="X78CC8F897CDE09EF" name="X78CC8F897CDE09EF"></a></p>
+
+<h5>1.2-1 AutomorphismOfF2ByImages</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AutomorphismOfF2ByImages</code>( <var class="Arg">F</var>, <var class="Arg">u</var>, <var class="Arg">v</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns an automorphism such that the images of the basis are the given words u and v. If the automorphism does not exists, returns false.</p>
+
+<p><a id="X8608AF24834A1BC1" name="X8608AF24834A1BC1"></a></p>
+
+<h5>1.2-2 AutomorphismOfF2ByMatrix</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AutomorphismOfF2ByMatrix</code>( <var class="Arg">F</var>, <var class="Arg">M</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns an automorphism that has the given matrix as image in <span class="SimpleMath">\(\mathrm{GL}_2(\mathbb{Z})\)</span>.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

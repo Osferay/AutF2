@@ -1,0 +1,88 @@
+  
+  [1X1 [33X[0;0YAutomorphisms[133X[101X
+  
+  
+  [1X1.1 [33X[0;0YAutomorphisms[133X[101X
+  
+  [1X1.1-1 IsAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XIsAutomorphismOfF2[102X( [3Xarg[103X ) [32X filter[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [1X1.1-2 AutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XAutomorphismOfF2[102X( [3XF[103X, [3Xlist[103X ) [32X operation[133X
+  
+  [33X[0;0YConstructor of the automorphism object given a word of automorphisms.[133X
+  
+  [1X1.1-3 WordOfAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XWordOfAutomorphismOfF2[102X( [3Xaut[103X ) [32X attribute[133X
+  
+  [33X[0;0YReturns the word of the given automorphism.[133X
+  
+  [1X1.1-4 ImagesAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XImagesAutomorphismOfF2[102X( [3Xaut[103X ) [32X attribute[133X
+  
+  [33X[0;0YReturns the images of the generators of [23XF_2[123X by the given automorphism.[133X
+  
+  [1X1.1-5 ImageByAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XImageByAutomorphismOfF2[102X( [3Xaut[103X, [3Xw[103X ) [32X operation[133X
+  
+  [33X[0;0YReturns the image of the given word by the given automorphism.[133X
+  
+  [1X1.1-6 IsIdentityAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XIsIdentityAutomorphismOfF2[102X( [3Xaut[103X ) [32X property[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [1X1.1-7 MatrixRepresentationOfAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XMatrixRepresentationOfAutomorphismOfF2[102X( [3Xaut[103X ) [32X attribute[133X
+  
+  [33X[0;0YReturns the representation of an automorphism in [23X\mathrm{GL}_2(\mathbb{Z})[123X.[133X
+  
+  [1X1.1-8 IsSpecialAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XIsSpecialAutomorphismOfF2[102X( [3Xaut[103X ) [32X attribute[133X
+  
+  [33X[0;0YReturns   whether   or   not   an  automorphism  is  special,  that  is  its
+  representation in [23X\mathrm{GL}_2(\mathbb{Z})[123X has determinant 1.[133X
+  
+  [1X1.1-9 IsConjugacyAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XIsConjugacyAutomorphismOfF2[102X( [3Xaut[103X ) [32X property[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [1X1.1-10 ConjugacyElementConjugacyAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XConjugacyElementConjugacyAutomorphismOfF2[102X( [3Xaut[103X ) [32X attribute[133X
+  
+  [33X[0;0YGetter of the element that determines a conjugacy automorphism[133X
+  
+  [1X1.1-11 ConjugacyAutomorphismOfF2[101X
+  
+  [33X[1;0Y[29X[2XConjugacyAutomorphismOfF2[102X( [3XF[103X, [3Xw[103X ) [32X operation[133X
+  
+  [33X[0;0YReturns  the automorphism determinated by the conjugacy of the given word in
+  [23XF_2[123X[133X
+  
+  
+  [1X1.2 [33X[0;0YRecognizing automorphisms[133X[101X
+  
+  [1X1.2-1 AutomorphismOfF2ByImages[101X
+  
+  [33X[1;0Y[29X[2XAutomorphismOfF2ByImages[102X( [3XF[103X, [3Xu[103X, [3Xv[103X ) [32X operation[133X
+  
+  [33X[0;0YReturns  an  automorphism  such  that  the images of the basis are the given
+  words u and v. If the automorphism does not exists, returns false.[133X
+  
+  [1X1.2-2 AutomorphismOfF2ByMatrix[101X
+  
+  [33X[1;0Y[29X[2XAutomorphismOfF2ByMatrix[102X( [3XF[103X, [3XM[103X ) [32X operation[133X
+  
+  [33X[0;0YReturns   an   automorphism   that   has   the  given  matrix  as  image  in
+  [23X\mathrm{GL}_2(\mathbb{Z})[123X.[133X
+  
