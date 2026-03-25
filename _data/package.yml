@@ -20,9 +20,9 @@ needed-pkgs:
       version: ">=2.2.2"
       url: "https://gap-packages.github.io/json/"
 
-www: https://osferay.github.io/research/software/autf2
-readme: autf2README.md
-packageinfo: https://osferay.github.io/research/software/autf2PackageInfo.g
+www: https://osferay.github.io/AutF2/
+readme: README.md
+packageinfo: https://osferay.github.io/AutF2/PackageInfo.g
 
 downloads:
     - name: .tar.gz
@@ -39,7 +39,7 @@ citeas: |
              Version 1.0</i>
      (<span class='BibYear'>2026</span>)<br />
     (<span class='BibNote'>GAP package</span>),
-    <span class='BibHowpublished'><a href="https://osferay.github.io/research/software/autf2">https://osferay.github.io/research/software/autf2</a></span>.
+    <span class='BibHowpublished'><a href="https://osferay.github.io/AutF2/">https://osferay.github.io/AutF2/</a></span>.
     </p>
     
 
@@ -50,7 +50,7 @@ bibtex: |
       month =            {Mar},
       year =             {2026},
       note =             {GAP package},
-      howpublished =     {\href                                      {https://osferay.github.io/research/software/autf2}
+      howpublished =     {\href                                      {https://osferay.github.io/AutF2/}
                           {\texttt{https://osferay.github.io/}\discretionary      {}{}{}\texttt{research/}\discretionary
                           {}{}{}\texttt{software/}\discretionary {}{}{}\texttt{autf2}}},
       printedkey =       {FA26}
