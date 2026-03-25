@@ -33,7 +33,7 @@ SourceRepository := rec(
     URL := "https://github.com/osferay/AutF2",
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
-PackageWWWHome  := "https://osferay.github.io/research/software/autf2",
+PackageWWWHome  := "https://osferay.github.io/AutF2/",
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 README_URL      := Concatenation( ~.PackageWWWHome, "README.md" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,
