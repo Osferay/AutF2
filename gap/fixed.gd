@@ -2,6 +2,6 @@
 #! @Section Fixed points subgroup
 #!
 #! @Description
-#! Returns a basis of the fixed point subgroup of aut.
+#! Returns a basis for the fixed-point subgroup of a given automorphism.
 #! @Arguments aut
 DeclareGlobalFunction( "FixedSubgroupAutomorphismOfF2" );
