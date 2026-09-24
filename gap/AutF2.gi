@@ -39,7 +39,7 @@ GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 		return AssocWordByLetterRep( FamilyObj(w), new ); 
 	end;
 	phi1 := function( w )
-		return EliminatedWord( w, gens[1], gens[1]*gens[2] );
+		return EliminatedWord( w, gens[1], gens[1]*gens[2]^-1 );
 	end;
 	phi2 := function( w )
 		return EliminatedWord( w, gens[2], gens[2]*gens[1] );
@@ -51,9 +51,8 @@ GeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 		local new;
 
 		new := ShallowCopy( w );
-		new := EliminatedWord( new, gens[1], gens[1]^-1 );
 		new := EliminatedWord( new, gens[2], gens[2]^-1 );
-		new := EliminatedWord( new, gens[1], gens[2]*gens[1]*gens[2]^-1 );
+		new := EliminatedWord( new, gens[1], gens[2]*gens[1]^-1*gens[2]^-1 );
 
 		return new;
 	end;
@@ -68,7 +67,7 @@ InverseOfGeneratorsOfGroupOfAutomorphismsOfF2 := function( F )
 	gens  := GeneratorsOfGroup( F );
 
 	iphi1 := function( w )
-		return EliminatedWord( w, gens[1], gens[1]*gens[2]^-1 );
+		return EliminatedWord( w, gens[1], gens[1]*gens[2] );
 	end;
 	iphi2 := function( w )
 		return EliminatedWord( w, gens[2], gens[2]*gens[1]^-1 );
@@ -113,18 +112,18 @@ MoveSigmaToLeft := function( word )
 		pos := Last( pos );
 		if mov[ pos-1 ] = "d" then
 			tmp := mov{[1..pos-2]};
-			Append( tmp, [ "s", -1, 2, -1, -1, 2, 3] );
+			Append( tmp, [ "s", 1, 2, 1, 1, 2, 3] );
 			Append( tmp, mov{ [pos+1..Length(mov) ] } );
 			mov := ShallowCopy( tmp );
 		elif AbsInt( mov[ pos-1 ] ) = 1 then
-			mov[ pos ] := SignInt( mov[ pos-1 ] )*2;
+			mov[ pos ] := -1*SignInt( mov[ pos-1 ] )*2;
 			mov[ pos-1 ] := "s";
 		elif AbsInt( mov[ pos-1 ] ) = 2 then
-			mov[ pos ] := SignInt( mov[ pos-1 ] )*1;
+			mov[ pos ] := -1*SignInt( mov[ pos-1 ] )*1;
 			mov[ pos-1 ] := "s";
 		elif AbsInt( mov[ pos-1 ] ) = 3 then
 			tmp := mov{[1..pos-2]};
-			Append( tmp, [ "s", -3, -2, SignInt( mov[ pos-1 ] )*1, 2, 3] );
+			Append( tmp, [ "s", -3, -2, -1*SignInt( mov[ pos-1 ] )*1, 2, 3] );
 			Append( tmp, mov{ [pos+1..Length(mov) ] } );
 			mov := ShallowCopy( tmp );
 		fi;
@@ -145,8 +144,6 @@ WordOfSpecialAutomorphismOfF2ToBraidWord := function( word )
 
 		if braid[i] = "d" then
 			braid[i] := 4;
-		elif AbsInt( braid[i] ) = 1 then
-			braid[i] := -1*braid[i];
 		fi;
 	
 	od;
@@ -164,17 +161,7 @@ BraidWordToWordOfSpecialAutomorphismOfF2 := function( braid )
 
 	if word[1] = 4 then
 		word[1] := "d";
-	elif AbsInt( word[1] ) = 1 then
-		word[1] := -1*word[1];
 	fi;
-	
-	for i in [2..Length( word )] do
-
-		if AbsInt( word[i] ) = 1 then
-			word[i] := -1*word[i];
-		fi;
-	
-	od;
 	
 	return word;
 end;
@@ -314,7 +301,7 @@ InstallMethod( MatrixRepresentationOfAutomorphismOfF2,
 			elif lcf[i] = "d" then
 				M := M*[[-1,0],[0,-1]];
 			elif AbsInt(lcf[i]) = 1 then
-				M := M*[[ 1, SignInt( lcf[i] )*1 ],[ 0, 1 ]];
+				M := M*[[ 1, -1*SignInt( lcf[i] )*1 ],[ 0, 1 ]];
 			elif AbsInt(lcf[i]) = 2 then
 				M := M*[[ 1, 0 ],[ SignInt( lcf[i] )*1, 1 ]];
 			elif AbsInt(lcf[i]) = 3 then
@@ -542,11 +529,11 @@ InstallMethod( ConjugacyAutomorphismOfF2,
 				Add( aut, SignInt( r )*2 );
 				Add( aut, -3 );
 				Add( aut, -2 );
-				Add( aut, SignInt( r )*1 );
+				Add( aut, -1*SignInt( r )*1 );
 				Add( aut, 2 );
 				Add( aut, 3 );
 			elif AbsInt( r ) = 2 then
-				Add( aut, SignInt( r )*1 );
+				Add( aut, -1*SignInt( r )*1 );
 				Add( aut, SignInt( r )*3 );
 			fi;
 		od;

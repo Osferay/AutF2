@@ -130,14 +130,14 @@ end;
 WordEqualToInverseBySigma := function( F, i, w )
 	local sigma, r, s, sym;
 
-	if i = 2 then
+	if i = 1 then
 		sigma := AutomorphismOfF2( F, [ "s" ] );
+	elif i = 2 then
+		sigma := AutomorphismOfF2( F, [ 1, 2, 3, 1, 2, 3 ] );
 	elif i = 3 then
-		sigma := AutomorphismOfF2( F, [ -1, 2, 3, -1, 2, 3 ] );
-	elif i = 4 then
-		sigma := AutomorphismOfF2( F, [ "s", -1, 2, 3 ] );
+		sigma := AutomorphismOfF2( F, [ "s", 1, 2, 3 ] );
 	else
-		Error( "i has to be 2,3 or 4.");
+		Error( "i has to be 1,2 or 3.");
 	fi;
 
 	if ImageByAutomorphismOfF2( sigma, w ) <> w^-1 then
@@ -169,14 +169,14 @@ end;
 WordConjugateToInverseBySigma := function( F, i, w )
 	local sigma, u, u1, w0, w1, w2;
 
-	if i = 2 then
+	if i = 1 then
 		sigma := AutomorphismOfF2( F, [ "s" ] );
+	elif i = 2 then
+		sigma := AutomorphismOfF2( F, [ 1, 2, 3, 1, 2, 3 ] );
 	elif i = 3 then
-		sigma := AutomorphismOfF2( F, [ -1, 2, 3, -1, 2, 3 ] );
-	elif i = 4 then
-		sigma := AutomorphismOfF2( F, [ "s", -1, 2, 3 ] );
+		sigma := AutomorphismOfF2( F, [ "s", 1, 2, 3 ] );
 	else
-		Error( "i has to be 2,3 or 4.");
+		Error( "i has to be 1,2 or 3.");
 	fi;
 
 	u := RepresentativeAction( F, w^-1, ImageByAutomorphismOfF2( sigma, w ) );
@@ -197,14 +197,14 @@ SolveQuestion2Order2 := function( F, i, z )
 
 	local sigma, w, r, p, w2, v, u, z1, z2, w1, s;
 
-	if i = 2 then
+	if i = 1 then
 		sigma := AutomorphismOfF2( F, [ "s" ] );
+	elif i = 2 then
+		sigma := AutomorphismOfF2( F, [ 1, 2, 3, 1, 2, 3 ] );
 	elif i = 3 then
-		sigma := AutomorphismOfF2( F, [ -1, 2, 3, -1, 2, 3 ] );
-	elif i = 4 then
-		sigma := AutomorphismOfF2( F, [ "s", -1, 2, 3 ] );
+		sigma := AutomorphismOfF2( F, [ "s", 1, 2, 3 ] );
 	else
-		Error( "i has to be 2,3 or 4.");
+		Error( "i has to be 1,2 or 3.");
 	fi;
 
 	w    := RootFreeGroup( z );
@@ -250,8 +250,8 @@ AutOrder2Conjugate := function( a )
 
 	F  := a!.freeGroup;
 	s1 := AutomorphismOfF2( F, [ "s" ] );
-	s2 := AutomorphismOfF2( F, [ -1, 2, 3, -1, 2, 3 ] );
-	s3 := AutomorphismOfF2( F, [ "s", -1, 2, 3 ] );
+	s2 := AutomorphismOfF2( F, [ 1, 2, 3, 1, 2, 3 ] );
+	s3 := AutomorphismOfF2( F, [ "s", 1, 2, 3 ] );
 
 	S  := List( [s1,s2,s3], MatrixRepresentationOfAutomorphismOfF2 );
 	A  := MatrixRepresentationOfAutomorphismOfF2( a );
@@ -261,7 +261,7 @@ AutOrder2Conjugate := function( a )
 
 		if not IsBool( C ) then
 			c := AutomorphismOfF2ByMatrix( F, C );
-			return rec( c := c, i := i+1 );
+			return rec( c := c, i := i );
 		fi;
 	od;
 
@@ -302,7 +302,7 @@ SolveQuestion2 := function( a, z )
 	if AbsInt(t) = 2 and d = 1 then
 		C := ConjugacyClassParabolicMatrix( A ).rep;
 		t := C[1][2]; 
-		p := AutomorphismOfF2( F, [ -3, -2, -1, 2, 3 ] );
+		p := AutomorphismOfF2( F, [ -3, -2, 1, 2, 3 ] );
 		b := ConjugacySA2( a^2, p^t );
 
 		if not IsBool( b ) then
@@ -327,7 +327,7 @@ SolveQuestion2 := function( a, z )
 		if A0[1] = 1 then 
 			return false;
 		fi;
-		h := SolveQuestion2Order2( F, 3, ImageByAutomorphismOfF2( z ) );
+		h := SolveQuestion2Order2( F, 2, ImageByAutomorphismOfF2( z ) );
 
 		return ImageByAutomorphismOfF2( b^-1, h.h );
 	fi;
@@ -350,7 +350,7 @@ InstallGlobalFunction( AreConjugateAutomorphismsOfF2, function( a, b )
 	v  := v[1];
 
 	F  := a!.freeGroup;
-	s3 := AutomorphismOfF2( F, [-1,2,-1,3,2,3] );
+	s3 := AutomorphismOfF2( F, [1,2,1,3,2,3] );
 	B  := MatrixRepresentationOfAutomorphismOfF2( b );
 	C  := CentralizerGL2Z( B );
 

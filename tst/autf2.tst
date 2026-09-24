@@ -7,29 +7,28 @@ gap> IsIdentityAutomorphismOfF2( Inverse( phi1 )*Inverse( phi3 )*phi1*phi3 );
 true
 gap> IsIdentityAutomorphismOfF2( Inverse( phi3 )*Inverse( phi2 )*Inverse(phi3)*phi2*phi3*phi2 );
 true
-gap> IsIdentityAutomorphismOfF2( phi2*Inverse( phi1 )*phi2*phi1*Inverse( phi2 )*phi1 );
+gap> IsIdentityAutomorphismOfF2( Inverse( phi2 )*Inverse( phi1 )*Inverse( phi2 )*phi1*phi2*phi1 );
 true
-gap> IsIdentityAutomorphismOfF2( (Inverse( phi1 )*phi2*phi3 )^4 );
+gap> IsIdentityAutomorphismOfF2( (phi1*phi2*phi3 )^4 );
 true
-gap> IsIdentityAutomorphismOfF2( phi1^sigma*Inverse( phi2 ) );
+gap> IsIdentityAutomorphismOfF2( phi1^sigma*phi2 );
 true
-gap> IsIdentityAutomorphismOfF2( phi3^sigma*Inverse( phi3 )*Inverse( phi2 )*Inverse( phi1 )*phi2*phi3 );
+gap> IsIdentityAutomorphismOfF2( Inverse( phi3 )*Inverse( phi2 )*phi1*phi2*phi3*(phi3^sigma) );
 true
 gap> Order( sigma );
 2
-gap> aut := AutomorphismOfF2( F, [ 1, 3, 2, -3, -2, 1, 2, 3 ] );;
+gap> aut := AutomorphismOfF2( F, [ -1, 3, 2, -3, -2, -1, 2, 3 ] );;
 gap> ConjugacyElementConjugacyAutomorphismOfF2( aut );
 f2*f1
-gap> phi4 := phi3^-1*phi2^-1*phi1*phi2*phi3;;
+gap> phi4 := phi3^-1*phi2^-1*phi1^-1*phi2*phi3;;
 gap> cent := CentralizerAutomorphismOfF2InSA( phi4 );;
 gap> ForAll( cent, x -> phi4*x = x*phi4 );
 true
 gap> ImageByAutomorphismOfF2( phi1*phi3*phi4, F.1*F.2 );
-f2^-1*f1*f2*f1^-1*f2
+f2^-1*f1^2
 gap> imgs := ImagesAutomorphismOfF2( aut );;
 gap> AutomorphismOfF2ByImages( F, imgs[1], imgs[2] ) = aut;
 true
 gap> B := [ [ 1, 1 ], [ -3, -2 ] ];;
 gap> AutomorphismOfF2ByMatrix( F, B );
-Automorphism of F2 with word [ "d", 2, 3, 2, 2, -1, 3, 2, -1, 2, -1, 3, -1, 
-  2, 3 ]
+Automorphism of F2 with word [ "d", 2, 3, 2, 2, 1, 3, 2, 1, 2, 1, 3, 1, 2, 3 ]

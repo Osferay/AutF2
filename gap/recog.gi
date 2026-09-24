@@ -5,7 +5,7 @@ WhiteheadAutomorphismsOfF2 := function( F )
     gens[1] := AutomorphismOfF2( F, [1] );
     gens[2] := AutomorphismOfF2( F, [2] );
     gens[3] := AutomorphismOfF2( F, [3] );
-    gens[4] := AutomorphismOfF2( F, [-3, -2, 1, 2, 3] );
+    gens[4] := AutomorphismOfF2( F, [-3, -2, -1, 2, 3] );
     type2   := ShallowCopy( gens );
     Add( type2, gens[1]^-1 );
     Add( type2, gens[2]^-1 );
@@ -14,7 +14,7 @@ WhiteheadAutomorphismsOfF2 := function( F )
 
     type1   := [];
     sigma2  := AutomorphismOfF2( F, ["s"] );
-    sigma1  := gens[1]^-1*gens[2]*gens[3];
+    sigma1  := gens[1]*gens[2]*gens[3];
     Add( type1, sigma1 );
     Add( type1, sigma1^2 );
     Add( type1, sigma1^3 );
@@ -24,9 +24,9 @@ WhiteheadAutomorphismsOfF2 := function( F )
     Add( type1, sigma1^3*sigma2 );
 
 	typec   := [];
-	Add( typec, gens[1]*gens[3] );
+	Add( typec, gens[1]^-1*gens[3] );
 	Add( typec, gens[2]*gens[4] );
-	Add( typec, (gens[1]*gens[3])^-1 );
+	Add( typec, (gens[1]^-1*gens[3])^-1 );
 	Add( typec, (gens[2]*gens[4])^-1 );
 
     return rec( type1 := type1, type2 := type2, typec := typec, all := Concatenation( type1, type2, typec ) );
@@ -72,6 +72,10 @@ InstallMethod( AreAutomorphicEquivalent,
 	[ IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse ],
 	function( F, u, v )
 		local red1, red2, W, ae, conj, w;
+
+		if u = v then
+			return AutomorphismOfF2( F, [] );
+		fi;
 
 		if IsCyclicalyReducedWord( u ) and IsCyclicalyReducedWord(v) then
 			red1 := WhiteheadReductionAlgorithm( F, u );
@@ -163,8 +167,8 @@ InstallMethod( AutomorphismOfF2ByMatrix,
 
 		w   := WordGL2ZinSU( M );
 		aut := AutomorphismOfF2( F, [] );
-		t   := AutomorphismOfF2( F, [-1, 2, 3, 1] );
-		s   := AutomorphismOfF2( F, [-1, 2, 3] );
+		t   := AutomorphismOfF2( F, ["d", 1, 2, 3, 2, 1, 1, 2, 3] );
+		s   := AutomorphismOfF2( F, [1, 2, 3] );
 
 		if w.e = 1 then
 			aut := AutomorphismOfF2( F, ["s"] );
