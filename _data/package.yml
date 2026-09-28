@@ -1,7 +1,7 @@
 name: AutF2
-version: "1.0"
+version: "2.0"
 license: "GPL-2.0-or-later"
-date: 2026-03-17
+date: 2026-09-28
 description: |
     Computations for the automorphisms group of F2
 
@@ -46,8 +46,8 @@ citeas: |
 bibtex: |
     @misc{ AutF2,
       author =           {Fern{\a'a}ndez Ayala, {\a'O}.},
-      title =            {{AutF2}, {Computations for the automorphisms group of F2}, {V}ersion 1.0},
-      month =            {Mar},
+      title =            {{AutF2}, {Computations for the automorphisms group of F2}, {V}ersion 2.0},
+      month =            {Sep},
       year =             {2026},
       note =             {GAP package},
       howpublished =     {\href                                      {https://osferay.github.io/AutF2/}

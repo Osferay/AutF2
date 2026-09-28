@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_autos">
+<Heading>Automorphisms</Heading>
+
+<Section Label="Chapter_Automorphisms_Section_Automorphisms">
+<Heading>Automorphisms</Heading>
+
+<ManSection>
+  <Filt Arg="arg" Type="Category" Name="IsAutomorphismOfF2" Label="for IsObject"/>
+ <Returns><K>true</K> or <K>false</K>
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Oper Arg="F, list" Name="AutomorphismOfF2" Label="for IsFreeGroup, IsList"/>
+ <Description>
+ Constructor of the automorphism object given a word of automorphisms. 
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Attr Arg="aut" Name="WordOfAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Description>
+ Returns the left canonical form of the given automorphism.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Attr Arg="aut" Name="ImagesAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Description>
+ Returns the images of the generators of <Math>F_2</Math> under  the given automorphism.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Oper Arg="aut, w" Name="ImageByAutomorphismOfF2" Label="for IsAutomorphismOfF2, IsAssocWordWithInverse"/>
+ <Description>
+ Returns the image of the given word under the given automorphism.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Prop Arg="aut" Name="IsIdentityAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Returns><K>true</K> or <K>false</K>
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Attr Arg="aut" Name="MatrixRepresentationOfAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Description>
+ Returns the image of an automorphism in <Math>\mathrm{GL}_2(\mathbb{Z})</Math> under the map <Math>\Psi</Math>.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Prop Arg="aut" Name="IsSpecialAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Returns><K>true</K> or <K>false</K>
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Prop Arg="aut" Name="IsConjugacyAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Returns><K>true</K> or <K>false</K>
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Attr Arg="aut" Name="ConjugacyElementConjugacyAutomorphismOfF2" Label="for IsAutomorphismOfF2"/>
+ <Description>
+ Getter of the element that determines a conjugacy automorphism.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Oper Arg="F, w" Name="ConjugacyAutomorphismOfF2" Label="for IsFreeGroup, IsAssocWordWithInverse"/>
+ <Description>
+ Returns the automorphism determinated by conjugacy of the given word in <Math>F_2</Math>
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Oper Arg="F, u, v" Name="AutomorphismOfF2ByImages" Label="for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse"/>
+ <Description>
+ Returns an automorphism such that the images of the basis elements are the given words <Math>u</Math> and <Math>v</Math>.
+ If the automorphism does not exist, it returns <C>false</C>.
+ </Description>
+</ManSection>
+
+<ManSection>
+  <Oper Arg="F, M" Name="AutomorphismOfF2ByMatrix" Label="for IsFreeGroup, IsList"/>
+ <Description>
+ Returns an automorphism whose image in <Math>\mathrm{GL}_2(\mathbb{Z})</Math> is the given matrix.
+ </Description>
+</ManSection>
+
+</Section>
+
+</Chapter>
+

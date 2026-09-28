@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_preface">
+<Heading>Preface</Heading>
+
+<P/>
+ In this package we provide methods to compute with automorphisms of the free group of rank <Math>2</Math>.
+ The details of the algorithms are available in <Cite Key="autf2" />.
+ We use the following notation:
+ <Display> \sigma=\begin{cases}
+ x \mapsto y,\\
+ y \mapsto x,
+ \end{cases}\quad
+ \phi_1=\begin{cases}
+ x \mapsto xy^{-1},\\
+ y \mapsto y,
+ \end{cases}\quad
+ \phi_2=\begin{cases}
+ x \mapsto x,\\
+ y \mapsto yx,
+ \end{cases}\quad
+ \phi_3=\begin{cases}
+ x \mapsto y^{-1}x,\\
+ y \mapsto y.
+ \end{cases} </Display>
+ Then <Math>\mathrm{Aut}(F_2)</Math> has the following presentation.
+ <Display> \begin{array}{r@{}l}
+ \mathrm{Aut}(F_2) = \langle \sigma,\phi_1,\phi_2,\phi_3 \mid &amp; \phi_1\phi_3=\phi_3\phi_1, \quad \phi_2\phi_3\phi_2 = \phi_3\phi_2\phi_3, \quad \phi_2\phi_1\phi_2 = \phi_1\phi_2\phi_1, \\
+  &amp; (\phi_1\phi_2\phi_3)^4=1, \quad \sigma^2=1, \quad \phi_1^{\sigma} = \phi_2^{-1}, \\
+ &amp; \phi_3\sigma = \sigma\phi_3^{-1}\phi_2^{-1}\phi_1^{-1}\phi_2\phi_3, \quad \phi_3^{-1}\sigma= \sigma\phi_3^{-1}\phi_2^{-1}\phi_1\phi_2\phi_3\rangle.
+ \end{array} </Display>
+ Denote the commutator subgroup of a group <Math>G</Math> by <Math>G^{\prime}</Math>. 
+ For <Math>\psi\in \mathrm{Aut}(F_2)</Math>, we define the map <Math>\psi^\ast</Math> by <Math>\psi^\ast(x F_2^{\prime}) = \psi(x) F_2^{\prime}</Math>.
+ If <Math>\overline{\cdot}</Math> denotes the isomorphism between <Math>\mathrm{Aut}(F_2/F_2^\prime)</Math> and <Math>\mathrm{GL}_2(\mathbb{Z})</Math>, then the map
+ <Display> \begin{array}{r@{}l}
+    \Psi \colon &amp; \mathrm{Aut}(F_2) \to \mathrm{GL}_2(\mathbb{Z}) \\
+    &amp; \psi \mapsto \overline{(\psi^\ast)}
+ \end{array} </Display>
+ is a group homomorphism and the kernel of this map is <Math>\mathrm{Inn}(F_2)</Math>.
+ We denote by <Math>\mathrm{SA}_2</Math> the subgroup of <Math>\mathrm{Aut}(F_2)</Math> consisting of those automorphisms that are mapped into <Math>\mathrm{SL}_2(\mathbb{Z})</Math> under <Math>\Psi</Math>.
+ Let <Math>B_4</Math> denote the braid group on <Math>4</Math> strands.
+ Then <Math>\mathrm{SA}_2 \cong B_4 / Z(B_4)</Math>.
+ Using this, we have that each automorphism can be written uniquely as a word of the form
+ <Display> \alpha = \sigma^{\varepsilon_1}\Delta^{\varepsilon_2}\alpha_1\alpha_2\cdots\alpha_k </Display>
+ where <Math>\varepsilon_1,\varepsilon_2 \in \{0,1\}</Math>, <Math>\Delta = \phi_1(\phi_2\phi_1)(\phi_3\phi_2\phi_1)</Math>, and <Math>\alpha_1,\dots,\alpha_k\in \mathrm{SA}_2</Math> whose images under the isomorphism between <Math>\mathrm{SA}_2</Math> and <Math>B_4 / Z(B_4)</Math> are simple braids.
+ We call this expression the left canonical form of <Math>\alpha</Math>.
+</Chapter>
+

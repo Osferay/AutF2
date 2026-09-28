@@ -1,0 +1,43 @@
+\contentsline {chapter}{\numberline {1}\textcolor {Chapter }{Preface}}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}\textcolor {Chapter }{Automorphisms}}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}\textcolor {Chapter }{Automorphisms}}{4}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}\textcolor {Chapter }{IsAutomorphismOfF2 (for IsObject)}}{4}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}\textcolor {Chapter }{AutomorphismOfF2 (for IsFreeGroup, IsList)}}{4}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}\textcolor {Chapter }{WordOfAutomorphismOfF2 (for IsAutomorphismOfF2)}}{4}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}\textcolor {Chapter }{ImagesAutomorphismOfF2 (for IsAutomorphismOfF2)}}{4}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}\textcolor {Chapter }{ImageByAutomorphismOfF2 (for IsAutomorphismOfF2, IsAssocWordWithInverse)}}{4}{subsection.2.1.5}%
+\contentsline {subsection}{\numberline {2.1.6}\textcolor {Chapter }{IsIdentityAutomorphismOfF2 (for IsAutomorphismOfF2)}}{5}{subsection.2.1.6}%
+\contentsline {subsection}{\numberline {2.1.7}\textcolor {Chapter }{MatrixRepresentationOfAutomorphismOfF2 (for IsAutomorphismOfF2)}}{5}{subsection.2.1.7}%
+\contentsline {subsection}{\numberline {2.1.8}\textcolor {Chapter }{IsSpecialAutomorphismOfF2 (for IsAutomorphismOfF2)}}{5}{subsection.2.1.8}%
+\contentsline {subsection}{\numberline {2.1.9}\textcolor {Chapter }{IsConjugacyAutomorphismOfF2 (for IsAutomorphismOfF2)}}{5}{subsection.2.1.9}%
+\contentsline {subsection}{\numberline {2.1.10}\textcolor {Chapter }{ConjugacyElementConjugacyAutomorphismOfF2 (for IsAutomorphismOfF2)}}{5}{subsection.2.1.10}%
+\contentsline {subsection}{\numberline {2.1.11}\textcolor {Chapter }{ConjugacyAutomorphismOfF2 (for IsFreeGroup, IsAssocWordWithInverse)}}{5}{subsection.2.1.11}%
+\contentsline {subsection}{\numberline {2.1.12}\textcolor {Chapter }{AutomorphismOfF2ByImages (for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse)}}{5}{subsection.2.1.12}%
+\contentsline {subsection}{\numberline {2.1.13}\textcolor {Chapter }{AutomorphismOfF2ByMatrix (for IsFreeGroup, IsList)}}{5}{subsection.2.1.13}%
+\contentsline {chapter}{\numberline {3}\textcolor {Chapter }{Conjugacy, fixed\texttt {\symbol {45}}point subgroups, and centralizers}}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}\textcolor {Chapter }{Centralizer}}{6}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}\textcolor {Chapter }{CentralizerAutomorphismOfF2}}{6}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}\textcolor {Chapter }{Conjugacy}}{6}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}\textcolor {Chapter }{AreConjugateAutomorphismsOfF2}}{6}{subsection.3.2.1}%
+\contentsline {section}{\numberline {3.3}\textcolor {Chapter }{Fixed points subgroup}}{6}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}\textcolor {Chapter }{FixedSubgroupAutomorphismOfF2}}{6}{subsection.3.3.1}%
+\contentsline {chapter}{\numberline {4}\textcolor {Chapter }{Related Algorithms}}{7}{chapter.4}%
+\contentsline {section}{\numberline {4.1}\textcolor {Chapter }{Matrix groups}}{7}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}\textcolor {Chapter }{ConjugacyGL2Z}}{7}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}\textcolor {Chapter }{CentralizerGL2Z}}{7}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}\textcolor {Chapter }{MembershipSubgroupSL2Z}}{7}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}\textcolor {Chapter }{Free groups}}{7}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}\textcolor {Chapter }{AreAutomorphicEquivalent (for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse)}}{7}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}\textcolor {Chapter }{IsCyclicalyReducedWord (for IsAssocWordWithInverse)}}{8}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}\textcolor {Chapter }{IsSubword (for IsAssocWordWithInverse, IsAssocWordWithInverse)}}{8}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}\textcolor {Chapter }{IsPrefix (for IsAssocWordWithInverse, IsAssocWordWithInverse)}}{8}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}\textcolor {Chapter }{IsSuffix (for IsAssocWordWithInverse, IsAssocWordWithInverse)}}{8}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}\textcolor {Chapter }{RootFreeGroup (for IsAssocWordWithInverse)}}{8}{subsection.4.2.6}%
+\contentsline {subsection}{\numberline {4.2.7}\textcolor {Chapter }{NielsenReducedSet}}{8}{subsection.4.2.7}%
+\contentsline {subsection}{\numberline {4.2.8}\textcolor {Chapter }{IsNielsenReducedSet}}{8}{subsection.4.2.8}%
+\contentsline {subsection}{\numberline {4.2.9}\textcolor {Chapter }{InFreeSubgroup}}{8}{subsection.4.2.9}%
+\contentsline {subsection}{\numberline {4.2.10}\textcolor {Chapter }{IsSubgroupOfFreeSubgroup}}{9}{subsection.4.2.10}%
+\contentsline {subsection}{\numberline {4.2.11}\textcolor {Chapter }{IsNormalSubgroupOfFreeSubgroup}}{9}{subsection.4.2.11}%
+\contentsline {subsection}{\numberline {4.2.12}\textcolor {Chapter }{AreEquivalent}}{9}{subsection.4.2.12}%
+\contentsline {chapter}{References}{10}{chapter*.2}%
+\contentsline {chapter}{Index}{11}{section*.3}%

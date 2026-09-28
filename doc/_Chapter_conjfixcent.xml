@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_conjfixcent">
+<Heading>Conjugacy, fixed-point subgroups, and centralizers</Heading>
+
+<Section Label="Chapter_Conjfixcent_Section_Centralizer">
+<Heading>Centralizer</Heading>
+
+<P/>
+<ManSection>
+  <Func Arg="aut" Name="CentralizerAutomorphismOfF2" />
+ <Description>
+ Returns a generating set for the centralizer of a given automorphism of <Math>F_2</Math>.
+ </Description>
+</ManSection>
+
+</Section>
+
+<Section Label="Chapter_Conjfixcent_Section_Conjugacy">
+<Heading>Conjugacy</Heading>
+
+<ManSection>
+  <Func Arg="a,b" Name="AreConjugateAutomorphismsOfF2" />
+ <Description>
+ Returns a conjugating element if the automorphisms <Math>a</Math> and <Math>b</Math> are conjugate.
+ Otherwise, it returns <C>false</C>.
+ </Description>
+</ManSection>
+
+</Section>
+
+<Section Label="Chapter_Conjfixcent_Section_Fixed_points_subgroup">
+<Heading>Fixed points subgroup</Heading>
+
+<P/>
+<ManSection>
+  <Func Arg="aut" Name="FixedSubgroupAutomorphismOfF2" />
+ <Description>
+ Returns a basis for the fixed-point subgroup of a given automorphism.
+ </Description>
+</ManSection>
+
+</Section>
+
+</Chapter>
+

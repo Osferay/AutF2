@@ -1,0 +1,47 @@
+\GAPDocLabFile{autf2}
+\makelabel{autf2:Title page}{}{X7D2C85EC87DD46E5}
+\makelabel{autf2:Table of Contents}{}{X8537FEB07AF2BEC8}
+\makelabel{autf2:Preface}{1}{X874E1D45845007FE}
+\makelabel{autf2:Automorphisms}{2}{X7FD74CDB783F4D95}
+\makelabel{autf2:Automorphisms}{2.1}{X7FD74CDB783F4D95}
+\makelabel{autf2:Conjugacy, fixed-point subgroups, and centralizers}{3}{X7E9585D47A65DB21}
+\makelabel{autf2:Centralizer}{3.1}{X7A2BF4527E08803C}
+\makelabel{autf2:Conjugacy}{3.2}{X86D1C5D47E16ACA4}
+\makelabel{autf2:Fixed points subgroup}{3.3}{X7BBEE9B679464479}
+\makelabel{autf2:Related Algorithms}{4}{X7D3FDF65793EB01A}
+\makelabel{autf2:Matrix groups}{4.1}{X7CF51CB48610A07D}
+\makelabel{autf2:Free groups}{4.2}{X7F7982097CB2567D}
+\makelabel{autf2:Bibliography}{Bib}{X7A6F98FD85F02BFE}
+\makelabel{autf2:References}{Bib}{X7A6F98FD85F02BFE}
+\makelabel{autf2:Index}{Ind}{X83A0356F839C696F}
+\makelabel{autf2:IsAutomorphismOfF2 for IsObject}{2.1.1}{X795467857E5E4235}
+\makelabel{autf2:AutomorphismOfF2 for IsFreeGroup, IsList}{2.1.2}{X78490E7D7EE21B75}
+\makelabel{autf2:WordOfAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.3}{X7F84A8D5853CD72C}
+\makelabel{autf2:ImagesAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.4}{X800B471778E8A146}
+\makelabel{autf2:ImageByAutomorphismOfF2 for IsAutomorphismOfF2, IsAssocWordWithInverse}{2.1.5}{X81E6057C87EE2FDE}
+\makelabel{autf2:IsIdentityAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.6}{X82C6EF4A85F76DE1}
+\makelabel{autf2:MatrixRepresentationOfAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.7}{X7A3E3F398616EAC8}
+\makelabel{autf2:IsSpecialAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.8}{X7D5E452E7FBB833E}
+\makelabel{autf2:IsConjugacyAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.9}{X7A06121978540E5A}
+\makelabel{autf2:ConjugacyElementConjugacyAutomorphismOfF2 for IsAutomorphismOfF2}{2.1.10}{X80C1889D7E274B13}
+\makelabel{autf2:ConjugacyAutomorphismOfF2 for IsFreeGroup, IsAssocWordWithInverse}{2.1.11}{X854F54497FCF2AD2}
+\makelabel{autf2:AutomorphismOfF2ByImages for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse}{2.1.12}{X78CC8F897CDE09EF}
+\makelabel{autf2:AutomorphismOfF2ByMatrix for IsFreeGroup, IsList}{2.1.13}{X8608AF24834A1BC1}
+\makelabel{autf2:CentralizerAutomorphismOfF2}{3.1.1}{X86E3FC8E7CEF3485}
+\makelabel{autf2:AreConjugateAutomorphismsOfF2}{3.2.1}{X84B74C6585A356CA}
+\makelabel{autf2:FixedSubgroupAutomorphismOfF2}{3.3.1}{X81F2F688785ECB9D}
+\makelabel{autf2:ConjugacyGL2Z}{4.1.1}{X82824F3A7B27FE39}
+\makelabel{autf2:CentralizerGL2Z}{4.1.2}{X87DAC1EB78FB742A}
+\makelabel{autf2:MembershipSubgroupSL2Z}{4.1.3}{X8253F88678208AFF}
+\makelabel{autf2:AreAutomorphicEquivalent for IsFreeGroup, IsAssocWordWithInverse, IsAssocWordWithInverse}{4.2.1}{X7D019AEE87401FD1}
+\makelabel{autf2:IsCyclicalyReducedWord for IsAssocWordWithInverse}{4.2.2}{X87BECA5782DFCBE4}
+\makelabel{autf2:IsSubword for IsAssocWordWithInverse, IsAssocWordWithInverse}{4.2.3}{X7CCE73017BB0945A}
+\makelabel{autf2:IsPrefix for IsAssocWordWithInverse, IsAssocWordWithInverse}{4.2.4}{X7A5B7BF97DA50B9A}
+\makelabel{autf2:IsSuffix for IsAssocWordWithInverse, IsAssocWordWithInverse}{4.2.5}{X86FEC68480261459}
+\makelabel{autf2:RootFreeGroup for IsAssocWordWithInverse}{4.2.6}{X782355CD80514F9C}
+\makelabel{autf2:NielsenReducedSet}{4.2.7}{X81076BA07F16C245}
+\makelabel{autf2:IsNielsenReducedSet}{4.2.8}{X79E7C53279DE9E8E}
+\makelabel{autf2:InFreeSubgroup}{4.2.9}{X87538CE5813D994D}
+\makelabel{autf2:IsSubgroupOfFreeSubgroup}{4.2.10}{X79A0875478CFF45D}
+\makelabel{autf2:IsNormalSubgroupOfFreeSubgroup}{4.2.11}{X7A739B117B8E50CA}
+\makelabel{autf2:AreEquivalent}{4.2.12}{X8729593B81C235B4}
