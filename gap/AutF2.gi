@@ -433,6 +433,19 @@ InstallOtherMethod( \^,
 		return AutomorphismOfF2( a!.freeGroup, new );
 end);
 
+InstallOtherMethod( Comm,
+	"for two automorphisms of F2",
+	[ IsAutomorphismOfF2, IsAutomorphismOfF2 ],
+	function( a, b )
+		local new;
+
+		if a!.freeGroup <> b!.freeGroup then
+			Error( "The free groups of the automorphisms are different." );
+		fi;
+
+		return a^-1*a^b;
+end);
+
 InstallOtherMethod( Order,
 	"for automorphisms of F2",
 	[ IsAutomorphismOfF2 ],

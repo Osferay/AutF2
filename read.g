@@ -10,3 +10,4 @@ ReadPackage( "AutF2", "gap/mats.gi");
 ReadPackage( "AutF2", "gap/recog.gi");
 ReadPackage( "AutF2", "gap/conj.gi");
 ReadPackage( "AutF2", "gap/fixed.gi");
+ReadPackage( "AutF2", "gap/cent.gi");

@@ -1,40 +1,31 @@
-OrbitStabilizerCentralizer := function( aut, C )
-    local dict, sdict, orbit, stab, o, y, j, todo, c, i, tmp;
+## Solves if a and a^b are conjugate by an inner automorphism ##
+SolveInnerConjugacyAutF2 := function( a, b )
+    local Id, v, a1, f, z0, h0;
+    
+    Id := AutomorphismOfF2( a!.freeGroup, [ ] );
 
-    i     := AutomorphismOfF2( aut!.freeGroup, [] );
-    dict  := NewDictionary( [], true );
-    sdict := NewDictionary( [], true );
-    AddDictionary( dict, aut!.lcf, 1 );
-    orbit := [ [aut,i] ];
-    stab  := [ ];
-    todo  := [ [aut,i] ];
+    v  := a^-1*(a^b);
+    a1 := ReduceToQuestion2( a, v, Id );
 
-    while not IsEmpty(todo) do
-        o := todo[1];
-        Remove( todo, 1 );
-        for c in C do
-            y := o[1]^c;
-            j := LookupDictionary( dict, y!.lcf );
+    if not IsBool( a1 ) then
+		f  := a1[3];
+		z0 := a1[2];
+						
+		h0 := SolveQuestion2( a, z0 );
 
-            if IsBool(j) then
-                AddDictionary( dict, y!.lcf, Length(orbit)+1 );
-                Add( orbit, [ y, o[2]*c ] );
-                Add( todo, [ y, o[2]*c ] );
-            else
-                tmp := (orbit[j][2])*(o[2]*c);
-                if IsBool( LookupDictionary( sdict, tmp!.lcf ) ) then
-                    AddDictionary( sdict, tmp!.lcf, Length(stab)+1 );
-                    Add( stab, tmp );
-                fi;
-            fi;
-        od;
-    od;
+		if not IsBool(h0) then
+			h0 := ConjugacyAutomorphismOfF2( a!.freeGroup, h0 );
+			return b*(h0*f)^-1;
+		fi;
+	fi;
 
-    return [orbit,stab];
+    return false;
 end;
 
+
+
 InstallGlobalFunction( "CentralizerAutomorphismOfF2", function( aut )
-    local C, C2, sigma, c, s2, px;
+    local C, sigma, c, s2, px, py, A, CA, b, D, e, Fix, tmp;
 
     if IsSpecialAutomorphismOfF2( aut ) then
         C     := CentralizerAutomorphismOfF2InSA( aut );
@@ -45,29 +36,67 @@ InstallGlobalFunction( "CentralizerAutomorphismOfF2", function( aut )
         fi;
     
     elif Order( aut ) = infinity then
-        C2 := CentralizerAutomorphismOfF2InSA( aut^2 );
-    else
-        s2    := AutomorphismOfF2( aut!.freeGroup, [ -1, 2, 3, -1, 2, 3 ] );
-        sigma := AutomorphismOfF2( aut!.freeGroup, ["s"] );
-        c     := AreConjugateAutomorphismsOfF2( aut, sigma );
+        s2 := AutomorphismOfF2( aut!.freeGroup, [ 1, 2, 3, 1, 2, 3 ] );
+
+        A  := MatrixRepresentationOfAutomorphismOfF2( aut );
+        CA := CentralizerGL2Z( A );
+        b  := AutomorphismOfF2ByMatrix( aut!.freeGroup, CA.gen );
+        D  := DivisorsInt( CA.exponent );
+        
+        C  := [];
+        tmp:= [];
+        c := SolveInnerConjugacyAutF2( aut, s2 );
+
         if not IsBool(c) then
-            C := [ sigma, s2 ];
-            C := List( C, x -> x^c );
+            Add( C, c );
+        fi;
+        
+        for e in D do
+            if IsEvenInt( e ) and IsEmpty(C) then
+                c := SolveInnerConjugacyAutF2( aut, s2*b^e );
+                
+                if not IsBool(c) then
+                    Add( C, c );
+                fi;
+            fi;
+
+
+            if IsEmpty( tmp ) then
+                c := SolveInnerConjugacyAutF2( aut, b^e );
+                
+                if not IsBool(c) then
+                    Add( tmp, c );
+                    Add( C, c );
+                fi;
+            fi; 
+        od;
+
+        Fix := FixedSubgroupAutomorphismOfF2( aut );
+        if not IsEmpty( Fix ) then
+            Add( C, ConjugacyAutomorphismOfF2( aut!.freeGroup, Fix[1] ) );
         fi;
 
-        sigma := AutomorphismOfF2( aut!.freeGroup, [ "s", -1, 2, 3 ] );
-        c     := AreConjugateAutomorphismsOfF2( aut, sigma );
+        return C;
+    else
+        s2    := AutomorphismOfF2( aut!.freeGroup, [ 1, 2, 3, 1, 2, 3 ] );
+        sigma := AutomorphismOfF2( aut!.freeGroup, ["s"] );
+        c     := AreConjugateAutomorphismsOfF2( sigma, aut );
+        if not IsBool(c) then
+            C := [ aut, s2^c ];
+        fi;
+
+        sigma := AutomorphismOfF2( aut!.freeGroup, [ "s", 1, 2, 3 ] );
+        c     := AreConjugateAutomorphismsOfF2( sigma, aut );
         if not IsBool(c) then
             px := AutomorphismOfF2( aut!.freeGroup, [ "d", 2, 3, 2, 2, 3, 2 ] );
-            C := [ sigma, s2, px ];
-            C := List( C, x -> x^c );
+            C := [ aut, s2^c, px^c ];
         fi;
 
-        sigma := AutomorphismOfF2( aut!.freeGroup, [ "s", -1, 2, 3, 1, 3 ] );
-        c     := AreConjugateAutomorphismsOfF2( aut, sigma );
+        sigma := AutomorphismOfF2( aut!.freeGroup, [ "s", 1, 2, 3, -1, 3 ] );
+        py    := AutomorphismOfF2( aut!.freeGroup, [-1,3] );
+        c     := AreConjugateAutomorphismsOfF2( sigma, aut );
         if not IsBool(c) then
-            C := [ sigma, s2 ];
-            C := List( C, x -> x^c );
+            C := [ aut, (s2*py)^c ];
         fi;
     fi;
 

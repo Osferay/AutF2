@@ -52,13 +52,13 @@ InstallGlobalFunction( FixedSubgroupAutomorphismOfF2, function( aut )
         fi;
     else
         s2  := AutomorphismOfF2( aut!.freeGroup, ["s"] );
-        s4  := AutomorphismOfF2( aut!.freeGroup, ["s",-1,2,3] );
-        s4y := AutomorphismOfF2( aut!.freeGroup, ["s",-1,2,3,1,3] );
+        s4  := AutomorphismOfF2( aut!.freeGroup, ["s",1,2,3] );
+        s4y := AutomorphismOfF2( aut!.freeGroup, ["s",1,2,3,-1,3] );
 
-        if ConjugacyAutomorphismOfF2( aut, s2 ) or ConjugacyAutomorphismOfF2( aut, s4y ) then
+        if AreConjugateAutomorphismsOfF2( aut, s2 ) or AreConjugateAutomorphismsOfF2( aut, s4y ) then
             return [];
         else
-            d := ConjugacyAutomorphismOfF2( aut, s4 );
+            d := AreConjugateAutomorphismsOfF2( aut, s4 );
             return [ ImageByAutomorphismOfF2( d^-1, aut!.freeGroup.1 ) ];
         fi;
     fi;

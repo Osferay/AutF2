@@ -10,3 +10,4 @@ ReadPackage( "AutF2", "gap/AutF2.gd");
 ReadPackage( "AutF2", "gap/recog.gd");
 ReadPackage( "AutF2", "gap/conj.gd");
 ReadPackage( "AutF2", "gap/fixed.gd");
+ReadPackage( "AutF2", "gap/cent.gd");

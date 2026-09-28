@@ -8,7 +8,7 @@
 DeclareGlobalFunction( "ConjugacyGL2Z" );
 #! @Description
 #! Given a matrix $A$, computes a matrix $C$ and an integer $n$ such that
-#! $\operatorname{Cent}_{\mathrm{GL}_2(\mathbb{Z})}(A) = \langle -C, C \rangle$ and $C^n = A$.
+#! $\mathrm{Cent}_{\mathrm{GL}_2(\mathbb{Z})}(A) = \langle -C, C \rangle$ and $C^n = A$.
 #! @Arguments A,B
 DeclareGlobalFunction( "CentralizerGL2Z" );
 #! @Description

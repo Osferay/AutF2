@@ -22,26 +22,26 @@
 #! x \mapsto y^{-1}x,\\
 #! y \mapsto y.
 #! \end{cases} $$
-#! Then $\operatorname{Aut}(F_2)$ has the following presentation.
-#! $$ \begin{aligned}
-#! \operatorname{Aut}(F_2) = \langle \sigma,\phi_1,\phi_2,\phi_3 \mid & \phi_1\phi_3=\phi_3\phi_1, \quad \phi_2\phi_3\phi_2 = \phi_3\phi_2\phi_3, \quad \phi_2\phi_1\phi_2 = \phi_1\phi_2\phi_1, \\
-#!    & (\phi_1\phi_2\phi_3)^4=1, \quad \sigma^2=1, \quad \phi_1^{\sigma} = \phi_2^{-1}, \\ 
-#!    & \phi_3\sigma = \sigma\phi_3^{-1}\phi_2^{-1}\phi_1^{-1}\phi_2\phi_3, \quad \phi_3^{-1}\sigma= \sigma\phi_3^{-1}\phi_2^{-1}\phi_1\phi_2\phi_3\rangle.
-#! \end{aligned} $$
+#! Then $\mathrm{Aut}(F_2)$ has the following presentation.
+#! $$ \begin{array}{r@{}l}
+#! \mathrm{Aut}(F_2) = \langle \sigma,\phi_1,\phi_2,\phi_3 \mid &amp; \phi_1\phi_3=\phi_3\phi_1, \quad \phi_2\phi_3\phi_2 = \phi_3\phi_2\phi_3, \quad \phi_2\phi_1\phi_2 = \phi_1\phi_2\phi_1, \\
+#!  &amp; (\phi_1\phi_2\phi_3)^4=1, \quad \sigma^2=1, \quad \phi_1^{\sigma} = \phi_2^{-1}, \\
+#! &amp; \phi_3\sigma = \sigma\phi_3^{-1}\phi_2^{-1}\phi_1^{-1}\phi_2\phi_3, \quad \phi_3^{-1}\sigma= \sigma\phi_3^{-1}\phi_2^{-1}\phi_1\phi_2\phi_3\rangle.
+#! \end{array} $$
 #! Denote the commutator subgroup of a group $G$ by $G^{\prime}$. 
-#! For $\psi\in \operatorname{Aut}(F_2)$, we define the map $\psi^\ast$ by $\psi^\ast(x F_2^{\prime}) = \psi(x) F_2^{\prime}$.
-#! If $\overline{\cdot}$ denotes the isomorphism between $\operatorname{Aut}(F_2/F_2^\prime)$ and $\operatorname{GL}_2(\mathbb{Z})$, then the map
-#! \begin{align*}
-#!    \Psi \colon & \operatorname{Aut}(F_2) \to \operatorname{GL}_2(\mathbb{Z}) \\
-#!    & \psi \mapsto \overline{(\psi^\ast)}
-#! \end{align*}
-#! is a group homomorphism and the kernel of this map is $\operatorname{Inn}(F_2)$.
-#! We denote by $\operatorname{SA}_2$ the subgroup of $\operatorname{Aut}(F_2)$ consisting of those automorphisms that are mapped into $\operatorname{SL}_2(\mathbb{Z})$ under $\Psi$.
+#! For $\psi\in \mathrm{Aut}(F_2)$, we define the map $\psi^\ast$ by $\psi^\ast(x F_2^{\prime}) = \psi(x) F_2^{\prime}$.
+#! If $\overline{\cdot}$ denotes the isomorphism between $\mathrm{Aut}(F_2/F_2^\prime)$ and $\mathrm{GL}_2(\mathbb{Z})$, then the map
+#! $$ \begin{array}{r@{}l}
+#!    \Psi \colon &amp; \mathrm{Aut}(F_2) \to \mathrm{GL}_2(\mathbb{Z}) \\
+#!    &amp; \psi \mapsto \overline{(\psi^\ast)}
+#! \end{array} $$
+#! is a group homomorphism and the kernel of this map is $\mathrm{Inn}(F_2)$.
+#! We denote by $\mathrm{SA}_2$ the subgroup of $\mathrm{Aut}(F_2)$ consisting of those automorphisms that are mapped into $\mathrm{SL}_2(\mathbb{Z})$ under $\Psi$.
 #! Let $B_4$ denote the braid group on $4$ strands.
-#! Then $\operatorname{SA}_2 \cong B_4 / Z(B_4)$.
+#! Then $\mathrm{SA}_2 \cong B_4 / Z(B_4)$.
 #! Using this, we have that each automorphism can be written uniquely as a word of the form
 #! $$ \alpha = \sigma^{\varepsilon_1}\Delta^{\varepsilon_2}\alpha_1\alpha_2\cdots\alpha_k $$
-#! where $\varepsilon_1,\varepsilon_2 \in \{0,1\}$, $\Delta = \phi_1(\phi_2\phi_1)(\phi_3\phi_2\phi_1)$, and $\alpha_1,\dots,\alpha_k\in \operatorname{SA}_2$ whose images under the isomorphism between $\operatorname{SA}_2$ and $B_4 / Z(B_4)$ are simple braids.
+#! where $\varepsilon_1,\varepsilon_2 \in \{0,1\}$, $\Delta = \phi_1(\phi_2\phi_1)(\phi_3\phi_2\phi_1)$, and $\alpha_1,\dots,\alpha_k\in \mathrm{SA}_2$ whose images under the isomorphism between $\mathrm{SA}_2$ and $B_4 / Z(B_4)$ are simple braids.
 #! We call this expression the left canonical form of $\alpha$.
 
 #! @Chapter Automorphisms
