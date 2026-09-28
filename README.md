@@ -16,7 +16,7 @@ First place the folder in the pkg subdirectory of your gap folder, or in any oth
 
     gap> LoadPackage("autf2");
 	─────────────────────────────────────────────────────────────────────────────
-	Loading  AutF2 0.1 (Computations for the automorphisms group of F2)
+	Loading  AutF2 2.0 (Computations for the automorphisms group of F2)
 	by Oscar Fernandez Ayala (https://osferay.github.io/).
 	Homepage: https://osferay.github.io/AutF2/
 	Report issues at https://github.com/osferay/autf2/issues
